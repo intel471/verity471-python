@@ -35,6 +35,9 @@ REQUIRES = [
     "pydantic >= 2",
     "typing-extensions >= 4.7.1",
     "lazy-imports >= 1, < 2",
+    "PyYAML >= 6.0.2",
+    "pycti >= 6.7",
+    "stix2 == 3.0.1",
 ]
 
 setup(
