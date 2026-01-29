@@ -1,0 +1,41 @@
+{
+  "count": 634,
+  "credential_sets": [
+    {
+      "activity": {
+        "first_seen_ts": "2023-01-20T14:00:09.817Z",
+        "last_seen_ts": "2023-06-22T11:57:19.741Z"
+      },
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "data": {
+        "breach_ts": "2023-01-16T00:00:00Z",
+        "collected_ts": "2023-01-19T00:00:00Z",
+        "description": "dummy",
+        "disclosure_ts": "2023-01-19T00:00:00Z",
+        "name": "dummy",
+        "record_count": 913706,
+        "sources": [],
+        "victims": []
+      },
+      "id": "cred-set--00000000-0000-0000-0000-000000000000",
+      "last_updated_ts": "2023-06-22T11:57:19.741Z",
+      "statistics": {
+        "accessed_urls_count": 0,
+        "credential_occurrences_count": 0,
+        "credentials_count": 0
+      }
+    }
+  ],
+  "cursor_next": "dummy"
+}

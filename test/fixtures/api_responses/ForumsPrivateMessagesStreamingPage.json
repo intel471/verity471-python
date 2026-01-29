@@ -1,0 +1,39 @@
+{
+  "count": 17014210,
+  "cursor_next": "dummy",
+  "private_messages": [
+    {
+      "author": {
+        "id": "actor--00000000-0000-0000-0000-000000000000",
+        "user_name": "dummy",
+        "user_name_id": "dummy"
+      },
+      "forum": {
+        "activity": {
+          "first_seen_ts": "2009-10-29T12:52:04Z",
+          "last_seen_ts": "2022-07-25T23:11:51Z"
+        },
+        "description": "dummy",
+        "id": "forum--00000000-0000-0000-0000-000000000000",
+        "links": {
+          "verity_portal": {
+            "href": "https://example.com"
+          }
+        },
+        "title": "dummy"
+      },
+      "private_message": {
+        "conversation_id": "private-message-thread--00000000-0000-0000-0000-000000000000",
+        "creation_ts": "2010-08-24T23:25:34Z",
+        "id": "private-message--00000000-0000-0000-0000-000000000000",
+        "message": "dummy",
+        "subject": "dummy"
+      },
+      "recipient": {
+        "id": "actor--00000000-0000-0000-0000-000000000000",
+        "user_name": "dummy",
+        "user_name_id": "dummy"
+      }
+    }
+  ]
+}

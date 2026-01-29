@@ -1,0 +1,45 @@
+{
+  "count": 6768,
+  "cursor_next": "dummy",
+  "reports": [
+    {
+      "body": "dummy",
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "creation_ts": "2019-01-16T22:18:22Z",
+      "entities": [],
+      "id": "report--00000000-0000-0000-0000-000000000000",
+      "information_ts": "2019-01-16T00:00:00Z",
+      "last_updated_ts": "2020-04-28T06:21:05Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "released_ts": "2019-01-17T16:59:57Z",
+      "sources": [
+        {
+          "links": {
+            "verity_api": {
+              "href": "https://example.com"
+            },
+            "verity_portal": {
+              "href": "https://example.com"
+            }
+          },
+          "title": "dummy",
+          "type": "internal"
+        }
+      ],
+      "title": "dummy",
+      "type": "spot_report",
+      "victims": []
+    }
+  ]
+}

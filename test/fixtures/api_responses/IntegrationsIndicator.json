@@ -1,0 +1,52 @@
+{
+  "activity": {
+    "first_seen_ts": "2018-08-07T18:33:00Z",
+    "last_seen_ts": "2018-08-07T18:33:00Z"
+  },
+  "classification": {
+    "girs": [
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      }
+    ]
+  },
+  "confidence": 50,
+  "data": {
+    "file": {
+      "md5": "00000000000000000000000000000000",
+      "sha1": "0000000000000000000000000000000000000000",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "description": "dummy",
+  "expiration_ts": "2019-08-07T18:33:00Z",
+  "id": "malware-indicator--00000000-0000-0000-0000-000000000000",
+  "kill_chain_phases": [
+    {
+      "kill_chain_name": "dummy",
+      "phase_name": "dummy"
+    }
+  ],
+  "pattern": "dummy",
+  "pattern_type": "dummy",
+  "pattern_version": "dummy",
+  "threat": {
+    "data": {
+      "malware": {
+        "family": "dummy",
+        "id": "malware--00000000-0000-0000-0000-000000000000"
+      },
+      "malware_family": {
+        "id": "malware-family--00000000-0000-0000-0000-000000000000",
+        "name": "dummy"
+      }
+    },
+    "type": "malware"
+  },
+  "type": "file"
+}

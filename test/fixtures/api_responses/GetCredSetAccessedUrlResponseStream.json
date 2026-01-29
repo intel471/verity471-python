@@ -1,0 +1,38 @@
+{
+  "access_urls": [
+    {
+      "activity": {
+        "first_seen_ts": "2023-01-20T12:00:07.747Z",
+        "last_seen_ts": "2023-01-20T12:00:07.747Z"
+      },
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "data": {
+        "accessed_domain": "dummy",
+        "accessed_url": "https://example.com",
+        "credential_set": {
+          "id": "cred-set--00000000-0000-0000-0000-000000000000",
+          "name": "dummy"
+        }
+      },
+      "id": "cred-set-accessed-url--00000000-0000-0000-0000-000000000000",
+      "last_updated_ts": "2023-01-20T12:00:07.747Z"
+    }
+  ],
+  "count": 17802,
+  "cursor_next": "dummy"
+}

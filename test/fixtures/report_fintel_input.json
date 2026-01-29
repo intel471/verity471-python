@@ -1,0 +1,110 @@
+{
+    "count": 2,
+    "reports": [
+        {
+            "id": "report--00000000-6922-5645-af58-aa977f4b8ead",
+            "type": "fintel",
+            "sub_type": "actor_profile",
+            "title": "Foo-Bar",
+            "information_ts": "2026-01-06T10:00:00Z",
+            "creation_ts": "2026-01-06T11:00:00Z",
+            "released_ts": "2026-01-06T12:00:00Z",
+            "entities": [
+                {
+                    "type": "Handle",
+                    "value": "Foo-Bar"
+                }
+            ],
+            "locations": [
+                {
+                    "region": "Europe",
+                    "country": "Russia",
+                    "link": "originated from"
+                }
+            ],
+            "last_updated_ts": "2026-01-06T13:00:00Z",
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Loader malware",
+                        "path": "1.1.6"
+                    }
+                ]
+            },
+            "body": "<p>Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations</p>",
+            "sources": [
+                {
+                    "type": "internal",
+                    "title": "Analysis of attacks",
+                    "links": {
+                        "verity_api": {
+                            "href": "https://link/api"
+                        },
+                        "verity_portal": {
+                            "href": "https://link/portal"
+                        }
+                    },
+                    "index": 1,
+                    "last_updated_ts": "2026-01-06T14:00:00Z",
+                    "source_type": "Information report"
+                }
+            ],
+            "attachments": [],
+            "victims": [
+                {
+                    "name": "Acme Corp.",
+                    "links": [
+                        {
+                            "external": {
+                                "href": "http://acmecorp"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "related_reports": [
+                {
+                    "id": "report--00000000-9b46-5cb7-bfef-eaadadaa4ec5",
+                    "type": "info_report",
+                    "title": "Analysis of attacks2",
+                    "creation_ts": "2026-01-06T15:00:00Z",
+                    "released_ts": "2026-01-06T16:00:00Z",
+                    "last_updated_ts": "2026-01-06T17:00:00Z",
+                    "information_ts": "2026-01-06T18:00:00Z",
+                    "sources": [],
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Loader malware",
+                                "path": "1.1.6"
+                            }
+                        ]
+                    },
+                    "assessment": {
+                        "admiralty_code": "A1"
+                    },
+                    "links": {
+                        "verity_api": {
+                            "href": "https://link/api"
+                        }
+                    }
+                }
+            ],
+            "derived_entities": [
+                {
+                    "type": "Handle",
+                    "value": "bar"
+                },
+                {
+                    "type": "EmailAddress",
+                    "value": "foo@bar.com"
+                }
+            ],
+            "links": {
+                "verity_api": {
+                    "href": "https://link/api"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+{
+  "breach_alert_count": 25735,
+  "count": 53407,
+  "cursor_next": "dummy",
+  "fintel_report_count": 1734,
+  "geopol_report_count": 1366,
+  "info_report_count": 14026,
+  "malware_report_count": 347,
+  "reports": [
+    {
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "creation_ts": "2023-09-25T15:43:52Z",
+      "id": "vulnerability--00000000-0000-0000-0000-000000000000",
+      "last_updated_ts": "2025-07-10T04:40:09Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "released_ts": "2023-09-25T15:43:52Z",
+      "sources": [],
+      "title": "dummy",
+      "type": "vulnerability_report"
+    }
+  ],
+  "spot_report_count": 6768,
+  "vulnerability_report_count": 3431
+}

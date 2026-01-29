@@ -1,0 +1,65 @@
+{
+  "activity": {
+    "first_seen_ts": "2023-01-18T08:08:19.994Z",
+    "last_seen_ts": "2023-01-18T08:08:19.994Z"
+  },
+  "classification": {
+    "girs": [
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      }
+    ]
+  },
+  "data": {
+    "affiliations": [
+      "third_parties"
+    ],
+    "credential_domain": "dummy",
+    "credential_login": "user@example.com",
+    "credential_set_type": [
+      "breaches"
+    ],
+    "credential_sets": [
+      {
+        "id": "cred-set--00000000-0000-0000-0000-000000000000",
+        "name": "dummy"
+      }
+    ],
+    "detection_domain": "dummy",
+    "info_stealer": {
+      "antivirus_software": [],
+      "computer_username": [],
+      "infection_ts": [],
+      "ip": [],
+      "isp": [],
+      "machine_id": [],
+      "malware_family": [],
+      "malware_install_path": [],
+      "os": [],
+      "pc_name": [],
+      "screenshot_path": [],
+      "version": []
+    },
+    "password": {
+      "strength": "not_provided"
+    }
+  },
+  "id": "cred--00000000-0000-0000-0000-000000000000",
+  "last_updated_ts": "2023-01-18T08:08:19.994Z",
+  "statistics": {
+    "accessed_urls_count": 1
+  }
+}

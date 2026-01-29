@@ -1,0 +1,40 @@
+{
+  "activity": {
+    "first_seen_ts": "2018-08-07T20:33:48Z",
+    "last_seen_ts": "2018-08-07T20:33:48Z"
+  },
+  "classification": {
+    "girs": [
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      }
+    ]
+  },
+  "data": {
+    "controllers": [
+      {
+        "url": "https://example.com"
+      }
+    ]
+  },
+  "id": "malware-event--00000000-0000-0000-0000-000000000000",
+  "threat": {
+    "data": {
+      "malware": {
+        "family": "dummy",
+        "id": "malware--00000000-0000-0000-0000-000000000000"
+      },
+      "malware_family": {
+        "id": "malware-family--00000000-0000-0000-0000-000000000000",
+        "name": "dummy"
+      }
+    },
+    "type": "malware"
+  },
+  "type": "artifact_extraction"
+}

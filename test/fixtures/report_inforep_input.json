@@ -1,0 +1,81 @@
+{
+    "count": 14061,
+    "cursor_next": "MjhiMWQ",
+    "reports": [
+        {
+            "actor_subject_of_report": [
+                {
+                    "aliases": [],
+                    "handle": "FooBar"
+                }
+            ],
+            "assessment": {
+                "admiralty_code": "A2"
+            },
+            "attachments": [
+                {
+                    "description": "",
+                    "file_name": "attachement-1403714944.png",
+                    "file_size": 189526,
+                    "malicious": false,
+                    "mime_type": "image/png",
+                    "url": "https://api.intel471.cloud/intel-report/v1/reports/info/report--1d4f77cb-ee3b-5ec2-9291-8cf9356bdfb8/attachments/5cfe4a939908a91e70e6a2dced037ee06ff3177aa90fdd640dbb3cc61ec33d63"
+                }
+            ],
+            "body": "<p>В течение последних нескольких дней был запущен онлайн-сервис. Он предоставляет интерфейс поиска по украденным пользовательским данным из различных утечек данных.</p>",
+            "body_translated": "<p>Within the last few days the online service has launched. It offers a search interface into stolen user data from various breaches.<p>",
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Loader malware",
+                        "path": "1.1.6"
+                    }
+                ]
+            },
+            "creation_ts": "2026-01-06T10:00:00Z",
+            "derived_entities": [],
+            "entities": [
+                {
+                    "type": "Handle",
+                    "value": "FooBar"
+                },
+                {
+                    "type": "IPAddress",
+                    "value": "0.0.0.0"
+                }
+            ],
+            "executive_summary": "executive_summary: Within the last few days the online service has launched",
+            "id": "report--00000000-ee3b-5ec2-9291-8cf9356bdfb8",
+            "information_ts": "2026-01-06T11:00:00Z",
+            "is_sensitive_source": true,
+            "last_updated_ts": "2026-01-06T12:00:00Z",
+            "links": {
+                "verity_api": {
+                    "href": "https://api.intel471.cloud/integrations/intel-report/v1/reports/info/report--1d4f77cb-ee3b-5ec2-9291-8cf9356bdfb8"
+                }
+            },
+            "locations": [],
+            "motivation": [
+                "CC"
+            ],
+            "related_reports": [],
+            "released_ts": "2026-01-06T13:00:00Z",
+            "researcher_comments": "<p>The service appears to be newly launched and aggregates previously leaked user data from multiple breach sources, offering basic search functionality.</p>\r\n",
+            "source_characterization": "Information is from a sensitive source.",
+            "title": "title: The online service has launched",
+            "type": "info_report",
+            "victims": [
+                {
+                    "name": "Acme Corp.",
+                    "links": [
+                        {
+                            "external": {
+                                "href": "http://acmecorp"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

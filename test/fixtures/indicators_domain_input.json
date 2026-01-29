@@ -1,0 +1,49 @@
+{
+    "count": 3,
+    "indicators": [
+        {
+            "id": "malware-indicator--10ed4631-c1bd-5be2-a904-2a988ad3ef6b",
+            "threat": {
+                "type": "malware",
+                "data": {
+                    "malware": {
+                        "id": "malware--0d91527d-103a-5b50-a540-dc573a12a9a4",
+                        "family": "barBaz"
+                    },
+                    "malware_family": {
+                        "id": "malware-family--0d91527d-103a-5b50-a540-dc573a12a9a4",
+                        "name": "barBaz"
+                    }
+                }
+            },
+            "activity": {
+                "first_seen_ts": "2026-01-06T10:00:00Z",
+                "last_seen_ts": "2026-01-06T11:00:00Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "path": "1.1.13",
+                        "name": "Proxy malware"
+                    }
+                ]
+            },
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "command_and_control"
+                }
+            ],
+            "type": "domain",
+            "data": {
+                "domain": "foobar.com"
+            },
+            "pattern": "[domain-name:value = 'foobar.com']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "confidence": 85,
+            "description": "socks5_systemz controller DGA Domain",
+            "expiration_ts": "2026-01-06T12:00:00Z"
+        }
+    ]
+}

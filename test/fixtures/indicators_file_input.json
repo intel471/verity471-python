@@ -1,0 +1,57 @@
+{
+    "count": 3,
+    "indicators": [
+        {
+            "activity": {
+                "first_seen_ts": "2026-01-06T10:00:00Z",
+                "last_seen_ts": "2026-01-06T11:00:00Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Information-stealer malware",
+                        "path": "1.1.5"
+                    },
+                    {
+                        "name": "Loader malware",
+                        "path": "1.1.6"
+                    }
+                ]
+            },
+            "confidence": 50,
+            "data": {
+                "file": {
+                    "md5": "4c4712a4141d261ec0ca8f9037950685",
+                    "sha1": "391e962681972d5625fc3574e112a4bdae603550",
+                    "sha256": "38a5dfa3ec07f08e8e1788d1d567359a7ed95b0e354953cf0222e0fea1872a7e"
+                }
+            },
+            "description": "sample of pony malware family",
+            "expiration_ts": "2026-01-06T12:00:00Z",
+            "id": "malware-indicator--0d6db034-db55-57fb-b28e-5ce8fdad4949",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "command_and_control"
+                }
+            ],
+            "pattern": "[file:hashes.'SHA-256' = '38a5dfa3ec07f08e8e1788d1d567359a7ed95b0e354953cf0222e0fea1872a7e' OR file:hashes.'SHA-1' = '391e962681972d5625fc3574e112a4bdae603550' OR file:hashes.MD5 = '4c4712a4141d261ec0ca8f9037950685']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "threat": {
+                "data": {
+                    "malware": {
+                        "family": "fooBar",
+                        "id": "malware--f12da3fa-094b-52b0-abec-7734d7816cf7"
+                    },
+                    "malware_family": {
+                        "id": "malware-family--f12da3fa-094b-52b0-abec-7734d7816cf7",
+                        "name": "fooBar"
+                    }
+                },
+                "type": "malware"
+            },
+            "type": "file"
+        }
+    ]
+}

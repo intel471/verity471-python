@@ -1,0 +1,102 @@
+{
+    "count": 2,
+    "reports": [
+        {
+            "activity": {
+                "first_seen_ts": "2026-01-06T10:00:00Z",
+                "last_seen_ts": "2026-01-06T11:00:00Z"
+            },
+            "activity_location": [
+                "location_underground",
+                "location_opensource"
+            ],
+            "aliases": [],
+            "body": "<p>CVE-2026-0000 is an information disclosure vulnerability impacting multiple products.</p>",
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Proof-of-concept (PoC) exploit code",
+                        "path": "2.2.1"
+                    },
+                    {
+                        "name": "Exploit development",
+                        "path": "2.2"
+                    }
+                ]
+            },
+            "counter_measure_links": [
+                {
+                    "title": "Link cm",
+                    "url": "https://link/cm"
+                }
+            ],
+            "counter_measures_html": "<p>The impacted vendor released patching information.</p>",
+            "creation_ts": "2026-01-06T12:00:00Z",
+            "cve_type": "Information disclosure",
+            "cvss": [
+                {
+                    "score": 5.0,
+                    "version": "2.0"
+                },
+                {
+                    "score": 7.5,
+                    "version": "3.0"
+                },
+                {
+                    "score": 7.6,
+                    "version": "3.1"
+                },
+                {
+                    "score": -1.0,
+                    "version": "4.0"
+                }
+            ],
+            "exploit_status": [
+                "productized",
+                "weaponized",
+                "available"
+            ],
+            "id": "vulnerability--00000000-e555-5c25-bb21-f544d2ce6997",
+            "interest_level": [
+                "researched_publicly",
+                "disclosed_publicly"
+            ],
+            "last_updated_ts": "2026-01-06T13:00:00Z",
+            "links": {
+                "verity_api": {
+                    "href": "https://link/verity_api"
+                }
+            },
+            "name": "CVE-2026-0000",
+            "patch_links": [
+                {
+                    "title": "Link patch",
+                    "url": "https://link/patch"
+                }
+            ],
+            "patch_status": "available",
+            "poc": "observed",
+            "poc_links": [
+                {
+                    "title": "Link poc",
+                    "url": "https://link/poc"
+                }
+            ],
+            "product_name": "Foobar",
+            "released_ts": "2026-01-06T14:00:00Z",
+            "risk_level": "high",
+            "sort_priority": 0,
+            "sources": [
+                {
+                    "title": "Link src",
+                    "type": "internal",
+                    "url": "https://link/src"
+                }
+            ],
+            "status": "existing",
+            "type": "vulnerability_report",
+            "underground_activity_summary_html": "<p>The actor advertised a network and web penetration testing automation</p>",
+            "vendor_name": "Acme"
+        }
+    ]
+}

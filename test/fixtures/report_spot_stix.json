@@ -1,0 +1,90 @@
+{
+  "id": "bundle--6ca6caf9-7b3d-4fc4-830d-b8f5de9afe0e",
+  "objects": [
+    {
+      "created": "2017-01-20T00:00:00.000Z",
+      "definition": {
+        "tlp": "amber"
+      },
+      "definition_type": "tlp",
+      "id": "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82",
+      "name": "TLP:AMBER",
+      "spec_version": "2.1",
+      "type": "marking-definition"
+    },
+    {
+      "created": "2022-01-01T00:00:00.000Z",
+      "id": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "identity_class": "organization",
+      "modified": "2022-01-01T00:00:00.000Z",
+      "name": "Intel 471 Inc.",
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "created": "2026-01-23T15:24:54.399662Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "id": "threat-actor--cc35feeb-6daf-54bb-bd78-271c3d12e4a0",
+      "modified": "2026-01-23T15:24:54.399662Z",
+      "name": "FooBar",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "resource_level": "individual",
+      "spec_version": "2.1",
+      "type": "threat-actor"
+    },
+    {
+      "contact_information": "http://acmecorp",
+      "created": "2026-01-23T15:24:54.399918Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "id": "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b",
+      "identity_class": "organization",
+      "modified": "2026-01-23T15:24:54.399918Z",
+      "name": "Acme Corp.",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "confidence": 0,
+      "content": "",
+      "created": "2026-01-23T15:24:54.400325Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "description": "Actor announces addition of the vulnerability targeting the Software.",
+      "external_references": [
+        {
+          "source_name": "Portal URL",
+          "url": "https://verity.intel471.com/intelligence/spotReportView/report--00000000-4a56-5f0c-8bd4-166b2115362f"
+        },
+        {
+          "source_name": "internal - Source",
+          "url": "https://link/verity_portal1"
+        }
+      ],
+      "id": "report--00000000-4a56-5f0c-8bd4-166b2115362f",
+      "labels": [
+        "Intel 471 - GIR 1.3.10 - Exploit kits"
+      ],
+      "modified": "2026-01-23T15:24:54.400325Z",
+      "name": "Actor announces addition of the vulnerability",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "object_refs": [
+        "threat-actor--cc35feeb-6daf-54bb-bd78-271c3d12e4a0",
+        "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b"
+      ],
+      "published": "2026-01-06T10:00:00Z",
+      "report_types": [
+        "spotrep"
+      ],
+      "spec_version": "2.1",
+      "type": "report",
+      "x_intel471_com_uid": "report--00000000-4a56-5f0c-8bd4-166b2115362f"
+    }
+  ],
+  "type": "bundle"
+}

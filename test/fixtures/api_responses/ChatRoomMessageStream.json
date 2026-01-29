@@ -1,0 +1,48 @@
+{
+  "chat_room": {
+    "activity": {
+      "first_seen_ts": "2017-02-27T02:37:48Z",
+      "last_seen_ts": "2017-04-08T01:00:14Z"
+    },
+    "channel_id": "dummy",
+    "description": "",
+    "id": "room--00000000-0000-0000-0000-000000000000",
+    "links": {
+      "external": {
+        "href": "https://example.com"
+      },
+      "verity_portal": {
+        "href": "https://example.com"
+      }
+    },
+    "message_count": 100,
+    "name": "dummy"
+  },
+  "message": {
+    "attachments": [],
+    "author": {
+      "id": "actor--00000000-0000-0000-0000-000000000000",
+      "user_name": "dummy",
+      "user_name_id": "dummy"
+    },
+    "creation_ts": "2017-02-27T02:37:48Z",
+    "html": "dummy",
+    "id": "message--00000000-0000-0000-0000-000000000000",
+    "links": {
+      "verity_portal": {
+        "href": "https://example.com"
+      }
+    },
+    "text": "dummy"
+  },
+  "server": {
+    "id": "server--00000000-0000-0000-0000-000000000000",
+    "links": {
+      "external": {
+        "href": "https://example.com"
+      }
+    },
+    "name": "dummy",
+    "type": "discord"
+  }
+}

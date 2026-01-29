@@ -1,0 +1,262 @@
+{
+  "actor_or_group": "dummy",
+  "body": "",
+  "classification": {
+    "girs": [
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "1.1.1.1"
+      },
+      {
+        "name": "dummy",
+        "path": "dummy"
+      },
+      {
+        "name": "dummy",
+        "path": "1.1.1.1"
+      }
+    ]
+  },
+  "confidence": {
+    "description": "dummy",
+    "level": "medium"
+  },
+  "creation_ts": "2021-07-01T09:17:33Z",
+  "entities": [
+    {
+      "type": "Handle",
+      "value": "dummy"
+    }
+  ],
+  "id": "report--00000000-0000-0000-0000-000000000000",
+  "information_ts": "2021-07-01T00:00:00Z",
+  "last_updated_ts": "2021-07-01T09:17:34Z",
+  "links": {
+    "verity_api": {
+      "href": "https://example.com"
+    }
+  },
+  "related_reports": [
+    {
+      "assessment": {
+        "admiralty_code": "A1"
+      },
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          }
+        ]
+      },
+      "creation_ts": "2021-08-06T13:03:38Z",
+      "id": "report--00000000-0000-0000-0000-000000000000",
+      "information_ts": "2021-07-12T00:00:00Z",
+      "last_updated_ts": "2022-11-03T14:30:36Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "released_ts": "2021-08-06T13:03:38Z",
+      "sources": [],
+      "title": "dummy",
+      "type": "info_report"
+    },
+    {
+      "assessment": {
+        "admiralty_code": "B1"
+      },
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "creation_ts": "2021-07-14T11:20:57Z",
+      "id": "report--00000000-0000-0000-0000-000000000000",
+      "information_ts": "2021-07-09T00:00:00Z",
+      "last_updated_ts": "2024-09-23T23:11:19Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "released_ts": "2021-07-14T11:20:57Z",
+      "sources": [],
+      "title": "dummy",
+      "type": "info_report"
+    }
+  ],
+  "released_ts": "2021-07-01T09:17:33Z",
+  "sources": [
+    {
+      "index": 1,
+      "last_updated_ts": "2021-07-01T00:00:00Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        },
+        "verity_portal": {
+          "href": "https://example.com"
+        }
+      },
+      "source_type": "dummy",
+      "title": "dummy",
+      "type": "internal"
+    }
+  ],
+  "title": "dummy",
+  "type": "breach_alert",
+  "victims": [
+    {
+      "country": "dummy",
+      "industries": [
+        {
+          "industry": "dummy",
+          "sector": "dummy"
+        }
+      ],
+      "links": [
+        {
+          "external": {
+            "href": "https://example.com"
+          }
+        }
+      ],
+      "name": "dummy",
+      "region": "dummy",
+      "revenue": "dummy"
+    }
+  ]
+}

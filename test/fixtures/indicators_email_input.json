@@ -1,0 +1,50 @@
+{
+    "count": 3,
+    "indicators": [
+        {
+            "id": "malware-indicator--3fc27dfd-f4b6-514a-b66b-b389bfb0b443",
+            "threat": {
+                "type": "malware",
+                "data": {
+                    "malware": {
+                        "id": "malware--f51e5cad-f605-5148-be51-023bd8ef4f18",
+                        "variant": "v3_variant_i",
+                        "family": "barBaz"
+                    },
+                    "malware_family": {
+                        "id": "malware-family--92eb4b5f-cfc5-5460-bd43-53fae450ac9a",
+                        "name": "barBaz"
+                    }
+                }
+            },
+            "activity": {
+                "first_seen_ts": "2026-01-06T10:00:00Z",
+                "last_seen_ts": "2026-01-06T11:00:00Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "path": "1.1.5",
+                        "name": "Information-stealer malware"
+                    }
+                ]
+            },
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "exfiltration"
+                }
+            ],
+            "type": "email",
+            "data": {
+                "email": "foo@bar.com"
+            },
+            "pattern": "[email-addr:value = 'foo@bar.com']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "confidence": 85,
+            "description": "exfiltration email receiver",
+            "expiration_ts": "2026-01-06T12:00:00Z"
+        }
+    ]
+}

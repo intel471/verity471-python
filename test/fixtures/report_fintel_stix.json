@@ -1,0 +1,92 @@
+{
+  "id": "bundle--1a4443af-adee-4b1a-af3e-36e32a2b5de8",
+  "objects": [
+    {
+      "created": "2017-01-20T00:00:00.000Z",
+      "definition": {
+        "tlp": "amber"
+      },
+      "definition_type": "tlp",
+      "id": "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82",
+      "name": "TLP:AMBER",
+      "spec_version": "2.1",
+      "type": "marking-definition"
+    },
+    {
+      "created": "2022-01-01T00:00:00.000Z",
+      "id": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "identity_class": "organization",
+      "modified": "2022-01-01T00:00:00.000Z",
+      "name": "Intel 471 Inc.",
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "contact_information": "http://acmecorp",
+      "created": "2026-01-23T15:24:54.381015Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "id": "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b",
+      "identity_class": "organization",
+      "modified": "2026-01-23T15:24:54.381015Z",
+      "name": "Acme Corp.",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "created": "2026-01-23T15:24:54.381252Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "description": "Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations",
+      "id": "threat-actor--c48054b6-e238-564a-ba9f-6f27f9675063",
+      "modified": "2026-01-23T15:24:54.381252Z",
+      "name": "Foo-Bar",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "resource_level": "individual",
+      "spec_version": "2.1",
+      "type": "threat-actor"
+    },
+    {
+      "confidence": 0,
+      "content": "<p>Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations</p>",
+      "created": "2026-01-23T15:24:54.381777Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "description": "Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations",
+      "external_references": [
+        {
+          "source_name": "Portal URL",
+          "url": "https://verity.intel471.com/intelligence/fintelReportView/report--00000000-6922-5645-af58-aa977f4b8ead"
+        },
+        {
+          "source_name": "Information report - Analysis of attacks",
+          "url": "https://link/portal"
+        }
+      ],
+      "id": "report--00000000-6922-5645-af58-aa977f4b8ead",
+      "labels": [
+        "Intel 471 - GIR 1.1.6 - Loader malware"
+      ],
+      "modified": "2026-01-23T15:24:54.381777Z",
+      "name": "Actor Profile - Foo-Bar",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "object_refs": [
+        "threat-actor--c48054b6-e238-564a-ba9f-6f27f9675063",
+        "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b"
+      ],
+      "published": "2026-01-06T11:00:00Z",
+      "report_types": [
+        "fintel",
+        "actor_profile"
+      ],
+      "spec_version": "2.1",
+      "type": "report",
+      "x_intel471_com_uid": "report--00000000-6922-5645-af58-aa977f4b8ead"
+    }
+  ],
+  "type": "bundle"
+}

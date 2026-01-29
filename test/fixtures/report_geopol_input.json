@@ -1,0 +1,72 @@
+{
+    "count": 172,
+    "cursor_next": "MjhiMWQ",
+    "spot_count": 33,
+    "intelligence_bulletin_count": 21,
+    "intelligence_summary_count": 25,
+    "tension_point_profile_count": 11,
+    "adversary_profile_count": 10,
+    "threat_brief_count": 17,
+    "sigact_count": 28,
+    "intelligence_estimate_count": 27,
+    "reports": [
+        {
+            "id": "report--00000000-97a1-58ae-a0f4-9bacf6800ee3",
+            "type": "geopol_report",
+            "sub_type": "intelligence_bulletin",
+            "title": "The country attacks another country's consulate, raises regional tensions",
+            "creation_ts": "2026-01-06T10:00:00Z",
+            "released_ts": "2026-01-06T11:00:00Z",
+            "last_updated_ts": "2026-01-06T12:00:00Z",
+            "information_ts": "2026-01-06T13:00:00Z",
+            "sources": [
+                {
+                    "type": "external",
+                    "title": "The country",
+                    "links": {
+                        "external": {
+                            "href": "https://link/ext1"
+                        }
+                    },
+                    "index": 1,
+                    "last_updated_ts": "2026-01-06T14:00:00Z",
+                    "source_type": "External Link"
+                },
+                {
+                    "type": "external",
+                    "title": "Country attacks",
+                    "links": {
+                        "external": {
+                            "href": "https://link/ext2"
+                        }
+                    },
+                    "index": 2,
+                    "last_updated_ts": "2026-01-06T15:00:00Z",
+                    "source_type": "External Link"
+                }
+            ],
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Loader malware",
+                        "path": "1.1.6"
+                    }
+                ]
+            },
+            "links": {
+                "verity_api": {
+                    "href": "https://link/api1"
+                }
+            },
+            "body": "<h2>Summary</h2><p>Following the country's attack on another country</p> <p>tensions across the north-south rose dramatically, and the already hostile relations were no exception to this.</p>",
+            "entities": [],
+            "locations": [],
+            "attachments": [],
+            "related_reports": [],
+            "country_profiles": [],
+            "regional_tension_points": [],
+            "derived_entities": [],
+            "is_truncated": false
+        }
+    ]
+}

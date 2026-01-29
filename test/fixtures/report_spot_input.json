@@ -1,0 +1,61 @@
+{
+    "count": 6779,
+    "cursor_next": "MjhiMWQ",
+    "reports": [
+        {
+            "body": "Actor announces addition of the vulnerability targeting the Software.",
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Exploit kits",
+                        "path": "1.3.10"
+                    }
+                ]
+            },
+            "creation_ts": "2026-01-06T10:00:00Z",
+            "entities": [
+                {
+                    "type": "Handle",
+                    "value": "FooBar"
+                }
+            ],
+            "id": "report--00000000-4a56-5f0c-8bd4-166b2115362f",
+            "information_ts": "2026-01-06T11:00:00Z",
+            "last_updated_ts": "2026-01-06T12:00:00Z",
+            "links": {
+                "verity_api": {
+                    "href": "https://link/verity_api1"
+                }
+            },
+            "released_ts": "2026-01-06T13:00:00Z",
+            "sources": [
+                {
+                    "links": {
+                        "verity_api": {
+                            "href": "https://link/verity_api2"
+                        },
+                        "verity_portal": {
+                            "href": "https://link/verity_portal1"
+                        }
+                    },
+                    "title": "Source",
+                    "type": "internal"
+                }
+            ],
+            "title": "Actor announces addition of the vulnerability",
+            "type": "spot_report",
+            "victims": [
+                {
+                    "name": "Acme Corp.",
+                    "links": [
+                        {
+                            "external": {
+                                "href": "http://acmecorp"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

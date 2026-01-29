@@ -1,0 +1,99 @@
+{
+  "id": "bundle--6e7ca40e-1995-4ffa-8d40-7a15c94d7bad",
+  "objects": [
+    {
+      "created": "2017-01-20T00:00:00.000Z",
+      "definition": {
+        "tlp": "amber"
+      },
+      "definition_type": "tlp",
+      "id": "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82",
+      "name": "TLP:AMBER",
+      "spec_version": "2.1",
+      "type": "marking-definition"
+    },
+    {
+      "created": "2022-01-01T00:00:00.000Z",
+      "id": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "identity_class": "organization",
+      "modified": "2022-01-01T00:00:00.000Z",
+      "name": "Intel 471 Inc.",
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "created": "2026-01-23T15:24:54.390474Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "id": "threat-actor--cc35feeb-6daf-54bb-bd78-271c3d12e4a0",
+      "modified": "2026-01-23T15:24:54.390474Z",
+      "name": "FooBar",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "resource_level": "individual",
+      "spec_version": "2.1",
+      "type": "threat-actor"
+    },
+    {
+      "id": "ipv4-addr--be9fc8ad-9c41-5787-a31a-e9cb561be1fb",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "spec_version": "2.1",
+      "type": "ipv4-addr",
+      "value": "0.0.0.0",
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd"
+    },
+    {
+      "contact_information": "http://acmecorp",
+      "created": "2026-01-23T15:24:54.391119Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "id": "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b",
+      "identity_class": "organization",
+      "modified": "2026-01-23T15:24:54.391119Z",
+      "name": "Acme Corp.",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "spec_version": "2.1",
+      "type": "identity"
+    },
+    {
+      "confidence": 70,
+      "content": "<h1>Executive Summary</h1>\nexecutive_summary: Within the last few days the online service has launched\n<h1>Researcher Comments</h1>\n<p>The service appears to be newly launched and aggregates previously leaked user data from multiple breach sources, offering basic search functionality.</p>\r\n\n<h1>Body Translated</h1>\n<p>Within the last few days the online service has launched. It offers a search interface into stolen user data from various breaches.<p>\n<h1>Body</h1>\n<p>\u0412 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0445 \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u0438\u0445 \u0434\u043d\u0435\u0439 \u0431\u044b\u043b \u0437\u0430\u043f\u0443\u0449\u0435\u043d \u043e\u043d\u043b\u0430\u0439\u043d-\u0441\u0435\u0440\u0432\u0438\u0441. \u041e\u043d \u043f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u044f\u0435\u0442 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441 \u043f\u043e\u0438\u0441\u043a\u0430 \u043f\u043e \u0443\u043a\u0440\u0430\u0434\u0435\u043d\u043d\u044b\u043c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c\u0441\u043a\u0438\u043c \u0434\u0430\u043d\u043d\u044b\u043c \u0438\u0437 \u0440\u0430\u0437\u043b\u0438\u0447\u043d\u044b\u0445 \u0443\u0442\u0435\u0447\u0435\u043a \u0434\u0430\u043d\u043d\u044b\u0445.</p>\n<h1>Source Characterization</h1>\nInformation is from a sensitive source.",
+      "created": "2026-01-23T15:24:54.392098Z",
+      "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "description": "executive_summary: Within the last few days the online service has launched",
+      "external_references": [
+        {
+          "source_name": "Portal URL",
+          "url": "https://verity.intel471.com/intelligence/infoReportView/report--00000000-ee3b-5ec2-9291-8cf9356bdfb8"
+        }
+      ],
+      "id": "report--00000000-ee3b-5ec2-9291-8cf9356bdfb8",
+      "labels": [
+        "Intel 471 - sensitive source",
+        "Intel 471 - GIR 1.1.6 - Loader malware"
+      ],
+      "modified": "2026-01-23T15:24:54.392098Z",
+      "name": "title: The online service has launched",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
+      "object_refs": [
+        "threat-actor--cc35feeb-6daf-54bb-bd78-271c3d12e4a0",
+        "ipv4-addr--be9fc8ad-9c41-5787-a31a-e9cb561be1fb",
+        "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b"
+      ],
+      "published": "2026-01-06T10:00:00Z",
+      "report_types": [
+        "inforep"
+      ],
+      "spec_version": "2.1",
+      "type": "report",
+      "x_intel471_com_uid": "report--00000000-ee3b-5ec2-9291-8cf9356bdfb8",
+      "x_opencti_reliability": "A - Completely reliable"
+    }
+  ],
+  "type": "bundle"
+}

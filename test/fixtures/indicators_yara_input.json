@@ -1,0 +1,44 @@
+{
+    "count": 3,
+    "indicators": [
+        {
+            "activity": {
+                "first_seen_ts": "2026-01-06T10:00:00Z",
+                "last_seen_ts": "2026-01-06T11:00:00Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Banking trojan malware",
+                        "path": "1.1.4"
+                    },
+                    {
+                        "name": "Clipper malware",
+                        "path": "1.1.16"
+                    }
+                ]
+            },
+            "confidence": 85,
+            "data": {
+                "yara": {
+                    "signature": "rule zeus_panda_unpacked :",
+                    "title": "ZeusPanda"
+                }
+            },
+            "id": "malware-indicator--c562b55b-c2c4-5569-ab94-37e22384480e",
+            "pattern": "rule zeus_panda_unpacked :",
+            "pattern_type": "yara",
+            "pattern_version": "4",
+            "threat": {
+                "data": {
+                    "malware_family": {
+                        "id": "malware-family--658b56a3-b385-56a0-b98b-9f7a22e7677a",
+                        "name": "barBaz"
+                    }
+                },
+                "type": "malware"
+            },
+            "type": "yara"
+        }
+    ]
+}

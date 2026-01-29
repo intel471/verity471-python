@@ -1,0 +1,110 @@
+{
+  "count": 3431,
+  "cursor_next": "dummy",
+  "reports": [
+    {
+      "activity": {
+        "first_seen_ts": "2023-09-25T15:43:52Z",
+        "last_seen_ts": "2025-07-10T04:40:09Z"
+      },
+      "activity_location": [
+        "location_underground",
+        "location_opensource"
+      ],
+      "aliases": [],
+      "body": "<p>CVE-2019-5418 is an information disclosure vulnerability impacting multiple v...</p>",
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          },
+          {
+            "name": "dummy",
+            "path": "dummy"
+          }
+        ]
+      },
+      "counter_measure_links": [],
+      "counter_measures_html": "dummy",
+      "creation_ts": "2023-09-25T15:43:52Z",
+      "cve_type": "dummy",
+      "cvss": [
+        {
+          "score": 5.0,
+          "version": "dummy"
+        },
+        {
+          "score": 7.5,
+          "version": "dummy"
+        },
+        {
+          "score": -1.0,
+          "version": "dummy"
+        },
+        {
+          "score": -1.0,
+          "version": "dummy"
+        }
+      ],
+      "exploit_status": [
+        "productized",
+        "weaponized",
+        "available"
+      ],
+      "id": "vulnerability--00000000-0000-0000-0000-000000000000",
+      "interest_level": [
+        "researched_publicly",
+        "disclosed_publicly"
+      ],
+      "last_updated_ts": "2025-07-10T04:40:09Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "name": "dummy",
+      "patch_links": [
+        {
+          "title": "dummy",
+          "url": "https://example.com"
+        }
+      ],
+      "patch_status": "available",
+      "poc": "observed",
+      "poc_links": [
+        {
+          "title": "dummy",
+          "url": "https://example.com"
+        },
+        {
+          "title": "dummy",
+          "url": "https://example.com"
+        },
+        {
+          "title": "dummy",
+          "url": "https://example.com"
+        }
+      ],
+      "product_name": "dummy",
+      "released_ts": "2023-09-25T15:43:52Z",
+      "risk_level": "high",
+      "sort_priority": 0,
+      "sources": [
+        {
+          "title": "dummy",
+          "type": "internal",
+          "url": "dummy"
+        }
+      ],
+      "status": "historical",
+      "type": "vulnerability_report",
+      "underground_activity_summary_html": "dummy",
+      "vendor_name": "dummy"
+    }
+  ]
+}

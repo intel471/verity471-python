@@ -1,0 +1,78 @@
+{
+    "count": 1,
+    "reports": [
+        {
+            "id": "report--00000000-713f-5f41-9ee4-45b3ff027017",
+            "type": "breach_alert",
+            "title": "Lorem",
+            "creation_ts": "2026-01-06T10:00:00Z",
+            "released_ts": "2026-01-06T11:00:00Z",
+            "last_updated_ts": "2026-01-06T12:00:00Z",
+            "information_ts": "2026-01-06T13:00:00Z",
+            "entities": [
+                {
+                    "type": "Handle",
+                    "value": "Lorem ipsum"
+                }
+            ],
+            "sources": [
+                {
+                    "type": "internal",
+                    "title": "Lorem ipsum",
+                    "links": {
+                        "verity_api": {
+                            "href": "https://api.intel471.cloud/integrations/intel-report/v1/reports/aaa"
+                        },
+                        "verity_portal": {
+                            "href": "https://verity.intel471.com/intelligence/breachAlertReportView/aaa"
+                        }
+                    },
+                    "index": 1,
+                    "last_updated_ts": "2026-01-06T14:00:00Z",
+                    "source_type": "Spot Report"
+                }
+            ],
+            "classification": {
+                "girs": [
+                    {
+                        "path": "1.1.1",
+                        "name": "Ransomware malware"
+                    }
+                ]
+            },
+            "victims": [
+                {
+                    "name": "Dummy",
+                    "links": [
+                        {
+                            "external": {
+                                "href": "https://www.example.com"
+                            }
+                        }
+                    ],
+                    "country": "Lorem ipsum",
+                    "revenue": "Lorem ipsum",
+                    "region": "Lorem ipsum",
+                    "industries": [
+                        {
+                            "industry": "Consumer business industry",
+                            "sector": "Lorem ipsum"
+                        }
+                    ]
+                }
+            ],
+            "actor_or_group": "Lorem ipsum",
+            "body": "Lorem ipsum dolor sit amet",
+            "confidence": {
+                "level": "low",
+                "description": "The intelligence picture is developing, cannot be corroborated or has some limitations."
+            },
+            "links": {
+                "verity_api": {
+                    "href": "https://api.intel471.cloud/integrations/intel-report/v1/reports/aaa"
+                }
+            },
+            "related_reports": []
+        }
+    ]
+}

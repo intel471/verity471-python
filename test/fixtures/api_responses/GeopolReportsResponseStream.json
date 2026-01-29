@@ -1,0 +1,209 @@
+{
+  "adversary_profile_count": 31,
+  "count": 1366,
+  "cursor_next": "dummy",
+  "intelligence_bulletin_count": 72,
+  "intelligence_estimate_count": 25,
+  "intelligence_summary_count": 54,
+  "reports": [
+    {
+      "attachments": [],
+      "body": "<p>Event backgroundFollowing the Oct</p>",
+      "classification": {
+        "girs": [
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          },
+          {
+            "name": "dummy",
+            "path": "1.1.1.1"
+          }
+        ]
+      },
+      "country_profiles": [
+        {
+          "country": "dummy",
+          "country_iso_code": "dummy",
+          "id": "report--00000000-0000-0000-0000-000000000000",
+          "information_ts": "2025-02-03T00:00:00Z",
+          "is_country_of_interest": false,
+          "security_assessment": "high",
+          "threat_rating": "substantial"
+        },
+        {
+          "country": "dummy",
+          "country_iso_code": "dummy",
+          "id": "report--00000000-0000-0000-0000-000000000000",
+          "information_ts": "2025-08-24T00:00:00Z",
+          "is_country_of_interest": false,
+          "security_assessment": "medium",
+          "threat_rating": "substantial"
+        }
+      ],
+      "creation_ts": "2024-04-16T16:41:10Z",
+      "derived_entities": [],
+      "entities": [],
+      "id": "report--00000000-0000-0000-0000-000000000000",
+      "information_ts": "2024-04-14T00:00:00Z",
+      "is_truncated": false,
+      "last_updated_ts": "2024-06-24T16:41:10Z",
+      "links": {
+        "verity_api": {
+          "href": "https://example.com"
+        }
+      },
+      "locations": [
+        {
+          "country": "dummy",
+          "link": "dummy",
+          "region": "dummy"
+        },
+        {
+          "country": "dummy",
+          "link": "dummy",
+          "region": "dummy"
+        },
+        {
+          "country": "dummy",
+          "link": "dummy",
+          "region": "dummy"
+        },
+        {
+          "country": "dummy",
+          "link": "dummy",
+          "region": "dummy"
+        },
+        {
+          "country": "dummy",
+          "link": "dummy",
+          "region": "dummy"
+        }
+      ],
+      "regional_tension_points": [],
+      "related_reports": [],
+      "released_ts": "2024-04-16T16:41:10Z",
+      "sources": [
+        {
+          "index": 1,
+          "last_updated_ts": "2024-04-01T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 2,
+          "last_updated_ts": "2024-04-03T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 3,
+          "last_updated_ts": "2024-04-05T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 4,
+          "last_updated_ts": "2024-04-04T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 5,
+          "last_updated_ts": "2024-04-02T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 6,
+          "last_updated_ts": "2024-04-14T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 7,
+          "last_updated_ts": "2024-04-05T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        },
+        {
+          "index": 8,
+          "last_updated_ts": "2024-04-05T00:00:00Z",
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "source_type": "dummy",
+          "title": "dummy",
+          "type": "external"
+        }
+      ],
+      "sub_type": "intelligence_bulletin",
+      "title": "dummy",
+      "type": "geopol_report"
+    }
+  ],
+  "sigact_count": 149,
+  "spot_count": 1013,
+  "tension_point_profile_count": 4,
+  "threat_brief_count": 18
+}
