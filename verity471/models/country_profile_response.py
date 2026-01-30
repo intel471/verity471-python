@@ -23,15 +23,18 @@ import pprint
 import re  # noqa: F401
 import json
 
-from verity471.verity_stix import STIXMapperSettings
-from verity471.verity_stix.mappers.common import StixMapper
 
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from verity471.models.security_assessment import SecurityAssessment
 from verity471.models.threat_rating import ThreatRating
-from typing import Optional, Set
+from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+
+if TYPE_CHECKING:
+    # Only for type checkers; does not run at runtime.
+    from verity471.verity_stix import STIXMapperSettings
+
 
 class CountryProfileResponse(BaseModel):
     """
@@ -57,7 +60,14 @@ class CountryProfileResponse(BaseModel):
         """Returns the string representation of the model using alias"""
         return pprint.pformat(self.model_dump(by_alias=True))
 
-    def to_stix(self, settings: STIXMapperSettings = None):
+    def to_stix(self, settings: Optional["STIXMapperSettings"] = None):
+        try:
+            from verity471.verity_stix.mappers.common import StixMapper
+        except ImportError as e:
+            raise ImportError(
+                "STIX support is an optional feature. "
+                "Install with: pip install 'verity471[stix]'"
+            ) from e
         stix_mapper = StixMapper(settings)
         return stix_mapper.map(self.to_dict())
 
