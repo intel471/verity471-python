@@ -17,7 +17,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - reports: 1.0.0 (sha256: 2050ae4d25813cd47834ae3843040a8d96723284b4b4ee4d2e4818a360a6aca7)
   - sources: 1.0.0 (sha256: a293621b477b279e532bde19e03f25becd2d7fb553b2b270d4e874ba206b823a)
 
-- Package version: 0.1.0
+- Package version: 0.1.1
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
