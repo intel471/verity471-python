@@ -19,6 +19,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify Version Sync
+        run: |
+          # 1. Get version from GitHub Tag (removes 'v' prefix if present)
+          TAG_VERSION=${{ github.event.release.tag_name }}
+          TAG_VERSION=${TAG_VERSION#v}
+          
+          # 2. Extract version from pyproject.toml
+          # This regex looks for 'version = "X.Y.Z"' and grabs the middle part
+          FILE_VERSION=$(grep -m 1 '^version = ' pyproject.toml | tr -d '"' | tr -d "'" | awk '{print $3}')
+          
+          echo "Checking consistency..."
+          echo "  GitHub Tag: $TAG_VERSION"
+          echo "  File Version: $FILE_VERSION"
+          
+          if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+            echo "::error::Version mismatch! Tag is $TAG_VERSION but pyproject.toml is $FILE_VERSION."
+            exit 1
+          fi
+          echo "✅ Versions are in sync."
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -33,8 +53,7 @@ jobs:
         run: python -m build
 
       - name: Publish to TestPyPI
+        # Secretless OIDC auth with PyPi - https://docs.pypi.org/trusted-publishers/
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
-          # skip-existing prevents workflow failure if this version is already on TestPyPI
-          skip-existing: true
