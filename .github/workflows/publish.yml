@@ -1,0 +1,40 @@
+name: Publish to TestPyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # Required for secretless OIDC auth with PyPi
+
+jobs:
+  call-test-workflow:
+    uses: ./.github/workflows/test.yml
+
+  deploy:
+    needs: call-test-workflow
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          # skip-existing prevents workflow failure if this version is already on TestPyPI
+          skip-existing: true

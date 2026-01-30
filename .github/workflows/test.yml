@@ -4,7 +4,12 @@ on:
   push:
     branches: [ main ]
   pull_request:
-  workflow_call:       # Allows publish.yml to trigger this logic
+  workflow_call:  # Allows publish.yml to trigger this logic
+
+# This stops old runs if you push new commits to the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
