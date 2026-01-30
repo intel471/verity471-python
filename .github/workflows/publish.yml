@@ -9,24 +9,15 @@ permissions:
   id-token: write # Required for secretless OIDC auth with PyPi
 
 jobs:
-  call-test-workflow:
-    uses: ./.github/workflows/test.yml
-
-  deploy:
-    needs: call-test-workflow
+  # 1. NEW: Fast-fail version check
+  version-check:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v4
-
       - name: Verify Version Sync
         run: |
-          # 1. Get version from GitHub Tag (removes 'v' prefix if present)
           TAG_VERSION=${{ github.event.release.tag_name }}
           TAG_VERSION=${TAG_VERSION#v}
-          
-          # 2. Extract version from pyproject.toml
-          # This regex looks for 'version = "X.Y.Z"' and grabs the middle part
           FILE_VERSION=$(grep -m 1 '^version = ' pyproject.toml | tr -d '"' | tr -d "'" | awk '{print $3}')
           
           echo "Checking consistency..."
@@ -37,21 +28,29 @@ jobs:
             echo "::error::Version mismatch! Tag is $TAG_VERSION but pyproject.toml is $FILE_VERSION."
             exit 1
           fi
-          echo "✅ Versions are in sync."
+          echo "✅ Versions are in sync. Proceeding to tests."
 
+  # 2. Run tests only if version-check passed
+  call-test-workflow:
+    needs: version-check
+    uses: ./.github/workflows/test.yml
+
+  # 3. Deploy only if everything above passed
+  deploy:
+    needs: [version-check, call-test-workflow]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           pip install build
-
       - name: Build package
         run: python -m build
-
       - name: Publish to TestPyPI
         # Secretless OIDC auth with PyPi - https://docs.pypi.org/trusted-publishers/
         uses: pypa/gh-action-pypi-publish@release/v1
