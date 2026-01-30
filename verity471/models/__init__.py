@@ -4,12 +4,12 @@
 """
     Verity471 Unified API
 
-      - creds: 1.0.0 (sha256: a6a51890d140b2280d6700ac6e108afa62dfb55bc79aa73b386946c7fa1e691f)
-  - girs: 1.0.0 (sha256: f9f8228e2e27b95ba259939a46eda91618b96d6be76bbcba7db47dabb9515cdb)
-  - indicators: 1.0.0 (sha256: 039a97ee798c2d28608d8b35f4eaa224b15c8a183a36cf2600321314f75f4777)
-  - malware: 1.0.0 (sha256: 41c96d01c01cc5c93820e5dda691e8d0df53e28da1af8ccc84a233b29745fb11)
-  - reports: 1.0.0 (sha256: 2050ae4d25813cd47834ae3843040a8d96723284b4b4ee4d2e4818a360a6aca7)
-  - sources: 1.0.0 (sha256: a293621b477b279e532bde19e03f25becd2d7fb553b2b270d4e874ba206b823a)
+      - creds: 1.0.0
+  - girs: 1.0.0
+  - indicators: 1.0.0
+  - malware: 1.0.0
+  - reports: 1.0.0
+  - sources: 1.0.0
 
 
     The version of the OpenAPI document: 1.0.0
