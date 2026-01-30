@@ -5,7 +5,7 @@ description = "Official Python SDK for the Verity471 API. Features query validat
 authors = [
   { name = "Intel 471 Inc.", email = "integrations@intel471.com" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.md"
 keywords = [
     "intel471",
@@ -23,7 +23,6 @@ keywords = [
 requires-python = ">=3.10"
 
 classifiers = [
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",
