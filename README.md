@@ -1,5 +1,7 @@
 # Verity471
 
+Test
+
 The official Python SDK for the Verity471 API.
 
 The client abstracts low-level API concerns by performing automatic query and payload validation and exposing a clean, typed interface to Verity471 data.
