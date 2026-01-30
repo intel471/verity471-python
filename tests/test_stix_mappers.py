@@ -11,7 +11,7 @@ from verity471.verity_stix.mappers.indicators import IndicatorsMapper
 from verity471.verity_stix.mappers.reports import ReportType
 
 from .conftest import PREFIX, read_fixture
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 
 

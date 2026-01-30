@@ -77,8 +77,7 @@ def test_api_responses(rest_client_class_mock, api_cls_name, method_name, kwargs
     rest_client_response = MagicMock(name='rest_client_response')
     rest_client_response.status = 200
     rest_client_response.reason = 'OK'
-    rest_client_response.getheader.return_value = 'application/json; charset=utf-8'
-    rest_client_response.getheaders.return_value = {'Content-Type': 'application/json; charset=utf-8'}
+    rest_client_response.headers = {'content-type': 'application/json; charset=utf-8'}
     response = read_fixture(f'{PREFIX}/fixtures/api_responses/{filename}.json')
     rest_client_response.data = json.dumps(response).encode('utf-8')
 

@@ -1,6 +1,6 @@
 [project]
 name = "verity471"
-version = "1.0.0"
+version = "0.1.0"
 description = "Verity471 Unified API"
 authors = [
   { name = "Intel 471 Inc.", email = "integrations@intel471.com" }
@@ -34,13 +34,12 @@ dependencies = [
 stix = [
   "PyYAML>=6.0.2",
   "stix2>=3.0.1,<4",
-  "pycti>=6.9.13",
+  "pycti>=6.9.13"
 ]
 
 test = [
   "pytest>=7.2.1",
-  "pytest-cov>=2.8.1",
-  "mock>=5.2.0",
+  "pytest-cov>=2.8.1"
 ]
 
 
