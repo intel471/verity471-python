@@ -17,7 +17,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - reports: 1.0.0
   - sources: 1.0.0
 
-- Package version: 0.1.2
+- Package version: 0.1.3
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -40,19 +40,19 @@ This installs the core SDK without optional STIX support.
 STIX support:
 
 ```
-pip3 install "verity471[stix]"
+pip install "verity471[stix]"
 ```
 
 Development and test dependencies:
 
 ```
-pip3 install "verity471[test]"
+pip install "verity471[test]"
 ```
 
 Both extras can be installed together:
 
 ```
-pip3 install "verity471[stix,test]"
+pip install "verity471[stix,test]"
 ```
 
 ### Install from GitHub
@@ -60,7 +60,7 @@ pip3 install "verity471[stix,test]"
 You can also install the SDK directly from the Git repository:
 
 ```sh
-pip3 install git+ssh://git@github.com/intel471/verity471-python.git
+pip install git+ssh://git@github.com/intel471/verity471-python.git
 ```
 
 With extras:
