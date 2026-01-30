@@ -1,4 +1,4 @@
-name: verity471 Tests
+name: Tests
 
 on: [push, pull_request]
 
