@@ -25,37 +25,48 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
 
 Python >= 3.10 
 
-## Installation & Usage
-### pip install
+## Installation
 
-```
+### Install from PyPI (recommended)
+
+```sh
 pip install verity471
 ```
 
-You can install the python package directly from GitHub:
+This installs the core SDK without optional STIX support.
+
+#### Optional features
+
+STIX support:
+
+```
+pip3 install "verity471[stix]"
+```
+
+Development and test dependencies:
+
+```
+pip3 install "verity471[test]"
+```
+
+Both extras can be installed together:
+
+```
+pip3 install "verity471[stix,test]"
+```
+
+### Install from GitHub
+
+You can also install the SDK directly from the Git repository:
 
 ```sh
 pip3 install git+ssh://git@github.com/intel471/verity471-python.git
 ```
-(you may need to run `pip` with root permission)
 
-Then import the package:
-```python
-import verity471
+With extras:
+
 ```
-
-### Setuptools
-
-Install via [Setuptools](http://pypi.python.org/pypi/setuptools).
-
-```sh
-python3 setup.py install --user
-```
-(or `sudo python3 setup.py install` to install the package for all users)
-
-Then import the package:
-```python
-import verity471
+pip install "git+ssh://git@github.com/intel471/verity471-python.git#egg=verity471[stix,test]"
 ```
 
 ## Getting Started
@@ -120,6 +131,14 @@ serialized = api_response.to_dict()
 ```
 
 ### STIX format
+
+> **Note**  
+> STIX support requires optional dependencies.  
+> Install with:
+>
+> ```sh
+> pip install "verity471[stix]"
+> ```
 
 To convert the response into the [STIX format (v2.1)](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html), call the `to_stix()` method on the response object.
 This method converts the API response into the corresponding STIX objects and returns them wrapped in a `Bundle` object (from [stix2](https://pypi.org/project/stix2/) package).
