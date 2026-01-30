@@ -22,7 +22,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
 
 ## Requirements.
 
-Python >= 3.8 
+Python >= 3.10 
 
 ## Installation & Usage
 ### pip install
