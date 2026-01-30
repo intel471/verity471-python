@@ -1,12 +1,16 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_call:       # Allows publish.yml to trigger this logic
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  run-pytest:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,11 +26,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
-      - name: Install package with test + stix extras
+      - name: Install package
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[test,stix]"
 
       - name: Test with pytest
-        run: |
-          pytest --cov=verity471
+        run: pytest --cov=verity471

@@ -1,10 +1,7 @@
 import datetime
-import uuid
 from typing import Union, NamedTuple, Optional, List
 
-from stix2 import Relationship, base, Identity
-from stix2.base import _DomainObject, _Observable
-from stix2.canonicalization.Canonicalize import canonicalize
+from stix2 import Identity
 import pycti
 
 from verity471.verity_stix.constants import INTEL_471
