@@ -1,13 +1,24 @@
 [project]
 name = "verity471"
 version = "0.1.0"
-description = "Verity471 Unified API"
+description = "Official Python SDK for the Verity471 API. Features query validation, instantiated object models, and native STIX mapping"
 authors = [
   { name = "Intel 471 Inc.", email = "integrations@intel471.com" }
 ]
 license = { text = "MIT" }
 readme = "README.md"
-keywords = ["intel471", "verity471", "cti", "threat-intelligence", "api-client"]
+keywords = [
+    "intel471",
+    "verity471",
+    "verity",
+    "sdk",
+    "api",
+    "api-client",
+    "threat-intelligence",
+    "cti",
+    "stix",
+    "cybersecurity",
+]
 
 requires-python = ">=3.10"
 
