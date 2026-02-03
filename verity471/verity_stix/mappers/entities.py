@@ -42,7 +42,7 @@ class EntitiesMapper:
             MapperConfig(map_user_account, (
                 "AIM", "Discord", "Facebook", "GitHub", "ICQ", "Instagram", "Jabber", "LinkedIn", "MSN", "MoiMir",
                 "Odnoklassniki", "QQ", "Skype", "Telegram", "TOX", "Tox", "Twitter", "VK", "WeChat", "Wickr", "YahooIM",
-                "PerfectMoneyID", "QiwiWallet", "WebMoneyID", "WebMoneyPurse", "YandexMoney", "Phone"),
+                "PerfectMoneyID", "QiwiWallet", "WebMoneyID", "WebMoneyPurse", "YandexMoney", "Phone", "X", "Signal"),
                          lambda x: re.sub(r"^.*/", "", x.strip("/"))),
         ]
         self.type2config = dict(ChainMap(*[{st: mc for st in mc.src_types} for mc in self.mapper_configs]))

@@ -332,19 +332,17 @@ class ReportMapper(BaseMapper):
 
     @staticmethod
     def _get_type(source: dict) -> ReportType:
-        if source.get("type").lower() == "info_report":
-            return ReportType.INFOREP
-        if source.get("type").lower() == "fintel":
-            return ReportType.FINTEL
-        if source.get("type").lower() == "breach_alert":
-            return ReportType.BREACH_ALERT
-        if source.get("type").lower() == "spot_report":
-            return ReportType.SPOTREP
-        if source.get("type").lower() == "malware_report":
-            return ReportType.MALWARE
-        if source.get("type").lower() == "geopol_report":
-            return ReportType.GEOPOL
-        raise VerityStixException("Unkown report type")
+        type_ = {
+            "info_report": ReportType.INFOREP,
+            "fintel": ReportType.FINTEL,
+            "breach_alert": ReportType.BREACH_ALERT,
+            "spot_report": ReportType.SPOTREP,
+            "malware_report": ReportType.MALWARE,
+            "geopol_report": ReportType.GEOPOL
+        }.get(source.get("type"))
+        if not type_:
+            raise VerityStixException("Unkown report type")
+        return type_
 
     def _get_portal_url(self, source: dict) -> str:
         report_type = self._get_type(source)

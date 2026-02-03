@@ -158,6 +158,9 @@ def test_report_mapper_fetches_full_report_on_demand(report_full_content, stream
         ({"type": "WebMoneyID", "value": "111112935229"}, {"type": "user-account", "user_id": "111112935229", "account_type": "WebMoneyID"}),
         ({"type": "WebMoneyPurse", "value": "Z111144083730"}, {"type": "user-account", "user_id": "Z111144083730", "account_type": "WebMoneyPurse"}),
         ({"type": "YandexMoney", "value": "111113131482342"}, {"type": "user-account", "user_id": "111113131482342", "account_type": "YandexMoney"}),
+        ({"type": "X", "value": "@FooB"}, {"type": "user-account", "user_id": "@FooB", "account_type": "X"}),
+        ({"type": "X", "value": "https://x.com/foob"}, {"type": "user-account", "user_id": "foob", "account_type": "X"}),
+        ({"type": "Signal", "value": "foo.11"}, {"type": "user-account", "user_id": "foo.11", "account_type": "Signal"}),
         ({"type": "Phone", "value": "79874172111"}, {"type": "user-account", "user_id": "79874172111", "account_type": "Phone"}),
         ({"type": "CveID", "value": "CVE-2024-23113"}, {"type": "vulnerability", "name": "CVE-2024-23113"}),
         # Invalid stuff
