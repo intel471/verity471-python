@@ -12,7 +12,7 @@ from .entities import EntitiesMapper
 
 from .. import STIXMapperSettings, author_identity, StixObjects
 from .common import BaseMapper, StixMapper
-from ..constants import INTEL_471, MARKING, REMOVE_HTML_REGEX
+from ..constants import INTEL_471, MARKING, PLATFORM_VERITY471, REMOVE_HTML_REGEX
 from ..sdo import map_organization
 
 
@@ -168,6 +168,7 @@ class ReportMapper(BaseMapper):
         if source.get("is_sensitive_source"):
             labels.append(f"{INTEL_471} - sensitive source")
         labels.extend(self._get_girs_labels(source))
+        labels.append(PLATFORM_VERITY471)
         description = self._get_description(source) or name
         report_types = [report_type.value]
         if sub_type := source.get("sub_type"):

@@ -1,12 +1,15 @@
 {
-  "id": "bundle--82b94503-3e69-485e-913e-3abc0c8d3d75",
+  "id": "bundle--12da613e-efd9-47cd-91d7-a0eeebf1da5d",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.286586Z",
+      "created": "2026-02-03T15:51:19.429858Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "malware--5709afa6-1486-5cfe-98fb-205568ec6491",
       "is_family": true,
-      "modified": "2026-01-23T15:24:54.286586Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.429858Z",
       "name": "fooBar",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -16,7 +19,7 @@
     },
     {
       "confidence": 50,
-      "created": "2026-01-23T15:24:54.286838Z",
+      "created": "2026-02-03T15:51:19.429979Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "fooBar controller IPv4",
       "id": "indicator--274128a4-2ad4-50b5-ae7b-b0dea1fa9861",
@@ -31,11 +34,12 @@
       ],
       "labels": [
         "fooBar",
+        "platform:verity471",
         "Intel 471 - GIR 1.1.4 - Banking trojan malware",
         "Intel 471 - GIR 1.2.1 - Multifunctional malware-as-a-service (MaaS)",
         "Intel 471 - GIR 1.3.4 - Web-injects"
       ],
-      "modified": "2026-01-23T15:24:54.286838Z",
+      "modified": "2026-02-03T15:51:19.429979Z",
       "name": "1.2.3.4",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -50,10 +54,13 @@
       "x_opencti_main_observable_type": "IPv4-Addr"
     },
     {
-      "created": "2026-01-23T15:24:54.287609Z",
+      "created": "2026-02-03T15:51:19.430407Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--ec4c6d46-736b-5ba8-bce9-63f531170f05",
-      "modified": "2026-01-23T15:24:54.287609Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.430407Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],
@@ -91,13 +98,19 @@
       "spec_version": "2.1",
       "type": "ipv4-addr",
       "value": "1.2.3.4",
-      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd"
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "x_opencti_labels": [
+        "platform:verity471"
+      ]
     },
     {
-      "created": "2026-01-23T15:24:54.288018Z",
+      "created": "2026-02-03T15:51:19.430565Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--a787645d-9c70-51d7-b74a-91f3c0a88d3f",
-      "modified": "2026-01-23T15:24:54.288018Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.430565Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],

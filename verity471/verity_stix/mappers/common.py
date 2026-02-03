@@ -5,7 +5,8 @@ import logging
 import re
 from abc import ABC
 from collections.abc import Callable
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Any
+from enum import Enum
 
 from stix2 import Bundle
 
@@ -66,7 +67,7 @@ class StixMapper:
             if condition(source):
                 log.info("Mapping Verity471 payload for %s.", name)
                 mapper = mapper_class(self.settings)
-                bundle = mapper.map(source)
+                bundle = mapper.map(self._deenum(source))
                 if bundle:
                     return bundle
                 else:
@@ -74,6 +75,27 @@ class StixMapper:
         raise StixMapperNotFound(
             f"STIX Mapper for this payload is not available (keys: {', '.join(source.keys())})."
         )
+
+    @classmethod
+    def _deenum(cls, obj: Any) -> Any:
+        # Enum -> unwrap to the underlying value
+        if isinstance(obj, Enum):
+            return obj.value
+
+        # dict -> recurse on values
+        if isinstance(obj, dict):
+            return {k: cls._deenum(v) for k, v in obj.items()}
+
+        # list/tuple/set -> recurse
+        if isinstance(obj, list):
+            return [cls._deenum(v) for v in obj]
+        if isinstance(obj, tuple):
+            return tuple(cls._deenum(v) for v in obj)
+        if isinstance(obj, set):
+            return {cls._deenum(v) for v in obj}
+
+        # anything else -> keep
+        return obj
 
 
 class BaseMapper(ABC):

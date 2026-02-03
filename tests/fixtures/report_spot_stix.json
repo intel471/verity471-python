@@ -1,5 +1,5 @@
 {
-  "id": "bundle--6ca6caf9-7b3d-4fc4-830d-b8f5de9afe0e",
+  "id": "bundle--7d420487-41d1-49b7-8969-cdc6a60732d5",
   "objects": [
     {
       "created": "2017-01-20T00:00:00.000Z",
@@ -22,10 +22,13 @@
       "type": "identity"
     },
     {
-      "created": "2026-01-23T15:24:54.399662Z",
+      "created": "2026-02-03T15:51:19.452046Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "threat-actor--cc35feeb-6daf-54bb-bd78-271c3d12e4a0",
-      "modified": "2026-01-23T15:24:54.399662Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.452046Z",
       "name": "FooBar",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -36,11 +39,14 @@
     },
     {
       "contact_information": "http://acmecorp",
-      "created": "2026-01-23T15:24:54.399918Z",
+      "created": "2026-02-03T15:51:19.452148Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b",
       "identity_class": "organization",
-      "modified": "2026-01-23T15:24:54.399918Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.452148Z",
       "name": "Acme Corp.",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -51,7 +57,7 @@
     {
       "confidence": 0,
       "content": "",
-      "created": "2026-01-23T15:24:54.400325Z",
+      "created": "2026-02-03T15:51:19.452276Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "Actor announces addition of the vulnerability targeting the Software.",
       "external_references": [
@@ -66,9 +72,10 @@
       ],
       "id": "report--00000000-4a56-5f0c-8bd4-166b2115362f",
       "labels": [
-        "Intel 471 - GIR 1.3.10 - Exploit kits"
+        "Intel 471 - GIR 1.3.10 - Exploit kits",
+        "platform:verity471"
       ],
-      "modified": "2026-01-23T15:24:54.400325Z",
+      "modified": "2026-02-03T15:51:19.452276Z",
       "name": "Actor announces addition of the vulnerability",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"

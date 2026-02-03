@@ -1,12 +1,15 @@
 {
-  "id": "bundle--e9063313-7953-4340-a486-a831084a3ac5",
+  "id": "bundle--b3e75339-0c0b-42fc-aa69-03ed0e0f28ef",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.291753Z",
+      "created": "2026-02-03T15:51:19.432039Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "malware--5709afa6-1486-5cfe-98fb-205568ec6491",
       "is_family": true,
-      "modified": "2026-01-23T15:24:54.291753Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.432039Z",
       "name": "fooBar",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -16,7 +19,7 @@
     },
     {
       "confidence": 50,
-      "created": "2026-01-23T15:24:54.292007Z",
+      "created": "2026-02-03T15:51:19.432157Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "sample of pony malware family",
       "id": "indicator--09437fc1-07ab-5ebf-b93a-aa2cc9288fa8",
@@ -31,10 +34,11 @@
       ],
       "labels": [
         "fooBar",
+        "platform:verity471",
         "Intel 471 - GIR 1.1.5 - Information-stealer malware",
         "Intel 471 - GIR 1.1.6 - Loader malware"
       ],
-      "modified": "2026-01-23T15:24:54.292007Z",
+      "modified": "2026-02-03T15:51:19.432157Z",
       "name": "38a5dfa3ec07f08e8e1788d1d567359a7ed95b0e354953cf0222e0fea1872a7e",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -49,10 +53,13 @@
       "x_opencti_main_observable_type": "StixFile"
     },
     {
-      "created": "2026-01-23T15:24:54.301784Z",
+      "created": "2026-02-03T15:51:19.433082Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--d4629d47-b5f0-57ec-8984-413a5b7048b4",
-      "modified": "2026-01-23T15:24:54.301784Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.433082Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],
@@ -94,13 +101,19 @@
       ],
       "spec_version": "2.1",
       "type": "file",
-      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd"
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "x_opencti_labels": [
+        "platform:verity471"
+      ]
     },
     {
-      "created": "2026-01-23T15:24:54.308804Z",
+      "created": "2026-02-03T15:51:19.433388Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--54137156-1cce-517e-a41c-9faec36242bc",
-      "modified": "2026-01-23T15:24:54.308804Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.433388Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],

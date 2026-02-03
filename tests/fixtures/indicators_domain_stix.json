@@ -1,12 +1,15 @@
 {
-  "id": "bundle--4d213ccf-1f39-4c39-84df-30004316b286",
+  "id": "bundle--8bdceeef-2747-4d4e-a490-a80e13956aad",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.355971Z",
+      "created": "2026-02-03T15:51:19.438988Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "malware--7b7a9065-06e7-5861-b500-f1152a4f236c",
       "is_family": true,
-      "modified": "2026-01-23T15:24:54.355971Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.438988Z",
       "name": "barBaz",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -16,7 +19,7 @@
     },
     {
       "confidence": 85,
-      "created": "2026-01-23T15:24:54.356273Z",
+      "created": "2026-02-03T15:51:19.439104Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "socks5_systemz controller DGA Domain",
       "id": "indicator--8ae4296b-abac-58f1-b3f6-9e2a1b0b8869",
@@ -31,9 +34,10 @@
       ],
       "labels": [
         "barBaz",
+        "platform:verity471",
         "Intel 471 - GIR 1.1.13 - Proxy malware"
       ],
-      "modified": "2026-01-23T15:24:54.356273Z",
+      "modified": "2026-02-03T15:51:19.439104Z",
       "name": "foobar.com",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -48,10 +52,13 @@
       "x_opencti_main_observable_type": "Domain-Name"
     },
     {
-      "created": "2026-01-23T15:24:54.361228Z",
+      "created": "2026-02-03T15:51:19.439429Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--7a556a1a-4c18-584a-ac9a-fef0161901d1",
-      "modified": "2026-01-23T15:24:54.361228Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.439429Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],
@@ -89,13 +96,19 @@
       "spec_version": "2.1",
       "type": "domain-name",
       "value": "foobar.com",
-      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd"
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "x_opencti_labels": [
+        "platform:verity471"
+      ]
     },
     {
-      "created": "2026-01-23T15:24:54.363077Z",
+      "created": "2026-02-03T15:51:19.439586Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--a84cfada-c7ca-5021-9b88-b1dc4fe6eed4",
-      "modified": "2026-01-23T15:24:54.363077Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.439586Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],

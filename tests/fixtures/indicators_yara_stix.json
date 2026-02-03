@@ -1,12 +1,15 @@
 {
-  "id": "bundle--2d9a688a-bc86-4377-94cb-f1b5509f6b4a",
+  "id": "bundle--af37f6fd-0d4e-463f-90eb-3531ac4fe7e2",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.341038Z",
+      "created": "2026-02-03T15:51:19.437489Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "malware--7b7a9065-06e7-5861-b500-f1152a4f236c",
       "is_family": true,
-      "modified": "2026-01-23T15:24:54.341038Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.437489Z",
       "name": "barBaz",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -16,7 +19,7 @@
     },
     {
       "confidence": 85,
-      "created": "2026-01-23T15:24:54.341843Z",
+      "created": "2026-02-03T15:51:19.437596Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "indicator--74e4414b-f3a9-56ee-ad1e-208d32d53799",
       "indicator_types": [
@@ -24,10 +27,11 @@
       ],
       "labels": [
         "barBaz",
+        "platform:verity471",
         "Intel 471 - GIR 1.1.4 - Banking trojan malware",
         "Intel 471 - GIR 1.1.16 - Clipper malware"
       ],
-      "modified": "2026-01-23T15:24:54.341843Z",
+      "modified": "2026-02-03T15:51:19.437596Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],
@@ -39,10 +43,13 @@
       "valid_from": "2026-01-06T10:00:00Z"
     },
     {
-      "created": "2026-01-23T15:24:54.34418Z",
+      "created": "2026-02-03T15:51:19.437704Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--9716ba4d-8e4d-5ab5-88b9-352d43a6fb7b",
-      "modified": "2026-01-23T15:24:54.34418Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.437704Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],

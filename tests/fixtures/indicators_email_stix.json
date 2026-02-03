@@ -1,12 +1,15 @@
 {
-  "id": "bundle--599ec8f6-575f-4351-8307-4093e4c01291",
+  "id": "bundle--2cfe78a6-101b-4285-bf36-e79223459cf9",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.370124Z",
+      "created": "2026-02-03T15:51:19.441182Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "malware--7b7a9065-06e7-5861-b500-f1152a4f236c",
       "is_family": true,
-      "modified": "2026-01-23T15:24:54.370124Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.441182Z",
       "name": "barBaz",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -16,7 +19,7 @@
     },
     {
       "confidence": 85,
-      "created": "2026-01-23T15:24:54.370496Z",
+      "created": "2026-02-03T15:51:19.441336Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "exfiltration email receiver",
       "id": "indicator--84c2c731-0e4f-513d-b23b-d613885d2680",
@@ -31,9 +34,10 @@
       ],
       "labels": [
         "barBaz",
+        "platform:verity471",
         "Intel 471 - GIR 1.1.5 - Information-stealer malware"
       ],
-      "modified": "2026-01-23T15:24:54.370496Z",
+      "modified": "2026-02-03T15:51:19.441336Z",
       "name": "foo@bar.com",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -48,10 +52,13 @@
       "x_opencti_main_observable_type": "Email-Addr"
     },
     {
-      "created": "2026-01-23T15:24:54.371257Z",
+      "created": "2026-02-03T15:51:19.441679Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--3df7906e-f133-54b7-8339-8666b7481599",
-      "modified": "2026-01-23T15:24:54.371257Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.441679Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],
@@ -89,13 +96,19 @@
       "spec_version": "2.1",
       "type": "email-addr",
       "value": "foo@bar.com",
-      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd"
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "x_opencti_labels": [
+        "platform:verity471"
+      ]
     },
     {
-      "created": "2026-01-23T15:24:54.371567Z",
+      "created": "2026-02-03T15:51:19.441843Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--a73ba09d-7e20-5aa7-bcf0-8d8002f3e3b8",
-      "modified": "2026-01-23T15:24:54.371567Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.441843Z",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
       ],

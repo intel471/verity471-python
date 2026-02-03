@@ -1,8 +1,8 @@
 {
-  "id": "bundle--8ec76c7b-875d-4072-8807-88e82f18d44e",
+  "id": "bundle--3c0232c1-b5f0-4f89-a26f-82fa4fe3905d",
   "objects": [
     {
-      "created": "2026-01-23T15:24:54.375Z",
+      "created": "2026-02-03T15:51:19.444289Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "<p>CVE-2026-0000 is an information disclosure vulnerability impacting multiple products.</p>\n\n<p>The actor advertised a network and web penetration testing automation</p>\n\n<p>The impacted vendor released patching information.</p>\n\n### Properties\n\n```yaml\nactivity_location:\n- location_underground\n- location_opensource\nexploit_status:\n- productized\n- weaponized\n- available\ninterest_level:\n- researched_publicly\n- disclosed_publicly\npatch_status: available\n```",
       "external_references": [
@@ -30,9 +30,10 @@
       "id": "vulnerability--6f2c668e-aa5f-5ce5-994b-aac371fa683f",
       "labels": [
         "Intel 471 - GIR 2.2.1 - Proof-of-concept (PoC) exploit code",
-        "Intel 471 - GIR 2.2 - Exploit development"
+        "Intel 471 - GIR 2.2 - Exploit development",
+        "platform:verity471"
       ],
-      "modified": "2026-01-23T15:24:54.375Z",
+      "modified": "2026-02-03T15:51:19.444289Z",
       "name": "CVE-2026-0000",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -47,21 +48,28 @@
       "name": "Foobar",
       "spec_version": "2.1",
       "type": "software",
-      "vendor": "Acme"
+      "vendor": "Acme",
+      "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+      "x_opencti_labels": [
+        "platform:verity471"
+      ]
     },
     {
-      "created": "2026-01-23T15:24:54.375298Z",
+      "created": "2026-02-03T15:51:19.444443Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "relationship--620f1431-1e2e-5824-9205-5a64946bcc4c",
-      "modified": "2026-01-23T15:24:54.375298Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.444443Z",
+      "object_marking_refs": [
+        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+      ],
       "relationship_type": "has",
       "source_ref": "software--1f2e88bf-0277-5c4a-bd98-2282c1bfdb23",
       "spec_version": "2.1",
       "target_ref": "vulnerability--6f2c668e-aa5f-5ce5-994b-aac371fa683f",
-      "type": "relationship",
-      "object_marking_refs": [
-        "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
-      ]
+      "type": "relationship"
     },
     {
       "created": "2022-01-01T00:00:00.000Z",

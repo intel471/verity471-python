@@ -1,5 +1,5 @@
 {
-  "id": "bundle--1a4443af-adee-4b1a-af3e-36e32a2b5de8",
+  "id": "bundle--1b282bcf-fe5f-43a2-ab58-60bb7c734f34",
   "objects": [
     {
       "created": "2017-01-20T00:00:00.000Z",
@@ -23,11 +23,14 @@
     },
     {
       "contact_information": "http://acmecorp",
-      "created": "2026-01-23T15:24:54.381015Z",
+      "created": "2026-02-03T15:51:19.448488Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "id": "identity--9454819f-6f1c-50c1-bd85-6c44c91ea18b",
       "identity_class": "organization",
-      "modified": "2026-01-23T15:24:54.381015Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.448488Z",
       "name": "Acme Corp.",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -36,11 +39,14 @@
       "type": "identity"
     },
     {
-      "created": "2026-01-23T15:24:54.381252Z",
+      "created": "2026-02-03T15:51:19.448577Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations",
       "id": "threat-actor--c48054b6-e238-564a-ba9f-6f27f9675063",
-      "modified": "2026-01-23T15:24:54.381252Z",
+      "labels": [
+        "platform:verity471"
+      ],
+      "modified": "2026-02-03T15:51:19.448577Z",
       "name": "Foo-Bar",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
@@ -52,7 +58,7 @@
     {
       "confidence": 0,
       "content": "<p>Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations</p>",
-      "created": "2026-01-23T15:24:54.381777Z",
+      "created": "2026-02-03T15:51:19.448702Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations",
       "external_references": [
@@ -67,9 +73,10 @@
       ],
       "id": "report--00000000-6922-5645-af58-aa977f4b8ead",
       "labels": [
-        "Intel 471 - GIR 1.1.6 - Loader malware"
+        "Intel 471 - GIR 1.1.6 - Loader malware",
+        "platform:verity471"
       ],
-      "modified": "2026-01-23T15:24:54.381777Z",
+      "modified": "2026-02-03T15:51:19.448702Z",
       "name": "Actor Profile - Foo-Bar",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"

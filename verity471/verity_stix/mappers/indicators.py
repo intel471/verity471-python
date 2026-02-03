@@ -6,7 +6,7 @@ from stix2 import Indicator, Bundle, Relationship, KillChainPhase
 
 from .. import author_identity, StixObjects
 from .common import StixMapper, BaseMapper, MappingConfig
-from ..constants import MARKING
+from ..constants import MARKING, PLATFORM_VERITY471
 from ..sco import map_domain, map_url, map_ipv4, map_file, map_email_address
 from ..sdo import map_malware
 
@@ -86,7 +86,7 @@ class IndicatorsMapper(BaseMapper):
                 continue
             malware_family_name = item["threat"]["data"]["malware_family"]["name"]
             malware = map_malware(malware_family_name)
-            labels = [malware_family_name]
+            labels = [malware_family_name, PLATFORM_VERITY471]
             try:
                 labels.extend(self.get_girs_labels(item["classification"]["girs"]))
             except KeyError:
@@ -135,6 +135,7 @@ class IndicatorsMapper(BaseMapper):
                 relationship_type="indicates",
                 target_ref=malware,
                 created_by_ref=author_identity,
+                labels=[PLATFORM_VERITY471],
                 object_marking_refs=[MARKING]
             )
 
@@ -162,6 +163,7 @@ class IndicatorsMapper(BaseMapper):
                         relationship_type="based-on",
                         target_ref=observable,
                         created_by_ref=author_identity,
+                        labels=[PLATFORM_VERITY471],
                         object_marking_refs=[MARKING]
                     )
                     container.add(observable)

@@ -1,7 +1,7 @@
 from stix2 import Malware, ThreatActor, Identity, Vulnerability
 import pycti
 from . import author_identity
-from .constants import MARKING
+from .constants import MARKING, PLATFORM_VERITY471
 
 
 
@@ -11,7 +11,8 @@ def map_malware(value: str, *args, **kwargs) -> Malware:
         name=value,
         is_family=True,
         created_by_ref=author_identity,
-        object_marking_refs=[MARKING],
+        labels=[PLATFORM_VERITY471],
+        object_marking_refs=[MARKING],  
     )
 
 def map_threat_actor(value: str, description: str = None, *args, **kwargs) -> ThreatActor:
@@ -21,6 +22,7 @@ def map_threat_actor(value: str, description: str = None, *args, **kwargs) -> Th
         description = description,
         resource_level="individual",
         created_by_ref=author_identity,
+        labels=[PLATFORM_VERITY471],
         object_marking_refs=[MARKING],
 )
 
@@ -30,6 +32,7 @@ def map_vulnerability(value: str, *args, **kwargs) -> Vulnerability:
         id=pycti.Vulnerability.generate_id(value),
         name=value,
         created_by_ref=author_identity,
+        labels=[PLATFORM_VERITY471],
         object_marking_refs=[MARKING],
     )
 
@@ -41,5 +44,6 @@ def map_organization(value: str, url=None, *args, **kwargs) -> Identity:
         contact_information=url,
         identity_class="organization",
         created_by_ref=author_identity,
+        labels=[PLATFORM_VERITY471],
         object_marking_refs=[MARKING],
 )

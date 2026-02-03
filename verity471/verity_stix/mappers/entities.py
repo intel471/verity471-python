@@ -59,4 +59,4 @@ class EntitiesMapper:
             except (InvalidValueError, ValueError) as e:
                 log.warning("Can't map observable `%s`: %s", value, e)
                 return
-        log.info("Skipping entity. No suitable mapper. type=`%s` value=`%s`", type, value)
+        log.warning("Skipping entity. No suitable mapper. type=`%s` value=`%s`", type, value)

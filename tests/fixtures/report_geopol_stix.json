@@ -1,5 +1,5 @@
 {
-  "id": "bundle--696c644a-5cb6-456b-84db-a5f3ca1ab848",
+  "id": "bundle--a6406f2f-9c95-4351-ba49-a452864aa518",
   "objects": [
     {
       "created": "2017-01-20T00:00:00.000Z",
@@ -24,7 +24,7 @@
     {
       "confidence": 0,
       "content": "<h2>Summary</h2><p>Following the country's attack on another country</p> <p>tensions across the north-south rose dramatically, and the already hostile relations were no exception to this.</p>",
-      "created": "2026-01-23T15:24:54.405Z",
+      "created": "2026-02-03T15:51:19.456452Z",
       "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
       "description": "Following the country's attack on another country",
       "external_references": [
@@ -35,9 +35,10 @@
       ],
       "id": "report--00000000-97a1-58ae-a0f4-9bacf6800ee3",
       "labels": [
-        "Intel 471 - GIR 1.1.6 - Loader malware"
+        "Intel 471 - GIR 1.1.6 - Loader malware",
+        "platform:verity471"
       ],
-      "modified": "2026-01-23T15:24:54.405Z",
+      "modified": "2026-02-03T15:51:19.456452Z",
       "name": "The country attacks another country's consulate, raises regional tensions",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"

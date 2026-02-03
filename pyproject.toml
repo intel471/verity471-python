@@ -1,6 +1,6 @@
 [project]
 name = "verity471"
-version = "0.1.8"
+version = "0.1.9"
 description = "Official Python SDK for the Verity471 API. Features query validation, instantiated object models, and native STIX mapping"
 authors = [
   { name = "Intel 471 Inc.", email = "integrations@intel471.com" }
