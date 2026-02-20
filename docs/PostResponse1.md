@@ -7,11 +7,11 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **attachments** | [**List[AttachmentData]**](AttachmentData.md) | Attachments and images in the post | [optional] 
 **author** | [**AuthorActor1**](AuthorActor1.md) |  | [optional] 
-**creation_ts** | **str** | Publish date in ISO 8601 format | 
+**creation_ts** | **str** | First scraping date in ISO 8601 format | 
 **entities** | [**List[EntityItem]**](EntityItem.md) | Entities extracted from the post | [optional] 
 **html** | **str** | HTML version of message | 
 **id** | **str** | Post unique id | 
-**last_updated_ts** | **str** | First time updated entity was seen | 
+**last_updated_ts** | **str** | Timestamp of last update | 
 **message** | **str** | Original Message | 
 **translated_message** | **str** | Contains translated message if available | [optional] 
 **translation_status** | [**TranslationStatus**](TranslationStatus.md) |  | [optional] 

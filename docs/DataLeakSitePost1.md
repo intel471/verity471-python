@@ -10,8 +10,8 @@ Name | Type | Description | Notes
 **file_listing** | [**DataLeakSiteFileListingUrl**](DataLeakSiteFileListingUrl.md) |  | [optional] 
 **inactive_since** | **str** | The date post became inactive or was reactivated again in ISO 8601 format | [optional] 
 **is_inactive** | **bool** | True if post is inactive | [optional] 
+**last_updated_ts** | **str** | Timestamp of last update | 
 **message** | **str** | Message of post | 
-**published_at** | **str** | Post publish date in ISO 8601 format | [optional] 
 **title** | **str** | Title of post | 
 
 ## Example
