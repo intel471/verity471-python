@@ -1,0 +1,32 @@
+{
+    "count": 69,
+    "cursor_next": "QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB",
+    "observables": [
+        {
+            "activity": {
+                "first_seen_ts": "2026-02-02T15:37:45Z",
+                "last_seen_ts": "2026-02-02T15:37:45Z"
+            },
+            "id": "observable--00000000-0000-0000-0000-000000000000",
+            "report": {
+                "creation_ts": "2026-02-02T15:37:45Z",
+                "id": "report--00000000-0000-0000-0000-000000000000",
+                "information_ts": "2026-01-29T00:00:00Z",
+                "last_updated_ts": "2026-02-02T15:37:45Z",
+                "links": {
+                    "verity_api": {
+                        "href": "https://api.example.com/integrations/intel-report/v1/reports/geopol/report--00000000-0000-0000-0000-000000000000"
+                    },
+                    "verity_portal": {
+                        "href": "https://portal.example.com/geopol/geopolReportView/report--00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "released_ts": "2026-02-02T15:37:45Z",
+                "sub_type": "significant_activity_report",
+                "type": "geopol_report"
+            },
+            "type": "MaliciousURL",
+            "value": "https://example.redacted/path?domain=%s&path=%s"
+        }
+    ]
+}

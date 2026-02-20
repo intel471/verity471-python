@@ -1,0 +1,28 @@
+{
+    "count": 533,
+    "watchers": [
+        {
+            "created_by": "user@example.com",
+            "creation_ts": "2025-03-18T12:41:51.462383Z",
+            "data_sets": [
+                "data_leak_sites",
+                "reports",
+                "malware",
+                "messaging_services",
+                "forums"
+            ],
+            "description": "example",
+            "dsl_query": "(FreeText:example)",
+            "id": 0,
+            "is_muted": false,
+            "last_updated_ts": "2025-08-14T08:36:27.769238Z",
+            "name": "example",
+            "notification_settings": [],
+            "query_fields": [
+                "_text"
+            ],
+            "updated_by": "user@example.com",
+            "watcher_group_id": 0
+        }
+    ]
+}

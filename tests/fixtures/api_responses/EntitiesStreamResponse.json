@@ -1,0 +1,31 @@
+{
+    "count": 40,
+    "cursor_next": "QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE",
+    "entities": [
+        {
+            "activity": {
+                "first_seen_ts": "2018-08-21T11:40:04Z",
+                "last_seen_ts": "2022-11-03T14:30:36Z"
+            },
+            "id": "entity--00000000-0000-0000-0000-000000000000",
+            "report": {
+                "creation_ts": "2018-08-21T11:40:04Z",
+                "id": "report--00000000-0000-0000-0000-000000000000",
+                "information_ts": "2018-08-16T00:00:00Z",
+                "last_updated_ts": "2022-11-03T14:30:36Z",
+                "links": {
+                    "verity_api": {
+                        "href": "https://api.example.com/integrations/intel-report/v1/reports/info/report--00000000-0000-0000-0000-000000000000"
+                    },
+                    "verity_portal": {
+                        "href": "https://portal.example.com/intelligence/infoReportView/report--00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "released_ts": "2018-08-21T11:40:04Z",
+                "type": "info_report"
+            },
+            "type": "ActorDomain",
+            "value": "example--redacted.example.com"
+        }
+    ]
+}
