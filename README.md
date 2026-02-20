@@ -9,15 +9,19 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.0.0
+- API version: 1.1.0
   - creds: 1.0.0
-  - girs: 1.0.0
   - indicators: 1.0.0
   - malware: 1.0.0
   - reports: 1.0.0
-  - sources: 1.0.0
+  - sources: 1.0.1
+  - actors: 1.0.0
+  - watchers: 1.0.0
+  - observables: 1.0.0
+  - entities: 1.0.0
+  - girs: 1.0.0
 
-- Package version: 1.0.0
+- Package version: 1.1.0
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -217,6 +221,9 @@ All URIs are relative to *https://api.intel471.cloud*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*ActorsApi* | [**get_actors_stream**](docs/ActorsApi.md#get_actors_stream) | **GET** /integrations/actors/v1/actors/stream | Retrieve a stream of actors
+*AlertsApi* | [**get_alerts_stream**](docs/AlertsApi.md#get_alerts_stream) | **GET** /integrations/watchers/v1/alerts/stream | Get alerts for the current user in a stream way
+*AlertsApi* | [**put_alerts_id_status**](docs/AlertsApi.md#put_alerts_id_status) | **PUT** /integrations/watchers/v1/alerts/{id}/{status} | Change status of an alert
 *CredentialsApi* | [**get_credential_sets_accessed_urls_stream**](docs/CredentialsApi.md#get_credential_sets_accessed_urls_stream) | **GET** /integrations/creds/v1/credential-sets/accessed-urls/stream | Credential set accessed url stream
 *CredentialsApi* | [**get_credential_sets_id**](docs/CredentialsApi.md#get_credential_sets_id) | **GET** /integrations/creds/v1/credential-sets/{id} | Get credential set by ID
 *CredentialsApi* | [**get_credential_sets_stream**](docs/CredentialsApi.md#get_credential_sets_stream) | **GET** /integrations/creds/v1/credential-sets/stream | Credential set stream
@@ -254,6 +261,10 @@ Class | Method | HTTP request | Description
 *SourcesApi* | [**get_forums_private_messages_stream**](docs/SourcesApi.md#get_forums_private_messages_stream) | **GET** /integrations/sources/v1/forums/private-messages/stream | Get forums private messages (stream)
 *SourcesApi* | [**get_messaging_services_messages_message_id**](docs/SourcesApi.md#get_messaging_services_messages_message_id) | **GET** /integrations/sources/v1/messaging-services/messages/{message_id} | Get a chat message by id
 *SourcesApi* | [**get_messaging_services_messages_stream**](docs/SourcesApi.md#get_messaging_services_messages_stream) | **GET** /integrations/sources/v1/messaging-services/messages/stream | Get chat messages (stream)
+*WatchersApi* | [**get_watcher_groups**](docs/WatchersApi.md#get_watcher_groups) | **GET** /integrations/watchers/v1/watcher-groups | Get list of watcher groups for user
+*WatchersApi* | [**get_watchers**](docs/WatchersApi.md#get_watchers) | **GET** /integrations/watchers/v1/watchers | Get list of watchers for the current user
+*EntitiesApi* | [**get_entities_stream**](docs/EntitiesApi.md#get_entities_stream) | **GET** /integrations/entities/v1/entities/stream | Retrieve a stream of entities
+*ObservablesApi* | [**get_observables_stream**](docs/ObservablesApi.md#get_observables_stream) | **GET** /integrations/observables/v1/observables/stream | Retrieve a stream of observables
 
 
 ## Documentation For Models
@@ -261,6 +272,9 @@ Class | Method | HTTP request | Description
  - [Activity](docs/Activity.md)
  - [ActivityLocation](docs/ActivityLocation.md)
  - [ActivityResponse](docs/ActivityResponse.md)
+ - [Actor](docs/Actor.md)
+ - [ActorObject](docs/ActorObject.md)
+ - [ActorStreamPage](docs/ActorStreamPage.md)
  - [ActorSubjectOfReport](docs/ActorSubjectOfReport.md)
  - [AdmiraltyCode](docs/AdmiraltyCode.md)
  - [AllMalwareProfiles](docs/AllMalwareProfiles.md)
@@ -276,6 +290,7 @@ Class | Method | HTTP request | Description
  - [ChatMessageStream](docs/ChatMessageStream.md)
  - [ChatMessagesStreamingPage](docs/ChatMessagesStreamingPage.md)
  - [ChatRoomMessageStream](docs/ChatRoomMessageStream.md)
+ - [ChatServerType](docs/ChatServerType.md)
  - [ChatServerTypeStream](docs/ChatServerTypeStream.md)
  - [Classification](docs/Classification.md)
  - [ClassificationResponse](docs/ClassificationResponse.md)
@@ -305,7 +320,10 @@ Class | Method | HTTP request | Description
  - [DataLeakSitePostsStreamingPage](docs/DataLeakSitePostsStreamingPage.md)
  - [Encryption](docs/Encryption.md)
  - [Entities](docs/Entities.md)
+ - [Entity](docs/Entity.md)
  - [EntityItem](docs/EntityItem.md)
+ - [EntityStreamPage](docs/EntityStreamPage.md)
+ - [EntityType](docs/EntityType.md)
  - [ErrorResponse](docs/ErrorResponse.md)
  - [ErrorResponseGirs](docs/ErrorResponseGirs.md)
  - [EventController](docs/EventController.md)
@@ -318,11 +336,14 @@ Class | Method | HTTP request | Description
  - [FintelReportsResponseStream](docs/FintelReportsResponseStream.md)
  - [FintelResponse](docs/FintelResponse.md)
  - [Forbidden](docs/Forbidden.md)
+ - [Forum](docs/Forum.md)
+ - [ForumObject](docs/ForumObject.md)
  - [ForumsPostsStreamingPage](docs/ForumsPostsStreamingPage.md)
  - [ForumsPrivateMessagesStreamingPage](docs/ForumsPrivateMessagesStreamingPage.md)
  - [ForumsResponse1](docs/ForumsResponse1.md)
  - [GIR](docs/GIR.md)
  - [GeoIp](docs/GeoIp.md)
+ - [GeoIpObservables](docs/GeoIpObservables.md)
  - [GeopolReportDetailsResponse](docs/GeopolReportDetailsResponse.md)
  - [GeopolReportSubType](docs/GeopolReportSubType.md)
  - [GeopolReportsResponseStream](docs/GeopolReportsResponseStream.md)
@@ -334,10 +355,17 @@ Class | Method | HTTP request | Description
  - [GetCredSetAccessedUrlResponseStream](docs/GetCredSetAccessedUrlResponseStream.md)
  - [GetCredSetResponse](docs/GetCredSetResponse.md)
  - [GetCredSetResponseStream](docs/GetCredSetResponseStream.md)
+ - [GetWatcherGroupResponse](docs/GetWatcherGroupResponse.md)
+ - [GetWatcherGroupResponseWrapper](docs/GetWatcherGroupResponseWrapper.md)
+ - [GetWatcherResponse](docs/GetWatcherResponse.md)
+ - [GetWatcherResponseWrapper](docs/GetWatcherResponseWrapper.md)
  - [GirTree](docs/GirTree.md)
  - [GirsResponse](docs/GirsResponse.md)
  - [GirsTreeResponse](docs/GirsTreeResponse.md)
  - [Highlight](docs/Highlight.md)
+ - [HighlightWatchers](docs/HighlightWatchers.md)
+ - [Href](docs/Href.md)
+ - [ImServer](docs/ImServer.md)
  - [IndicatorData](docs/IndicatorData.md)
  - [IndicatorsStream](docs/IndicatorsStream.md)
  - [Industries](docs/Industries.md)
@@ -351,11 +379,13 @@ Class | Method | HTTP request | Description
  - [InterestLevel](docs/InterestLevel.md)
  - [InternalServerError](docs/InternalServerError.md)
  - [Ipv4](docs/Ipv4.md)
+ - [Isp](docs/Isp.md)
  - [IspData](docs/IspData.md)
  - [KillChainPhase](docs/KillChainPhase.md)
  - [Link](docs/Link.md)
  - [Link1](docs/Link1.md)
  - [Links](docs/Links.md)
+ - [LinksWatchers](docs/LinksWatchers.md)
  - [Location](docs/Location.md)
  - [Malware](docs/Malware.md)
  - [MalwareFamily](docs/MalwareFamily.md)
@@ -363,6 +393,11 @@ Class | Method | HTTP request | Description
  - [MalwareReportsResponseStream](docs/MalwareReportsResponseStream.md)
  - [Motivation](docs/Motivation.md)
  - [NotFound](docs/NotFound.md)
+ - [NotificationPreferenceType](docs/NotificationPreferenceType.md)
+ - [NotificationSettingsResponse](docs/NotificationSettingsResponse.md)
+ - [Observable](docs/Observable.md)
+ - [ObservableStreamPage](docs/ObservableStreamPage.md)
+ - [ObservableType](docs/ObservableType.md)
  - [PatchStatus](docs/PatchStatus.md)
  - [Poc](docs/Poc.md)
  - [PostDetails1](docs/PostDetails1.md)
@@ -372,6 +407,7 @@ Class | Method | HTTP request | Description
  - [ProcessingStatus](docs/ProcessingStatus.md)
  - [RecipientDomain](docs/RecipientDomain.md)
  - [Redirect](docs/Redirect.md)
+ - [Report](docs/Report.md)
  - [ReportAttachment](docs/ReportAttachment.md)
  - [ReportContent](docs/ReportContent.md)
  - [ReportLocation](docs/ReportLocation.md)
@@ -385,12 +421,15 @@ Class | Method | HTTP request | Description
  - [SecurityAssessment](docs/SecurityAssessment.md)
  - [ServerStream](docs/ServerStream.md)
  - [Settings](docs/Settings.md)
+ - [ShareSettingsResponse](docs/ShareSettingsResponse.md)
  - [SignificantActivity](docs/SignificantActivity.md)
  - [SimplifiedMalwareProfile](docs/SimplifiedMalwareProfile.md)
  - [SourcesLinks](docs/SourcesLinks.md)
  - [SourcesResponse](docs/SourcesResponse.md)
  - [SpotReportResponse](docs/SpotReportResponse.md)
  - [SpotReportsResponseStream](docs/SpotReportsResponseStream.md)
+ - [StreamingAlertsResponse](docs/StreamingAlertsResponse.md)
+ - [StreamingWatcherAlert](docs/StreamingWatcherAlert.md)
  - [SubForumResponse1](docs/SubForumResponse1.md)
  - [Template](docs/Template.md)
  - [TensionPointResponse](docs/TensionPointResponse.md)
@@ -407,6 +446,7 @@ Class | Method | HTTP request | Description
  - [VulnerabilitiesReportDetailsResponseStream](docs/VulnerabilitiesReportDetailsResponseStream.md)
  - [VulnerabilitiesReportsResponseStream](docs/VulnerabilitiesReportsResponseStream.md)
  - [VulnerabilityStatus](docs/VulnerabilityStatus.md)
+ - [WatcherGroupType](docs/WatcherGroupType.md)
  - [YaraData](docs/YaraData.md)
 
 

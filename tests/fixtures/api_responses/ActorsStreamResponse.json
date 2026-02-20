@@ -1,0 +1,16 @@
+{
+    "count": 1068,
+    "cursor_next": "QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE",
+    "actors": [
+        {
+            "id": "actor--00000000-0000-0000-0000-000000000000",
+            "activity": {
+                "first_seen_ts": "2019-02-12T23:46:28Z",
+                "last_seen_ts": "2019-02-12T23:46:28Z"
+            },
+            "handles": [
+                "ExampleHandle"
+            ]
+        }
+    ]
+}

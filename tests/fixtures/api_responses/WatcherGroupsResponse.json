@@ -1,0 +1,37 @@
+{
+    "count": 49,
+    "watchers_groups": [
+        {
+            "id": 0,
+            "name": "example group",
+            "description": "",
+            "created_by": "user@example.com",
+            "owner_user_id": "user@example.com",
+            "organisation_id": "example",
+            "watcher_ids": [
+                0,
+                0
+            ],
+            "is_editable": false,
+            "is_global": false,
+            "is_subscribed": false,
+            "is_muted": false,
+            "notification_settings": [],
+            "sharing_settings": [
+                {
+                    "user_id": "user@example.com",
+                    "organisation_id": "",
+                    "created": "2025-09-23T13:09:35.679581Z"
+                },
+                {
+                    "user_id": "user@example.com",
+                    "organisation_id": "",
+                    "created": "2025-09-23T13:09:35.679581Z"
+                }
+            ],
+            "updated_by": "user@example.com",
+            "creation_ts": "2025-01-30T11:52:42.629791Z",
+            "last_updated_ts": "2025-09-23T13:09:35.583518Z"
+        }
+    ]
+}

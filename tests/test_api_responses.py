@@ -69,6 +69,12 @@ test_params = {
     'SourcesApi:get_forums_private_messages_stream': ('SourcesApi', 'get_forums_private_messages_stream', {'size': 1}, 'ForumsPrivateMessagesStreamingPage', 'https://api.intel471.cloud/integrations/sources/v1/forums/private-messages/stream?size=1'),
     'SourcesApi:get_messaging_services_messages_message_id': ('SourcesApi', 'get_messaging_services_messages_message_id', {'message_id': 'message--da2a22d1-4d3e-5b79-b557-c275453f31f9'}, 'ChatRoomMessageStream', 'https://api.intel471.cloud/integrations/sources/v1/messaging-services/messages/message--da2a22d1-4d3e-5b79-b557-c275453f31f9'),
     'SourcesApi:get_messaging_services_messages_stream': ('SourcesApi', 'get_messaging_services_messages_stream', {'size': 1}, 'ChatMessagesStreamingPage', 'https://api.intel471.cloud/integrations/sources/v1/messaging-services/messages/stream?size=1'),
+    'EntitiesApi:get_entities_stream': ('EntitiesApi', 'get_entities_stream', {'entity': 'intel.com', 'size': 1}, 'EntitiesStreamResponse', 'https://api.intel471.cloud/integrations/entities/v1/entities/stream?entity=intel.com&size=1'),
+    'ObservablesApi:get_observables_stream': ('ObservablesApi', 'get_observables_stream', {'observable': 'domain'}, 'ObservablesStreamResponse', 'https://api.intel471.cloud/integrations/observables/v1/observables/stream?observable=domain'),
+    'AlertsApi:get_alerts_stream': ('AlertsApi', 'get_alerts_stream', {'size': 1}, 'AlertsStreamResponse', 'https://api.intel471.cloud/integrations/watchers/v1/alerts/stream?size=1'),
+    'WatchersApi:get_watchers': ('WatchersApi', 'get_watchers', {}, 'WatchersResponse', 'https://api.intel471.cloud/integrations/watchers/v1/watchers'),
+    'WatchersApi:get_watcher_groups': ('WatchersApi', 'get_watcher_groups', {}, 'WatcherGroupsResponse', 'https://api.intel471.cloud/integrations/watchers/v1/watcher-groups'),
+    'ActorsApi:get_actors_stream': ('ActorsApi', 'get_actors_stream', {'actor': 'yalishanda', 'size': 100}, 'ActorsStreamResponse', 'https://api.intel471.cloud/integrations/actors/v1/actors/stream?actor=yalishanda&size=100'),
 }
 
 @patch('verity471.rest.RESTClientObject')

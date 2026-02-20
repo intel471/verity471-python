@@ -36,7 +36,7 @@
           "download_url": "https://example.com"
         },
         "message": "dummy",
-        "published_at": "2024-12-09T09:00:00Z",
+        "last_updated_ts": "2024-12-09T09:00:00Z",
         "title": "dummy"
       },
       "thread": {
