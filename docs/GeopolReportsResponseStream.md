@@ -5,17 +5,17 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**adversary_profile_count** | **int** | Count of Adversary Profile reports | 
 **count** | **int** | Number of total Geopol reports matching the query | 
 **cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
-**spot_count** | **int** | Count of Geopol Spot Report reports | 
 **intelligence_bulletin_count** | **int** | Count of Intelligence Bulletin reports | 
-**intelligence_summary_count** | **int** | Count of Intelligence Summary reports | 
-**tension_point_profile_count** | **int** | Count of Tension Point Profile reports | 
-**adversary_profile_count** | **int** | Count of Adversary Profile reports | 
-**threat_brief_count** | **int** | Count of Threat Brief reports | 
-**sigact_count** | **int** | Count of Significant Activity Report reports | 
 **intelligence_estimate_count** | **int** | Count of Intelligence Estimate reports | 
+**intelligence_summary_count** | **int** | Count of Intelligence Summary reports | 
 **reports** | [**List[GeopolReportDetailsResponse]**](GeopolReportDetailsResponse.md) | List of Geopol reports in the current batch | [optional] 
+**sigact_count** | **int** | Count of Significant Activity Report reports | 
+**spot_count** | **int** | Count of Geopol Spot Report reports | 
+**tension_point_profile_count** | **int** | Count of Tension Point Profile reports | 
+**threat_brief_count** | **int** | Count of Threat Brief reports | 
 
 ## Example
 

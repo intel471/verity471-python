@@ -6,8 +6,8 @@ Confidence level and description
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**level** | [**ConfidenceLevel**](ConfidenceLevel.md) |  | 
 **description** | **str** | Additional confidence description | 
+**level** | [**ConfidenceLevel**](ConfidenceLevel.md) |  | 
 
 ## Example
 

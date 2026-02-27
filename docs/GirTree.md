@@ -5,11 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**children** | [**List[GirTree]**](GirTree.md) |  | [optional] 
+**deprecated** | **bool** |  | [optional] 
+**description** | **str** |  | [optional] 
 **id** | **str** |  | [optional] 
 **name** | **str** |  | [optional] 
-**description** | **str** |  | [optional] 
-**deprecated** | **bool** |  | [optional] 
-**children** | [**List[GirTree]**](GirTree.md) |  | [optional] 
 
 ## Example
 

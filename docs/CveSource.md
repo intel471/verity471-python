@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**url** | **str** | URL of the source. | 
 **title** | **str** | Title of the source. | 
 **type** | **str** | Type of the source. | 
+**url** | **str** | URL of the source. | 
 
 ## Example
 

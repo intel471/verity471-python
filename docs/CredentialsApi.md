@@ -55,7 +55,7 @@ with verity471.ApiClient(configuration) as api_client:
     credential_set_id = 'credential_set_id_example' # str | Search by credential set id. (optional)
     credential_set_name = 'credential_set_name_example' # str | Search by credential set name. (optional)
     accessed_url = 'accessed_url_example' # str |  (optional)
-    girs = ['[1.0.1, 2.1.0, my_girs, company_pirs]'] # List[str] | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
+    girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
     victim = 'victim_example' # str |  (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
@@ -83,7 +83,7 @@ Name | Type | Description  | Notes
  **credential_set_id** | **str**| Search by credential set id. | [optional] 
  **credential_set_name** | **str**| Search by credential set name. | [optional] 
  **accessed_url** | **str**|  | [optional] 
- **girs** | [**List[str]**](str.md)| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
+ **girs** | **str**| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
  **victim** | **str**|  | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
@@ -244,7 +244,7 @@ with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.CredentialsApi(api_client)
     credential_set_name = 'credential_set_name_example' # str | Search by credential set name. (optional)
-    girs = ['[1.0.1, 2.1.0, my_girs, company_pirs]'] # List[str] | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
+    girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
     victim = 'victim_example' # str |  (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
@@ -270,7 +270,7 @@ with verity471.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **credential_set_name** | **str**| Search by credential set name. | [optional] 
- **girs** | [**List[str]**](str.md)| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
+ **girs** | **str**| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
  **victim** | **str**|  | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
@@ -533,7 +533,7 @@ with verity471.ApiClient(configuration) as api_client:
     password_plain = 'password_plain_example' # str | Must be URL encoded (optional)
     credential_login = 'credential_login_example' # str | Search by credential login. (optional)
     detected_malware = 'detected_malware_example' # str | Search by credential detected malware. For example: agent_tesla, Lumma, VIDAR (optional)
-    girs = ['[1.0.1, 2.1.0, my_girs, company_pirs]'] # List[str] | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
+    girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
     last_updated_from = 'last_updated_from_example' # str | UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days (optional)
@@ -575,7 +575,7 @@ Name | Type | Description  | Notes
  **password_plain** | **str**| Must be URL encoded | [optional] 
  **credential_login** | **str**| Search by credential login. | [optional] 
  **detected_malware** | **str**| Search by credential detected malware. For example: agent_tesla, Lumma, VIDAR | [optional] 
- **girs** | [**List[str]**](str.md)| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
+ **girs** | **str**| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **last_updated_from** | **str**| UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days | [optional] 
@@ -666,7 +666,7 @@ with verity471.ApiClient(configuration) as api_client:
     password_plain = 'password_plain_example' # str | Must be URL encoded (optional)
     credential_login = 'credential_login_example' # str | Search by credential login. (optional)
     detected_malware = 'detected_malware_example' # str | Search by credential detected malware. For example: agent_tesla, Lumma, VIDAR (optional)
-    girs = ['[\"1.0.1\",\"2.1.0\",\"my_girs\",\"company_pirs\"]'] # List[str] | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
+    girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
     last_updated_from = 'last_updated_from_example' # str | UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days (optional)
@@ -707,7 +707,7 @@ Name | Type | Description  | Notes
  **password_plain** | **str**| Must be URL encoded | [optional] 
  **credential_login** | **str**| Search by credential login. | [optional] 
  **detected_malware** | **str**| Search by credential detected malware. For example: agent_tesla, Lumma, VIDAR | [optional] 
- **girs** | [**List[str]**](str.md)| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
+ **girs** | **str**| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **last_updated_from** | **str**| UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days | [optional] 

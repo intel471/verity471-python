@@ -6,12 +6,12 @@ Report related intelligence estimate data
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**is_country_of_interest** | **bool** |  | 
 **overview** | **str** |  | [optional] 
-**threat_rating** | [**ThreatRating**](ThreatRating.md) |  | 
+**report_location** | [**ReportLocation**](ReportLocation.md) |  | 
 **security_assessment** | [**SecurityAssessment**](SecurityAssessment.md) |  | 
 **text_toc** | **str** |  | [optional] 
-**report_location** | [**ReportLocation**](ReportLocation.md) |  | 
-**is_country_of_interest** | **bool** |  | 
+**threat_rating** | [**ThreatRating**](ThreatRating.md) |  | 
 
 ## Example
 

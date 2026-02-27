@@ -5,13 +5,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** |  | 
 **country** | **str** |  | 
 **country_iso_code** | **str** |  | [optional] 
-**threat_rating** | [**ThreatRating**](ThreatRating.md) |  | [optional] 
-**security_assessment** | [**SecurityAssessment**](SecurityAssessment.md) |  | [optional] 
+**id** | **str** |  | 
 **information_ts** | **str** |  | 
 **is_country_of_interest** | **bool** |  | 
+**security_assessment** | [**SecurityAssessment**](SecurityAssessment.md) |  | [optional] 
+**threat_rating** | [**ThreatRating**](ThreatRating.md) |  | [optional] 
 
 ## Example
 

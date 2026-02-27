@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**version** | **str** |  | 
 **score** | **float** |  | 
+**version** | **str** |  | 
 
 ## Example
 

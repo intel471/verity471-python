@@ -6,10 +6,10 @@ Location information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**region** | **str** | Region name related to the report | 
 **country** | **str** | Country name related to the report | [optional] 
 **iso** | **str** | Country iso code related to the report | [optional] 
 **link** | **str** | Linkage type or relation to the location | [optional] 
+**region** | **str** | Region name related to the report | 
 
 ## Example
 
