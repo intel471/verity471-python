@@ -6,8 +6,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** |  | 
-**name** | **str** |  | 
 **information_ts** | **str** |  | 
+**name** | **str** |  | 
 
 ## Example
 

@@ -6,9 +6,9 @@ Detailed information about the threat described in the report
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**family** | **str** | Family classification of the threat. | 
 **id** | **str** | Unique identifier of the threat. | 
 **type** | **str** | Type of the threat. | 
-**family** | **str** | Family classification of the threat. | 
 
 ## Example
 

@@ -5,12 +5,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**url** | **str** | URL to download the attachment | 
-**file_name** | **str** | Name of the attachment file | 
-**malicious** | **bool** | Indicates if the attachment is malicious | 
-**file_size** | **int** | Size of the attachment file in bytes | 
-**mime_type** | **str** | MIME type of the attachment | 
 **description** | **str** | Description of the attachment | [optional] 
+**file_name** | **str** | Name of the attachment file | 
+**file_size** | **int** | Size of the attachment file in bytes | 
+**malicious** | **bool** | Indicates if the attachment is malicious | 
+**mime_type** | **str** | MIME type of the attachment | 
+**url** | **str** | URL to download the attachment | 
 
 ## Example
 

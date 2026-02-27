@@ -5,12 +5,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**type** | **str** | Type of the source | 
-**title** | **str** | Title of the source | [optional] 
-**links** | [**Links**](Links.md) |  | 
 **index** | **int** | Index of the source in the report text | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | [optional] 
+**links** | [**Links**](Links.md) |  | 
 **source_type** | **str** | Characterization of the source type | [optional] 
+**title** | **str** | Title of the source | [optional] 
+**type** | **str** | Type of the source | 
 
 ## Example
 

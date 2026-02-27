@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **breach_ts** | **datetime** | Date of breach. | [optional] 
 **collected_ts** | **datetime** | Date of collection. | [optional] 
 **victims** | [**List[VictimResponse]**](VictimResponse.md) | List of purported victims. | [optional] 
-**sources** | [**List[CredentialSource]**](CredentialSource.md) | List of sources. | [optional] 
+**sources** | [**List[LinksSource]**](LinksSource.md) | List of sources. | [optional] 
 
 ## Example
 

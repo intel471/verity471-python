@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**timestamp** | **datetime** |  | [optional] 
-**message** | **str** |  | [optional] 
 **errors** | **List[str]** |  | [optional] 
+**message** | **str** |  | [optional] 
+**timestamp** | **datetime** |  | [optional] 
 
 ## Example
 

@@ -6,9 +6,9 @@ Report related significant activity data
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**summary** | **str** |  | [optional] 
 **comments** | **str** |  | [optional] 
 **event_tag** | [**EventTag**](EventTag.md) |  | 
+**summary** | **str** |  | [optional] 
 
 ## Example
 

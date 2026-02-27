@@ -50,7 +50,7 @@ with verity471.ApiClient(configuration) as api_client:
     forum = 'forum_example' # str | Apply filtering by forum display name. (optional)
     var_from = 1627776000000 # int | Apply filtering by from timestamp - UNIX timestamp(in milliseconds) (optional)
     until = 1627776000000 # int | Apply filtering by until timestamp - UNIX timestamp(in milliseconds) (optional)
-    service_type = verity471.ChatServerType() # ChatServerType | Search by specific service for messages. Example: Telegram (optional)
+    service_type = verity471.ChatServerType() # ChatServerType | Search by specific server type for messages (optional)
     size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
     cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
 
@@ -74,7 +74,7 @@ Name | Type | Description  | Notes
  **forum** | **str**| Apply filtering by forum display name. | [optional] 
  **var_from** | **int**| Apply filtering by from timestamp - UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| Apply filtering by until timestamp - UNIX timestamp(in milliseconds) | [optional] 
- **service_type** | [**ChatServerType**](.md)| Search by specific service for messages. Example: Telegram | [optional] 
+ **service_type** | [**ChatServerType**](.md)| Search by specific server type for messages | [optional] 
  **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
 

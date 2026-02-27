@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**handle** | **str** | Handle or identifier of the actor | 
 **aliases** | **List[str]** | List of alternative names for the actor | [optional] 
+**handle** | **str** | Handle or identifier of the actor | 
 
 ## Example
 

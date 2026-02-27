@@ -10,6 +10,7 @@ Method | HTTP request | Description
 [**get_forums_posts_stream**](SourcesApi.md#get_forums_posts_stream) | **GET** /integrations/sources/v1/forums/posts/stream | Get forums posts (stream)
 [**get_forums_private_messages_private_message_id**](SourcesApi.md#get_forums_private_messages_private_message_id) | **GET** /integrations/sources/v1/forums/private-messages/{private_message_id} | Get a private message by id
 [**get_forums_private_messages_stream**](SourcesApi.md#get_forums_private_messages_stream) | **GET** /integrations/sources/v1/forums/private-messages/stream | Get forums private messages (stream)
+[**get_images_image_type_hash_name**](SourcesApi.md#get_images_image_type_hash_name) | **GET** /integrations/sources/v1/images/{image_type}/{hash}/{name} | Download image by type hash and name
 [**get_messaging_services_messages_message_id**](SourcesApi.md#get_messaging_services_messages_message_id) | **GET** /integrations/sources/v1/messaging-services/messages/{message_id} | Get a chat message by id
 [**get_messaging_services_messages_stream**](SourcesApi.md#get_messaging_services_messages_stream) | **GET** /integrations/sources/v1/messaging-services/messages/stream | Get chat messages (stream)
 
@@ -564,6 +565,93 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_images_image_type_hash_name**
+> bytearray get_images_image_type_hash_name(image_type, hash, name)
+
+Download image by type hash and name
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.models.image_type import ImageType
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.SourcesApi(api_client)
+    image_type = verity471.ImageType() # ImageType | 
+    hash = 'd383c5db40027a3d84153c808e6c1c78b3c6c68ff436d5d8c99fb677c32eb6ee' # str | 
+    name = 'jhy2Gqc.gif' # str | 
+
+    try:
+        # Download image by type hash and name
+        api_response = api_instance.get_images_image_type_hash_name(image_type, hash, name)
+        print("The response of SourcesApi->get_images_image_type_hash_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling SourcesApi->get_images_image_type_hash_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **image_type** | [**ImageType**](.md)|  | 
+ **hash** | **str**|  | 
+ **name** | **str**|  | 
+
+### Return type
+
+**bytearray**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/octet-stream, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Disposition -  <br>  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |

@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **value** | **str** | Value of the observable | 
 **geo_ip** | [**GeoIpObservables**](GeoIpObservables.md) |  | [optional] 
 **activity** | [**Activity**](Activity.md) |  | 
-**report** | [**Report**](Report.md) |  | 
+**report** | [**ReportObservables**](ReportObservables.md) |  | 
 
 ## Example
 

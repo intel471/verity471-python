@@ -9,19 +9,19 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.0
-  - creds: 1.0.0
+- API version: 1.1.1
+  - creds: 1.0.1
   - indicators: 1.0.0
   - malware: 1.0.0
   - reports: 1.0.0
-  - sources: 1.0.1
-  - actors: 1.0.0
+  - sources: 1.0.2
+  - actors: 1.0.1
   - watchers: 1.0.0
   - observables: 1.0.0
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.0
+- Package version: 1.1.1
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -259,6 +259,7 @@ Class | Method | HTTP request | Description
 *SourcesApi* | [**get_forums_posts_stream**](docs/SourcesApi.md#get_forums_posts_stream) | **GET** /integrations/sources/v1/forums/posts/stream | Get forums posts (stream)
 *SourcesApi* | [**get_forums_private_messages_private_message_id**](docs/SourcesApi.md#get_forums_private_messages_private_message_id) | **GET** /integrations/sources/v1/forums/private-messages/{private_message_id} | Get a private message by id
 *SourcesApi* | [**get_forums_private_messages_stream**](docs/SourcesApi.md#get_forums_private_messages_stream) | **GET** /integrations/sources/v1/forums/private-messages/stream | Get forums private messages (stream)
+*SourcesApi* | [**get_images_image_type_hash_name**](docs/SourcesApi.md#get_images_image_type_hash_name) | **GET** /integrations/sources/v1/images/{image_type}/{hash}/{name} | Download image by type hash and name
 *SourcesApi* | [**get_messaging_services_messages_message_id**](docs/SourcesApi.md#get_messaging_services_messages_message_id) | **GET** /integrations/sources/v1/messaging-services/messages/{message_id} | Get a chat message by id
 *SourcesApi* | [**get_messaging_services_messages_stream**](docs/SourcesApi.md#get_messaging_services_messages_stream) | **GET** /integrations/sources/v1/messaging-services/messages/stream | Get chat messages (stream)
 *WatchersApi* | [**get_watcher_groups**](docs/WatchersApi.md#get_watcher_groups) | **GET** /integrations/watchers/v1/watcher-groups | Get list of watcher groups for user
@@ -309,7 +310,6 @@ Class | Method | HTTP request | Description
  - [CredStatisticsResponse](docs/CredStatisticsResponse.md)
  - [CredentialOccurrenceCredResponse](docs/CredentialOccurrenceCredResponse.md)
  - [CredentialOccurrenceDataResponse](docs/CredentialOccurrenceDataResponse.md)
- - [CredentialSource](docs/CredentialSource.md)
  - [CveSource](docs/CveSource.md)
  - [Cvss](docs/Cvss.md)
  - [DataLeakSiteFileListingUrl](docs/DataLeakSiteFileListingUrl.md)
@@ -366,6 +366,7 @@ Class | Method | HTTP request | Description
  - [HighlightWatchers](docs/HighlightWatchers.md)
  - [Href](docs/Href.md)
  - [ImServer](docs/ImServer.md)
+ - [ImageType](docs/ImageType.md)
  - [IndicatorData](docs/IndicatorData.md)
  - [IndicatorsStream](docs/IndicatorsStream.md)
  - [Industries](docs/Industries.md)
@@ -385,6 +386,7 @@ Class | Method | HTTP request | Description
  - [Link](docs/Link.md)
  - [Link1](docs/Link1.md)
  - [Links](docs/Links.md)
+ - [LinksSource](docs/LinksSource.md)
  - [LinksWatchers](docs/LinksWatchers.md)
  - [Location](docs/Location.md)
  - [Malware](docs/Malware.md)
@@ -410,7 +412,9 @@ Class | Method | HTTP request | Description
  - [Report](docs/Report.md)
  - [ReportAttachment](docs/ReportAttachment.md)
  - [ReportContent](docs/ReportContent.md)
+ - [ReportEntities](docs/ReportEntities.md)
  - [ReportLocation](docs/ReportLocation.md)
+ - [ReportObservables](docs/ReportObservables.md)
  - [ReportResponseStream](docs/ReportResponseStream.md)
  - [ReportType](docs/ReportType.md)
  - [ReportingStatus](docs/ReportingStatus.md)
@@ -424,6 +428,8 @@ Class | Method | HTTP request | Description
  - [ShareSettingsResponse](docs/ShareSettingsResponse.md)
  - [SignificantActivity](docs/SignificantActivity.md)
  - [SimplifiedMalwareProfile](docs/SimplifiedMalwareProfile.md)
+ - [SourceLink](docs/SourceLink.md)
+ - [SourceLinks](docs/SourceLinks.md)
  - [SourcesLinks](docs/SourcesLinks.md)
  - [SourcesResponse](docs/SourcesResponse.md)
  - [SpotReportResponse](docs/SpotReportResponse.md)

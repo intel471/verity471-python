@@ -7,7 +7,7 @@ A messaging service that the actor is associated with
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** |  | 
-**service_type** | [**ChatServerType**](ChatServerType.md) |  | 
+**type** | [**ChatServerType**](ChatServerType.md) |  | 
 
 ## Example
 

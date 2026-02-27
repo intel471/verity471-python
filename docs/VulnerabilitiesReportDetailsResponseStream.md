@@ -6,35 +6,35 @@ Minimal schema for a vulnerability report response with keys, types, and descrip
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique identifier of the report | 
-**type** | **str** | Type of the report | 
-**creation_ts** | **str** | Timestamp when the report was published first time | 
-**released_ts** | **str** | Timestamp when the report was published last time | 
-**last_updated_ts** | **str** | Timestamp of last report update | 
-**name** | **str** | Name of the vulnerability | 
-**aliases** | **List[str]** | List of alternative names or identifiers for the vulnerability | [optional] 
-**status** | [**VulnerabilityStatus**](VulnerabilityStatus.md) |  | 
-**cve_type** | **str** | Type of CVE, for example: Buffer overflow, Privilege escalation, Memory corruption, etc | 
-**risk_level** | [**RiskLevel**](RiskLevel.md) |  | 
-**cvss** | [**List[Cvss]**](Cvss.md) | List of CVSS scores associated with the vulnerability | [optional] 
-**poc** | [**Poc**](Poc.md) |  | [optional] 
-**patch_status** | [**PatchStatus**](PatchStatus.md) |  | [optional] 
-**body** | **str** | HTML formatted summary of the vulnerability | [optional] 
-**underground_activity_summary_html** | **str** | HTML formatted summary of underground activity related to the vulnerability | [optional] 
-**counter_measures_html** | **str** | HTML formatted summary of countermeasures for the vulnerability | [optional] 
-**interest_level** | [**List[InterestLevel]**](InterestLevel.md) | List of levels of interest related to the vulnerability | [optional] 
-**activity_location** | [**List[ActivityLocation]**](ActivityLocation.md) | List of locations where activity related to the vulnerability has been observed | [optional] 
-**exploit_status** | [**List[ExploitStatus]**](ExploitStatus.md) | List of exploitation status details for the vulnerability | [optional] 
-**sort_priority** | **int** | Priority used for sorting vulnerability reports | [optional] 
-**vendor_name** | **str** | Name of the vendor of the affected software | 
-**product_name** | **str** | Name of the product of the affected software | 
-**sources** | [**List[CveSource]**](CveSource.md) | List of sources referenced in the report | [optional] 
-**poc_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Proofs of Concept related to the vulnerability | [optional] 
-**patch_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Patches related to the vulnerability | [optional] 
-**counter_measure_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Counter Measures related to the vulnerability | [optional] 
-**classification** | [**Classification**](Classification.md) |  | 
 **activity** | [**Activity**](Activity.md) |  | 
+**activity_location** | [**List[ActivityLocation]**](ActivityLocation.md) | List of locations where activity related to the vulnerability has been observed | [optional] 
+**aliases** | **List[str]** | List of alternative names or identifiers for the vulnerability | [optional] 
+**body** | **str** | HTML formatted summary of the vulnerability | [optional] 
+**classification** | [**Classification**](Classification.md) |  | 
+**counter_measure_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Counter Measures related to the vulnerability | [optional] 
+**counter_measures_html** | **str** | HTML formatted summary of countermeasures for the vulnerability | [optional] 
+**creation_ts** | **str** | Timestamp when the report was published first time | 
+**cve_type** | **str** | Type of CVE, for example: Buffer overflow, Privilege escalation, Memory corruption, etc | 
+**cvss** | [**List[Cvss]**](Cvss.md) | List of CVSS scores associated with the vulnerability | [optional] 
+**exploit_status** | [**List[ExploitStatus]**](ExploitStatus.md) | List of exploitation status details for the vulnerability | [optional] 
+**id** | **str** | Unique identifier of the report | 
+**interest_level** | [**List[InterestLevel]**](InterestLevel.md) | List of levels of interest related to the vulnerability | [optional] 
+**last_updated_ts** | **str** | Timestamp of last report update | 
 **links** | [**Links**](Links.md) |  | 
+**name** | **str** | Name of the vulnerability | 
+**patch_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Patches related to the vulnerability | [optional] 
+**patch_status** | [**PatchStatus**](PatchStatus.md) |  | [optional] 
+**poc** | [**Poc**](Poc.md) |  | [optional] 
+**poc_links** | [**List[Link1]**](Link1.md) | List of titled URLs to Proofs of Concept related to the vulnerability | [optional] 
+**product_name** | **str** | Name of the product of the affected software | 
+**released_ts** | **str** | Timestamp when the report was published last time | 
+**risk_level** | [**RiskLevel**](RiskLevel.md) |  | 
+**sort_priority** | **int** | Priority used for sorting vulnerability reports | [optional] 
+**sources** | [**List[CveSource]**](CveSource.md) | List of sources referenced in the report | [optional] 
+**status** | [**VulnerabilityStatus**](VulnerabilityStatus.md) |  | 
+**type** | **str** | Type of the report | 
+**underground_activity_summary_html** | **str** | HTML formatted summary of underground activity related to the vulnerability | [optional] 
+**vendor_name** | **str** | Name of the vendor of the affected software | 
 
 ## Example
 

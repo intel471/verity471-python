@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **type** | [**EntityType**](EntityType.md) |  | 
 **value** | **str** | The value of the entity | 
 **activity** | [**Activity**](Activity.md) |  | 
-**report** | [**Report**](Report.md) |  | [optional] 
+**report** | [**ReportEntities**](ReportEntities.md) |  | [optional] 
 **actor** | [**ActorObject**](ActorObject.md) |  | [optional] 
 
 ## Example

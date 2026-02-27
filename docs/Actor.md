@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **activity** | [**Activity**](Activity.md) |  | 
 **handles** | **List[str]** | Actor names - from most current in use first, and list historical handles. | [optional] 
 **forum** | [**Forum**](Forum.md) |  | [optional] 
-**im_server** | [**ImServer**](ImServer.md) |  | [optional] 
+**instant_message_server** | [**ImServer**](ImServer.md) |  | [optional] 
 **report** | [**Report**](Report.md) |  | [optional] 
 
 ## Example
