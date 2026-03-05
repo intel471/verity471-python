@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**actors** | [**List[Actor]**](Actor.md) | A page of matched actors | [optional] 
 **count** | **int** | Total count of matched actors | 
 **cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
-**actors** | [**List[Actor]**](Actor.md) | A page of matched actors | [optional] 
 
 ## Example
 

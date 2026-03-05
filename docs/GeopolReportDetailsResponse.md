@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **is_sensitive_source** | **bool** | Indicates if the report contains sensitive source derived information | [optional] 
 **is_truncated** | **bool** | True when the body field was omitted due to exceeding size limit; fetch full report by ID if needed | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**SourceLinks**](SourceLinks.md) |  | 
 **locations** | [**List[ReportLocation]**](ReportLocation.md) | List of locations related to the report | [optional] 
 **regional_tension_points** | [**List[TensionPointResponse]**](TensionPointResponse.md) | Report related tension points | [optional] 
 **related_reports** | [**List[ReportContent]**](ReportContent.md) | List of related reports connected to this report | [optional] 

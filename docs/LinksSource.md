@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**title** | **str** | Title of the source | [optional] 
 **links** | [**SourceLinks**](SourceLinks.md) |  | 
+**title** | **str** | Title of the source | [optional] 
 **type** | **str** | Type of the source | 
 
 ## Example

@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **status** | **str** |  | 
 **source_type** | **str** |  | 
 **source_id** | **str** |  | 
-**links** | [**LinksWatchers**](LinksWatchers.md) |  | 
+**links** | [**Links**](Links.md) |  | 
 **highlights** | [**List[HighlightWatchers]**](HighlightWatchers.md) |  | [optional] 
 **creation_ts** | **datetime** |  | 
 **is_trashed** | **bool** |  | 

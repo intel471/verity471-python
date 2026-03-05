@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_actors_stream**
-> ActorStreamPage get_actors_stream(actor, forum=forum, var_from=var_from, until=until, service_type=service_type, size=size, cursor=cursor)
+> ActorStreamPage get_actors_stream(actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
 
 Retrieve a stream of actors
 
@@ -50,13 +50,13 @@ with verity471.ApiClient(configuration) as api_client:
     forum = 'forum_example' # str | Apply filtering by forum display name. (optional)
     var_from = 1627776000000 # int | Apply filtering by from timestamp - UNIX timestamp(in milliseconds) (optional)
     until = 1627776000000 # int | Apply filtering by until timestamp - UNIX timestamp(in milliseconds) (optional)
-    service_type = verity471.ChatServerType() # ChatServerType | Search by specific server type for messages (optional)
+    server_type = verity471.ChatServerType() # ChatServerType | Search by specific server type for messages (optional)
     size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
     cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
 
     try:
         # Retrieve a stream of actors
-        api_response = api_instance.get_actors_stream(actor, forum=forum, var_from=var_from, until=until, service_type=service_type, size=size, cursor=cursor)
+        api_response = api_instance.get_actors_stream(actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
         print("The response of ActorsApi->get_actors_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -74,7 +74,7 @@ Name | Type | Description  | Notes
  **forum** | **str**| Apply filtering by forum display name. | [optional] 
  **var_from** | **int**| Apply filtering by from timestamp - UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| Apply filtering by until timestamp - UNIX timestamp(in milliseconds) | [optional] 
- **service_type** | [**ChatServerType**](.md)| Search by specific server type for messages | [optional] 
+ **server_type** | [**ChatServerType**](.md)| Search by specific server type for messages | [optional] 
  **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
 

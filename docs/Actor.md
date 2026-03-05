@@ -5,10 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique identifier of the actor | 
 **activity** | [**Activity**](Activity.md) |  | 
-**handles** | **List[str]** | Actor names - from most current in use first, and list historical handles. | [optional] 
 **forum** | [**Forum**](Forum.md) |  | [optional] 
+**handles** | **List[str]** | Actor names - from most current in use first, and list historical handles. | [optional] 
+**id** | **str** | Unique identifier of the actor | 
 **instant_message_server** | [**ImServer**](ImServer.md) |  | [optional] 
 **report** | [**Report**](Report.md) |  | [optional] 
 

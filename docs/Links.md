@@ -1,14 +1,12 @@
 # Links
 
-Links to the source
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**verity_api** | [**Link**](Link.md) |  | [optional] 
-**verity_portal** | [**Link**](Link.md) |  | [optional] 
-**external** | [**Link**](Link.md) |  | [optional] 
+**verity_api** | [**Href**](Href.md) |  | [optional] 
+**verity_portal** | [**Href**](Href.md) |  | [optional] 
 
 ## Example
 

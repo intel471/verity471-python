@@ -9,19 +9,19 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.1
+- API version: 1.1.2
   - creds: 1.0.1
   - indicators: 1.0.0
-  - malware: 1.0.0
-  - reports: 1.0.0
-  - sources: 1.0.2
-  - actors: 1.0.1
+  - malware: 1.0.1
+  - reports: 1.0.1
+  - sources: 1.0.3
+  - actors: 1.0.2
   - watchers: 1.0.0
   - observables: 1.0.0
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.1
+- Package version: 1.1.2
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -288,6 +288,7 @@ Class | Method | HTTP request | Description
  - [BreachAlertByIdResponse](docs/BreachAlertByIdResponse.md)
  - [BreachAlertResponse](docs/BreachAlertResponse.md)
  - [BreachAlertsResponseStream](docs/BreachAlertsResponseStream.md)
+ - [BulletproofHosting](docs/BulletproofHosting.md)
  - [ChatMessageStream](docs/ChatMessageStream.md)
  - [ChatMessagesStreamingPage](docs/ChatMessagesStreamingPage.md)
  - [ChatRoomMessageStream](docs/ChatRoomMessageStream.md)
@@ -310,7 +311,6 @@ Class | Method | HTTP request | Description
  - [CredStatisticsResponse](docs/CredStatisticsResponse.md)
  - [CredentialOccurrenceCredResponse](docs/CredentialOccurrenceCredResponse.md)
  - [CredentialOccurrenceDataResponse](docs/CredentialOccurrenceDataResponse.md)
- - [CveSource](docs/CveSource.md)
  - [Cvss](docs/Cvss.md)
  - [DataLeakSiteFileListingUrl](docs/DataLeakSiteFileListingUrl.md)
  - [DataLeakSitePost1](docs/DataLeakSitePost1.md)
@@ -384,10 +384,10 @@ Class | Method | HTTP request | Description
  - [IspData](docs/IspData.md)
  - [KillChainPhase](docs/KillChainPhase.md)
  - [Link](docs/Link.md)
- - [Link1](docs/Link1.md)
  - [Links](docs/Links.md)
+ - [LinksEntities](docs/LinksEntities.md)
+ - [LinksObservables](docs/LinksObservables.md)
  - [LinksSource](docs/LinksSource.md)
- - [LinksWatchers](docs/LinksWatchers.md)
  - [Location](docs/Location.md)
  - [Malware](docs/Malware.md)
  - [MalwareFamily](docs/MalwareFamily.md)
@@ -442,7 +442,9 @@ Class | Method | HTTP request | Description
  - [ThreadResponse1](docs/ThreadResponse1.md)
  - [Threat](docs/Threat.md)
  - [ThreatData](docs/ThreatData.md)
+ - [ThreatDataMalware](docs/ThreatDataMalware.md)
  - [ThreatInfo](docs/ThreatInfo.md)
+ - [ThreatMalware](docs/ThreatMalware.md)
  - [ThreatRating](docs/ThreatRating.md)
  - [TranslationStatus](docs/TranslationStatus.md)
  - [Trigger](docs/Trigger.md)

@@ -71,23 +71,34 @@
       "patch_links": [
         {
           "title": "dummy",
-          "url": "https://example.com"
+          "links": {
+            "external": {
+              "href": "https://example.com"
+            }
+          },
+          "type": "external"
         }
       ],
       "patch_status": "available",
       "poc": "observed",
       "poc_links": [
         {
-          "title": "dummy",
-          "url": "https://example.com"
+          "title": "dummy1",
+          "links": {
+            "external": {
+              "href": "https://example1.com"
+            }
+          },
+          "type": "external"
         },
         {
-          "title": "dummy",
-          "url": "https://example.com"
-        },
-        {
-          "title": "dummy",
-          "url": "https://example.com"
+          "title": "dummy2",
+          "links": {
+            "external": {
+              "href": "https://example2.com"
+            }
+          },
+          "type": "external"
         }
       ],
       "product_name": "dummy",
@@ -98,7 +109,11 @@
         {
           "title": "dummy",
           "type": "internal",
-          "url": "dummy"
+          "links": {
+            "verity_portal": {
+              "href": "https://dev.api/123"
+            }
+          }
         }
       ],
       "status": "historical",

@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 **is_sensitive_source** | **bool** | Indicates if the report contains sensitive source derived information | [optional] 
 **is_truncated** | **bool** | True when the body field was omitted due to exceeding size limit; fetch full report by ID if needed | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**SourceLinks**](SourceLinks.md) |  | 
 **released_ts** | **str** | Timestamp when the report was published last time | 
 **sources** | [**List[SourcesResponse]**](SourcesResponse.md) | List of sources referenced in the report | [optional] 
 **title** | **str** | Title of the report | 

@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **data** | [**EventData**](EventData.md) | Event-specific data | [optional] 
 **id** | **str** | Unique identifier of the entity | [optional] 
 **kill_chain_phases** | [**List[KillChainPhase]**](KillChainPhase.md) | List of kill chain phases associated with the entity | [optional] 
-**threat** | [**Threat**](Threat.md) | Threat information associated with the entity | [optional] 
+**threat** | [**ThreatMalware**](ThreatMalware.md) | Threat information associated with the entity | [optional] 
 **type** | **str** | Type of Event | [optional] 
 
 ## Example

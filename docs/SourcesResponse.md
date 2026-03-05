@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **index** | **int** | Index of the source in the report text | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | [optional] 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**SourceLinks**](SourceLinks.md) |  | 
 **source_type** | **str** | Characterization of the source type | [optional] 
 **title** | **str** | Title of the source | [optional] 
 **type** | **str** | Type of the source | 
