@@ -139,6 +139,8 @@ class BaseMapper(ABC):
                             links.append(Link(name="Verity471 Portal", url=value.get("href")))
                         elif key == "verity_api":
                             links.append(Link(name="Verity471 API", url=value.get("href")))
+                        elif key == "external":
+                            links.append(Link(name="External", url=value.get("href")))
             # Complex style: {"links": {"external": {"href": ...}, ...}, "title": "...", ...}
             elif isinstance(entry, dict) and "links" in entry:
                 type_ = entry.get("type")
