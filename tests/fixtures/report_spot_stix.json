@@ -62,12 +62,16 @@
       "description": "Actor announces addition of the vulnerability targeting the Software.",
       "external_references": [
         {
-          "source_name": "Portal URL",
+          "source_name": "Verity471 Portal",
           "url": "https://verity.intel471.com/intelligence/spotReportView/report--00000000-4a56-5f0c-8bd4-166b2115362f"
         },
         {
-          "source_name": "internal - Source",
+          "source_name": "[Verity471 Portal] Source",
           "url": "https://link/verity_portal1"
+        },
+        {
+          "source_name": "[Verity471 API] Source",
+          "url": "https://link/verity_api2"
         }
       ],
       "id": "report--00000000-4a56-5f0c-8bd4-166b2115362f",
@@ -75,7 +79,7 @@
         "Intel 471 - GIR 1.3.10 - Exploit kits",
         "platform:verity471"
       ],
-      "modified": "2026-02-03T15:51:19.452276Z",
+      "modified": "2026-03-05T14:42:26.036475Z",
       "name": "Actor announces addition of the vulnerability",
       "object_marking_refs": [
         "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"

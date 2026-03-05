@@ -21,7 +21,7 @@ Name | Type | Description | Notes
 **is_sensitive_source** | **bool** | Indicates if the report contains sensitive source derived information | 
 **is_truncated** | **bool** | True when the body field was omitted due to exceeding size limit; fetch full report by ID if needed | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**SourceLinks**](SourceLinks.md) |  | 
 **locations** | [**List[ReportLocation]**](ReportLocation.md) | List of locations related to the report | [optional] 
 **motivation** | [**List[Motivation]**](Motivation.md) | List of motivations related to the report | [optional] 
 **related_reports** | [**List[ReportContent]**](ReportContent.md) | List of related reports connected to this report | [optional] 

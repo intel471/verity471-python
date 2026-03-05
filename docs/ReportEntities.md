@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **last_updated_ts** | **datetime** | Timestamp when the report was last updated (ISO 8601) | 
 **information_ts** | **datetime** | Timestamp of the information in the report (ISO 8601) | 
 **released_ts** | **datetime** | Timestamp when the report was released (ISO 8601) | 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**LinksEntities**](LinksEntities.md) |  | 
 
 ## Example
 

@@ -26,9 +26,8 @@ class MappingConfig:
 
 @dataclass
 class Link:
-    type: str
-    href: str
-    description: Optional[str] = None
+    name: str
+    url: str
 
 
 class StixMapper:
@@ -124,11 +123,52 @@ class BaseMapper(ABC):
 
     def map_links(self, links_sources: Union[dict, list[dict]]) -> list[Link]:
         links = []
+        if not links_sources:
+            return links
+
+        # Normalize input to list
         if isinstance(links_sources, dict):
             links_sources = [links_sources]
-        for links_source in links_sources:
-            for key, value in links_source.items():
-                links.append(Link(type=key, href=value.get('href')))
+
+        for entry in links_sources:
+            # Simple style: {"verity_api": {"href": ...}}, {"verity_portal": {"href": ...}}
+            if isinstance(entry, dict) and "links" not in entry:
+                for key, value in entry.items():
+                    if isinstance(value, dict) and "href" in value:
+                        if key == "verity_portal":
+                            links.append(Link(name="Verity471 Portal", url=value.get("href")))
+                        elif key == "verity_api":
+                            links.append(Link(name="Verity471 API", url=value.get("href")))
+                        elif key == "external":
+                            links.append(Link(name="External", url=value.get("href")))
+            # Complex style: {"links": {"external": {"href": ...}, ...}, "title": "...", ...}
+            elif isinstance(entry, dict) and "links" in entry:
+                type_ = entry.get("type")
+                title = entry.get("title")
+                source_type = entry.get("source_type")
+                links_dict = entry["links"]
+                if type_ == "external" and "external" in links_dict:
+                    ext_link = links_dict.get("external")
+                    if isinstance(ext_link, dict) and "href" in ext_link:
+                        ext_title = f"{source_type}/{title}" if source_type else title
+                        links.append(Link(name=ext_title, url=ext_link.get("href")))
+                elif type_ == "internal":
+                    if "verity_portal" in links_dict:
+                        vp_link = links_dict.get("verity_portal")
+                        if isinstance(vp_link, dict) and "href" in vp_link:
+                            parts = ["Verity471 Portal"]
+                            if source_type:
+                                parts.append(source_type)
+                            vp_name = f"[{'/'.join(parts)}] {title}"
+                            links.append(Link(name=vp_name, url=vp_link.get("href")))
+                    if "verity_api" in links_dict:
+                        va_link = links_dict.get("verity_api")
+                        if isinstance(va_link, dict) and "href" in va_link:
+                            parts = ["Verity471 API"]
+                            if source_type:
+                                parts.append(source_type)
+                            va_name = f"[{'/'.join(parts)}] {title}"
+                            links.append(Link(name=va_name, url=va_link.get("href")))
         return links
 
     def get_girs_labels(self, gir_paths: List[dict]):

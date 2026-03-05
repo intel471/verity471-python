@@ -26,8 +26,13 @@
             },
             "counter_measure_links": [
                 {
-                    "title": "Link cm",
-                    "url": "https://link/cm"
+                    "title": "Link cm ext",
+                    "type": "external",
+                    "links": {
+                        "external": {
+                            "href": "https://link/cm"
+                        }
+                    }
                 }
             ],
             "counter_measures_html": "<p>The impacted vendor released patching information.</p>",
@@ -70,16 +75,26 @@
             "name": "CVE-2026-0000",
             "patch_links": [
                 {
-                    "title": "Link patch",
-                    "url": "https://link/patch"
+                    "title": "Link patch ext",
+                    "type": "external",
+                    "links": {
+                        "external": {
+                            "href": "https://link/patch"
+                        }
+                    }
                 }
             ],
             "patch_status": "available",
             "poc": "observed",
             "poc_links": [
                 {
-                    "title": "Link poc",
-                    "url": "https://link/poc"
+                    "title": "Link poc ext",
+                    "type": "external",
+                    "links": {
+                        "external": {
+                            "href": "https://link/poc"
+                        }
+                    }
                 }
             ],
             "product_name": "Foobar",
@@ -88,9 +103,16 @@
             "sort_priority": 0,
             "sources": [
                 {
-                    "title": "Link src",
+                    "title": "Link src int",
                     "type": "internal",
-                    "url": "https://link/src"
+                    "links": {
+                        "verity_portal": {
+                            "href": "https://link/src_portal"
+                        },
+                        "verity_api": {
+                            "href": "https://link/src_api"
+                        }
+                    }
                 }
             ],
             "status": "existing",

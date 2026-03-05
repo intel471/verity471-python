@@ -63,12 +63,16 @@
       "description": "Distributed-denial-of-service (DDoS) attacks constitute a business continuity risk for organizations",
       "external_references": [
         {
-          "source_name": "Portal URL",
+          "source_name": "Verity471 Portal",
           "url": "https://verity.intel471.com/intelligence/fintelReportView/report--00000000-6922-5645-af58-aa977f4b8ead"
         },
         {
-          "source_name": "Information report - Analysis of attacks",
+          "source_name": "[Verity471 Portal/Information report] Analysis of attacks",
           "url": "https://link/portal"
+        },
+        {
+          "source_name": "[Verity471 API/Information report] Analysis of attacks",
+          "url": "https://link/api"
         }
       ],
       "id": "report--00000000-6922-5645-af58-aa977f4b8ead",

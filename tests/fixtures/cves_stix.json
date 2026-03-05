@@ -7,23 +7,27 @@
       "description": "<p>CVE-2026-0000 is an information disclosure vulnerability impacting multiple products.</p>\n\n<p>The actor advertised a network and web penetration testing automation</p>\n\n<p>The impacted vendor released patching information.</p>\n\n### Properties\n\n```yaml\nactivity_location:\n- location_underground\n- location_opensource\nexploit_status:\n- productized\n- weaponized\n- available\ninterest_level:\n- researched_publicly\n- disclosed_publicly\npatch_status: available\n```",
       "external_references": [
         {
-          "source_name": "verity_api",
+          "source_name": "Verity471 API",
           "url": "https://link/verity_api"
         },
         {
-          "source_name": "[Verity URL] Link src",
-          "url": "https://link/src"
+          "source_name": "[Verity471 Portal] Link src int",
+          "url": "https://link/src_portal"
         },
         {
-          "source_name": "[PoC] Link poc",
+          "source_name": "[Verity471 API] Link src int",
+          "url": "https://link/src_api"
+        },
+        {
+          "source_name": "[PoC] Link poc ext",
           "url": "https://link/poc"
         },
         {
-          "source_name": "[Patch] Link patch",
+          "source_name": "[Patch] Link patch ext",
           "url": "https://link/patch"
         },
         {
-          "source_name": "[Counter measures] Link cm",
+          "source_name": "[Counter measure] Link cm ext",
           "url": "https://link/cm"
         }
       ],

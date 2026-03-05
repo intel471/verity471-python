@@ -288,14 +288,11 @@ class ReportMapper(BaseMapper):
             "source_type": "Info Report"
         }
         """
-        references = [ExternalReference(source_name="Portal URL", url=self._get_portal_url(source))]
+        references = [ExternalReference(source_name="Verity471 Portal", url=self._get_portal_url(source))]
         if value := self._extract_value(source, "links_path"):
-            for link_source in value:
-                source_name = f"{link_source.get('source_type', link_source.get('type'))} - {link_source['title']}".strip()
-                links = [i for i in self.map_links(link_source['links']) if i.type in ("external", "verity_portal")]
-                if links:
-                    external_ref = ExternalReference(url=links[0].href, source_name=source_name)
-                    references.append(external_ref)
+            links = self.map_links(value)
+            for link in links:
+                references.append(ExternalReference(source_name=link.name, url=link.url))
         return references
 
     def _get_entities(self, source: dict) -> StixObjects:
@@ -314,9 +311,9 @@ class ReportMapper(BaseMapper):
             for victim_src in value:
                 uri = None
                 if links_src := victim_src.get("links"):
-                    external = [i for i in self.map_links(links_src) if i.type == "external"]
+                    external = [i for i in self.map_links(links_src) if i.name.lower() == "external"]
                     if external:
-                        uri = external[0].href
+                        uri = external[0].url
                 stix_objects.add(
                     map_organization(victim_src["name"], uri))
             return stix_objects

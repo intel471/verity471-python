@@ -62,12 +62,16 @@
       "description": "Lorem ipsum dolor sit amet",
       "external_references": [
         {
-          "source_name": "Portal URL",
+          "source_name": "Verity471 Portal",
           "url": "https://verity.intel471.com/intelligence/breachAlertReportView/report--00000000-713f-5f41-9ee4-45b3ff027017"
         },
         {
-          "source_name": "Spot Report - Lorem ipsum",
+          "source_name": "[Verity471 Portal/Spot Report] Lorem ipsum",
           "url": "https://verity.intel471.com/intelligence/breachAlertReportView/aaa"
+        },
+        {
+          "source_name": "[Verity471 API/Spot Report] Lorem ipsum",
+          "url": "https://api.intel471.cloud/integrations/intel-report/v1/reports/aaa"
         }
       ],
       "id": "report--00000000-713f-5f41-9ee4-45b3ff027017",

@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **id** | **str** | Unique identifier of the related report | 
 **information_ts** | **str** | Timestamp of the information contained in the report | [optional] 
 **last_updated_ts** | **str** | Timestamp of last report update | 
-**links** | [**Links**](Links.md) |  | 
+**links** | [**SourceLinks**](SourceLinks.md) |  | 
 **released_ts** | **str** | Timestamp when the report was published last time | 
 **sources** | [**List[SourcesResponse]**](SourcesResponse.md) | List of sources referenced in the report | [optional] 
 **sub_type** | **str** | Fintel or Geopol report subtype, e.g. ACTOR_PROFILE | [optional] 

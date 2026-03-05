@@ -181,31 +181,31 @@ def test_observable_mapper(source, expected_values):
 @pytest.mark.parametrize("report_type,source,expected_values", (
     (ReportType.FINTEL, {"id": "ab1", "type": "fintel", "sources": [
         {"type": "external", "title": "ACME corp news", "links": {"external": {"href": "https://acme.corp/123"}}, "index": "1"}]},
-     {"source_name": "external - ACME corp news", "url": "https://acme.corp/123"}),
+     {"source_name": "ACME corp news", "url": "https://acme.corp/123"}),
     (ReportType.FINTEL, {"id": "ab1", "type": "fintel", "sources": [
         {"type": "external", "source_type": "External Link", "title": "Titan Information Report",
          "links": {"external": {"href": "https://titan.intel471.com/report/inforep/487a8"}}, "index": "1"}]},
-     {"source_name": "External Link - Titan Information Report",
+     {"source_name": "External Link/Titan Information Report",
       "url": "https://titan.intel471.com/report/inforep/487a8"}),
     (ReportType.INFOREP, {"id": "ab1", "type": "info_report", "sources": [
         {"type": "external", "source_type": "Forum Post", "title": "[SOURCE CODE] HexSec | Android RAT",
          "links": {"external": {"href": "https://titan.intel471.com/post_thread/9cacd56"}}, "index": "1"}]},
-     {"source_name": "Forum Post - [SOURCE CODE] HexSec | Android RAT",
+     {"source_name": "Forum Post/[SOURCE CODE] HexSec | Android RAT",
       "url": "https://titan.intel471.com/post_thread/9cacd56"}),
     (ReportType.INFOREP, {"id": "ab1", "type": "info_report", "sources": [
         {"type": "external", "source_type": "Forum Post", "title": "[SOURCE CODE] HexSec | Android RAT",
          "links": {"external": {"href": "https://titan.intel471.com/post_thread/9cacd56"}}, "index": "1"}]},
-     {"source_name": "Forum Post - [SOURCE CODE] HexSec | Android RAT",
+     {"source_name": "Forum Post/[SOURCE CODE] HexSec | Android RAT",
       "url": "https://titan.intel471.com/post_thread/9cacd56"}),
     (ReportType.BREACH_ALERT, {"id": "ab1", "type": "breach_alert", "sources": [
         {"type": "internal", "source_type": "Forum Thread", "title": "acmesystems",
          "links": {"verity_portal": {"href": "https://titan.intel471.com/post_thread/2984"}}, "index": "1"}]},
-     {"source_name": "Forum Thread - acmesystems",
+     {"source_name": "[Verity471 Portal/Forum Thread] acmesystems",
       "url": "https://titan.intel471.com/post_thread/2984"}),
     (ReportType.SPOTREP, {"id": "ab1", "type": "spot_report", "sources": [
         {"type": "internal", "title": "Forum thread",
          "links": {"verity_portal": {"href": "https://titan.intel471.com/post_thread/2984"}}, "index": "1"}]},
-     {"source_name": "internal - Forum thread",
+     {"source_name": "[Verity471 Portal] Forum thread",
       "url": "https://titan.intel471.com/post_thread/2984"}),
 ))
 def test_map_reports_external_references(report_type, source, expected_values):
@@ -213,7 +213,7 @@ def test_map_reports_external_references(report_type, source, expected_values):
     external_refs = mapper._get_external_references(source)
     external_ref_0 = json.loads(external_refs[0].serialize())
     report_settings = ReportMapper.reports_settings.get(report_type)
-    assert external_ref_0 == {"source_name": "Portal URL", "url": f"https://verity.intel471.com/{report_settings.portal_url_fragment}/ab1"}
+    assert external_ref_0 == {"source_name": "Verity471 Portal", "url": f"https://verity.intel471.com/{report_settings.portal_url_fragment}/ab1"}
     if expected_values:
         external_ref_1 = json.loads(external_refs[1].serialize())
         assert external_ref_1 == expected_values

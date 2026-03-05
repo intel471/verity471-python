@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **country** | **str** | Country of the victim | [optional] 
 **industries** | [**List[Industries]**](Industries.md) | List of Industries associated with the victim | [optional] 
-**links** | [**List[Links]**](Links.md) | List of URLs associated with the victim | [optional] 
+**links** | [**List[SourceLinks]**](SourceLinks.md) | List of URLs associated with the victim | [optional] 
 **name** | **str** | Name of the victim | 
 **region** | **str** | Region information of the victim | [optional] 
 **revenue** | **str** | Revenue information of the victim | [optional] 

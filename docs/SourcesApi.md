@@ -52,7 +52,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.SourcesApi(api_client)
-    id = 'file-listing--b4d7f16b-c25c-5608-9a98-dc73532400a4-71' # str | 
+    id = 'file--082e91d6-2258-5f21-81d1-809bb96eb720' # str | 
 
     try:
         # Get a data leak site file listing content

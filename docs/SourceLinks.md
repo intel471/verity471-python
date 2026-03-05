@@ -6,9 +6,9 @@ Available links
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**external** | [**SourceLink**](SourceLink.md) |  | [optional] 
 **verity_api** | [**SourceLink**](SourceLink.md) |  | [optional] 
 **verity_portal** | [**SourceLink**](SourceLink.md) |  | [optional] 
-**external** | [**SourceLink**](SourceLink.md) |  | [optional] 
 
 ## Example
 

@@ -10,6 +10,7 @@ from ..constants import MARKING, PLATFORM_VERITY471, X_OPENCTI_CREATED_BY, X_OPE
 @StixMapper.register(
     "vuln_reports",
     lambda x: isinstance(x.get("reports"), list)
+    and len(x["reports"]) > 0
     and (x["reports"][0].get("id") or "").startswith("vulnerability--")
     and "fintel_report_count" not in x,
 )
@@ -47,23 +48,17 @@ class CveMapper(BaseMapper):
             description = f"{summary}\n\n{underground_activity_summary}\n\n{counter_measures}\n\n### Properties\n\n```yaml\n{extras}```"
 
             external_references = []
-            # New links structure
-            links = self.map_links(item.get("links"))
-            for link in links:
-                external_references.append(ExternalReference(source_name=link.type, url=link.href))
-
-            # Old style links, to be changed in MER-7243
-            for link_type, key in (
-                ("Verity URL", "sources"),
-                ("PoC", "poc_links"),
-                ("Patch", "patch_links"),
-                ("Counter measures", "counter_measure_links")
+            for key, key_name in (
+                ("links", None),
+                ("sources", None),
+                ("poc_links", "PoC"),
+                ("patch_links", "Patch"),
+                ("counter_measure_links", "Counter measure")
             ):
-                for link in item.get(key) or []:
-                    external_reference = ExternalReference(
-                        source_name=f"[{link_type}] {link['title']}", url=link["url"]
-                    )
-                    external_references.append(external_reference)
+                links = self.map_links(item.get(key))
+                for link in links:
+                    source_name = f"[{key_name}] {link.name}" if key_name else link.name
+                    external_references.append(ExternalReference(source_name=source_name, url=link.url))
 
             custom_properties = {"x_intel471_com_uid": id_}
             cvss_item = next((i for i in item.get("cvss") if i.get('version') == '3.1'), None)
