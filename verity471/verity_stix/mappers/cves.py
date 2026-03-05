@@ -10,6 +10,7 @@ from ..constants import MARKING, PLATFORM_VERITY471, X_OPENCTI_CREATED_BY, X_OPE
 @StixMapper.register(
     "vuln_reports",
     lambda x: isinstance(x.get("reports"), list)
+    and len(x["reports"]) > 0
     and (x["reports"][0].get("id") or "").startswith("vulnerability--")
     and "fintel_report_count" not in x,
 )
