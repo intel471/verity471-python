@@ -9,7 +9,7 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.2
+- API version: 1.1.3
   - creds: 1.0.1
   - indicators: 1.0.0
   - malware: 1.0.1
@@ -21,7 +21,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.2
+- Package version: 1.1.3
 - Generator version: 7.19.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -237,6 +237,7 @@ Class | Method | HTTP request | Description
 *IndicatorsApi* | [**get_indicator_by_id**](docs/IndicatorsApi.md#get_indicator_by_id) | **GET** /integrations/indicators/v1/indicators/{id} | Get indicator by id
 *IndicatorsApi* | [**get_indicators_stream**](docs/IndicatorsApi.md#get_indicators_stream) | **GET** /integrations/indicators/v1/indicators/stream | Stream indicators using a cursor
 *MalwareApi* | [**get_malware_family_by_id**](docs/MalwareApi.md#get_malware_family_by_id) | **GET** /integrations/malware-intel/v1/malware/{id} | Get malware family details by id
+*MalwareApi* | [**get_malware_file**](docs/MalwareApi.md#get_malware_file) | **GET** /integrations/malware-intel/v1/malware/files/{file_name}/download | Get malware file using sha256
 *MalwareApi* | [**get_malware_list**](docs/MalwareApi.md#get_malware_list) | **GET** /integrations/malware-intel/v1/malware | Get list of malware families.
 *ReportsApi* | [**get_reports_breach_alert_id**](docs/ReportsApi.md#get_reports_breach_alert_id) | **GET** /integrations/intel-report/v1/reports/breach-alert/{id} | Get a breach alert report details
 *ReportsApi* | [**get_reports_breach_alert_stream**](docs/ReportsApi.md#get_reports_breach_alert_stream) | **GET** /integrations/intel-report/v1/reports/breach-alert/stream | Get all breach alert reports (stream)

@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **historical_usernames** | **List[str]** | Author previous usernames | [optional] 
 **id** | **str** | Unique id of actor | 
 **user_name** | **str** | Username | 
-**user_name_id** | **str** |  | 
 
 ## Example
 
