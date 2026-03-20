@@ -26,8 +26,7 @@
         "attachments": [],
         "author": {
           "id": "actor--00000000-0000-0000-0000-000000000000",
-          "user_name": "dummy",
-          "user_name_id": "dummy"
+          "user_name": "dummy"
         },
         "creation_ts": "2017-02-27T02:37:48Z",
         "html": "dummy",
