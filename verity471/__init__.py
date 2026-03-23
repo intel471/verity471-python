@@ -40,6 +40,10 @@ __all__ = [
     "WatchersApi",
     "EntitiesApi",
     "ObservablesApi",
+    "AlertTarget",
+    "fetch_alert_targets",
+    "resolve_url",
+    "call_url",
     "ApiResponse",
     "ApiClient",
     "Configuration",
@@ -250,6 +254,12 @@ from verity471.api.sources_api import SourcesApi as SourcesApi
 from verity471.api.watchers_api import WatchersApi as WatchersApi
 from verity471.api.entities_api import EntitiesApi as EntitiesApi
 from verity471.api.observables_api import ObservablesApi as ObservablesApi
+
+# import helpers
+from verity471.helpers import AlertTarget as AlertTarget
+from verity471.helpers import fetch_alert_targets as fetch_alert_targets
+from verity471.helpers import resolve_url as resolve_url
+from verity471.helpers import call_url as call_url
 
 # import ApiClient
 from verity471.api_response import ApiResponse as ApiResponse
