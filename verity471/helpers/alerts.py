@@ -108,7 +108,7 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, IntegrationsIndicator):
         value = None
         if target.data:
-            value = (target.data.domain or target.data.email or target.data.url
+            value = (target.data.domain or target.data.email or target.data.url or target.data.file.sha256
                      or (target.data.ipv4.ip_address if target.data.ipv4 else None))
         conf = f"confidence: {target.confidence}" if target.confidence is not None else None
         return _prefixed("Indicator", _join([target.type, value, conf]))
@@ -208,7 +208,7 @@ def fetch_alert_targets(
         except UnresolvableURL:
             log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
             return AlertTarget(alert=alert, target=None)
-        except Exception:
+        except Exception as e:
             if raise_on_error:
                 raise
             log.error("Failed to fetch target for alert %s (%s)", alert.source_id, url, exc_info=True)
