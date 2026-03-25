@@ -245,6 +245,12 @@ Each `AlertTarget` exposes:
 | `.alert` | `StreamingWatcherAlert` | The original alert object (status, watcher IDs, timestamps, highlights, etc.). |
 | `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
 | `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. |
+| `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
+| `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
+
+Watcher and group data is fetched once per `fetch_alert_targets` call (two parallel API requests) and
+shared by reference across all `AlertTarget` objects — there is no duplication even when many alerts
+share the same watcher.
 
 ### Example usage
 
@@ -262,16 +268,18 @@ with verity471.ApiClient(configuration) as api_client:
 
     targets = verity471.fetch_alert_targets(alerts_response, api_client)
     for t in targets:
-        print(t.alert.source_type, t.alert.source_id, t.alert.status, t.target_summary)
+        watcher_name = t.watcher.name if t.watcher else None
+        group_name = t.watcher_group.name if t.watcher_group else None
+        print(t.alert.source_type, t.alert.status, watcher_name, group_name, t.target_summary)
 ```
 
 ### Example output
 
 ```
-fintel fintel--abcd1234 read [Fintel] Threat Landscape: Q1 2025 Summary | 2025-03-15T12:00:00Z | Key findings from the first quarter include…
-forum_post post--77ef7990-f8f2-5076-9126-1c22b463c515 unread [Forum Post] Selling access to corporate VPN… | 2025-03-14T08:30:00Z
-credential_occurrence credential_occurrence--a1b2c3 unread [Credential Occurrence] https://example.com/login | email | 2025-03-13T10:00:00Z
-malware_report malware_report--x9y8z7 read [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
+fintel read threat_actor Ransomware actors [Fintel] Threat Landscape: Q1 2025 Summary | 2025-03-15T12:00:00Z | Key findings from the first quarter include…
+forum_post unread ddos_monitor My Watchers [Forum Post] Selling access to corporate VPN… | 2025-03-14T08:30:00Z
+credential_occurrence unread cred_watcher Credential Alerts [Credential Occurrence] https://example.com/login | email | 2025-03-13T10:00:00Z
+malware_report read malware_tracker My Watchers [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
 ```
 
 ## Documentation for API Endpoints
