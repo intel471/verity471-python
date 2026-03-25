@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from verity471.api_client import ApiClient
+from verity471.api.watchers_api import WatchersApi
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
 from verity471.models.fintel_response import FintelResponse
@@ -21,6 +22,8 @@ from verity471.models.post_details1 import PostDetails1
 from verity471.models.private_message_details1 import PrivateMessageDetails1
 from verity471.models.simplified_malware_profile import SimplifiedMalwareProfile
 from verity471.models.spot_report_response import SpotReportResponse
+from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
+from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.streaming_alerts_response import StreamingAlertsResponse
 from verity471.models.streaming_watcher_alert import StreamingWatcherAlert
 from verity471.models.vulnerabilities_report_details_response import VulnerabilitiesReportDetailsResponse
@@ -142,10 +145,16 @@ class AlertTarget:
     ``target_summary`` provides a compact, human-readable one-liner for the
     target (e.g. report title + date, indicator type + value, credential
     login + domain).
+
+    ``watcher`` is the full :class:`GetWatcherResponse` for the watcher that
+    triggered this alert, or ``None`` if not found in the fetched list.
+    ``watcher_group`` is the corresponding :class:`GetWatcherGroupResponse`.
     """
 
     alert: StreamingWatcherAlert
     target: Any
+    watcher: GetWatcherResponse | None = None
+    watcher_group: GetWatcherGroupResponse | None = None
 
     @property
     def target_summary(self) -> str | None:
@@ -187,6 +196,20 @@ def fetch_alert_targets(
         for r in fetch_alert_targets(alerts, api_client):
             print(r.alert.source_type, r.alert.status, r.target)
     """
+    watchers_by_id: dict[int, GetWatcherResponse] = {}
+    groups_by_id: dict[int, GetWatcherGroupResponse] = {}
+    try:
+        watchers_api = WatchersApi(api_client)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as watcher_executor:
+            future_watchers = watcher_executor.submit(watchers_api.get_watchers)
+            future_groups = watcher_executor.submit(watchers_api.get_watcher_groups)
+            watchers_resp = future_watchers.result()
+            groups_resp = future_groups.result()
+        watchers_by_id = {w.id: w for w in (watchers_resp.watchers or [])}
+        groups_by_id = {g.id: g for g in (groups_resp.watchers_groups or [])}
+    except Exception:
+        log.warning("Failed to fetch watchers/watcher groups; watcher enrichment will be skipped", exc_info=True)
+
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
         if not url:
@@ -198,13 +221,23 @@ def fetch_alert_targets(
             target = call_url(api_client, url)
         except UnresolvableURL:
             log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
-            return AlertTarget(alert=alert, target=None)
-        except Exception as e:
+            return AlertTarget(
+                alert=alert,
+                target=None,
+                watcher=watchers_by_id.get(alert.watcher_id),
+                watcher_group=groups_by_id.get(alert.watcher_group_id),
+            )
+        except Exception:
             if raise_on_error:
                 raise
             log.error("Failed to fetch target for alert %s (%s)", alert.source_id, url, exc_info=True)
             return None
-        return AlertTarget(alert=alert, target=target)
+        return AlertTarget(
+            alert=alert,
+            target=target,
+            watcher=watchers_by_id.get(alert.watcher_id),
+            watcher_group=groups_by_id.get(alert.watcher_group_id),
+        )
 
     alerts = alerts_response.alerts or []
     results: list[AlertTarget] = [None] * len(alerts)  # type: ignore[list-item]

@@ -5,6 +5,8 @@ import pytest
 
 from tests.conftest import PREFIX, read_fixture
 from verity471 import fetch_alert_targets
+from verity471.models.get_watcher_response import GetWatcherResponse
+from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
 import verity471
 
 
@@ -30,9 +32,12 @@ test_params = {
     'SourcesApi:get_messaging_services_messages_message_id': ('ChatRoomMessageStream', 'https://api.intel471.cloud/integrations/sources/v1/messaging-services/messages/message--da2a22d1-4d3e-5b79-b557-c275453f31f9', '[Message] dummy | 2017-02-27T02:37:48Z'),
 }
 
+@patch('verity471.helpers.alerts.WatchersApi')
 @patch('verity471.rest.RESTClientObject')
 @pytest.mark.parametrize('filename, query_url, expected_target_summary', test_params.values(), ids=test_params.keys())
-def test_api_responses(rest_client_class_mock, filename, query_url, expected_target_summary):
+def test_api_responses(rest_client_class_mock, watchers_api_mock, filename, query_url, expected_target_summary):
+    watchers_api_mock.return_value.get_watchers.return_value.watchers = []
+    watchers_api_mock.return_value.get_watcher_groups.return_value.watchers_groups = []
     
 
     
@@ -57,3 +62,44 @@ def test_api_responses(rest_client_class_mock, filename, query_url, expected_tar
         response = fetch_alert_targets(mock_alerts_response, api_client)
         assert response[0].target is not None
         assert response[0].target_summary == expected_target_summary
+
+
+@patch('verity471.helpers.alerts.WatchersApi')
+@patch('verity471.rest.RESTClientObject')
+def test_alert_target_watcher_enrichment(rest_client_class_mock, watchers_api_mock):
+    filename, query_url, _ = list(test_params.values())[0]
+
+    rest_client_response = MagicMock(name='rest_client_response')
+    rest_client_response.status = 200
+    rest_client_response.reason = 'OK'
+    rest_client_response.headers = {'content-type': 'application/json; charset=utf-8'}
+    rest_client_response.data = json.dumps(read_fixture(f'{PREFIX}/fixtures/api_responses/{filename}.json')).encode('utf-8')
+    rest_client_instance_mock = MagicMock(name='rest_client_instance')
+    rest_client_instance_mock.request.return_value = rest_client_response
+    rest_client_class_mock.side_effect = [rest_client_instance_mock]
+
+    mock_watcher = MagicMock(spec=GetWatcherResponse)
+    mock_watcher.id = 42
+    mock_watcher.name = 'my_watcher'
+
+    mock_group = MagicMock(spec=GetWatcherGroupResponse)
+    mock_group.id = 7
+    mock_group.name = 'my_group'
+
+    watchers_api_mock.return_value.get_watchers.return_value.watchers = [mock_watcher]
+    watchers_api_mock.return_value.get_watcher_groups.return_value.watchers_groups = [mock_group]
+
+    with verity471.ApiClient(verity471.Configuration()) as api_client:
+        mock_alerts_response = MagicMock(name='alerts_response')
+        mock_alert = MagicMock(name='alert')
+        mock_alert.links.verity_api.href = query_url
+        mock_alert.watcher_id = 42
+        mock_alert.watcher_group_id = 7
+        mock_alerts_response.alerts = [mock_alert]
+
+        response = fetch_alert_targets(mock_alerts_response, api_client)
+
+    assert response[0].watcher is mock_watcher
+    assert response[0].watcher.name == 'my_watcher'
+    assert response[0].watcher_group is mock_group
+    assert response[0].watcher_group.name == 'my_group'
