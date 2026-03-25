@@ -215,6 +215,71 @@ Client's class/method | API endpoint | Produced outcome
 
 *Empty cells inherit the value from the previous row.*
 
+## Helper: `fetch_alert_targets`
+
+The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects that carry metadata
+(status, watcher IDs, timestamps, highlights) but not the actual content the alert refers to.
+`fetch_alert_targets` resolves each alert's API link in parallel and pairs it with the fully
+fetched target object — a report, forum post, credential, indicator, or any other supported type.
+
+```python
+from verity471.helpers import fetch_alert_targets, AlertTarget
+```
+
+or directly from the top-level package:
+
+```python
+from verity471 import fetch_alert_targets, AlertTarget
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `alerts_response` | `StreamingAlertsResponse` | *(required)* | The page returned by `AlertsApi.get_alerts_stream()`. |
+| `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
+| `raise_on_error` | `bool` | `False` | When `True`, re-raise exceptions instead of logging and skipping the alert. |
+
+### Returns
+
+A list of `AlertTarget` objects in the same order as `alerts_response.alerts`.
+
+Each `AlertTarget` exposes:
+
+| Attribute | Type | Description |
+|---|---|---|
+| `.alert` | `StreamingWatcherAlert` | The original alert object (status, watcher IDs, timestamps, highlights, etc.). |
+| `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. |
+
+### Example usage
+
+```python
+import verity471
+
+configuration = verity471.Configuration(
+    username="your_username",
+    password="your_password",
+)
+
+with verity471.ApiClient(configuration) as api_client:
+    alerts_api = verity471.AlertsApi(api_client)
+    alerts_response = alerts_api.get_alerts_stream(size=10)
+
+    targets = verity471.fetch_alert_targets(alerts_response, api_client)
+    for t in targets:
+        print(t.alert.source_type, t.alert.source_id, t.alert.status, t.target_summary)
+```
+
+### Example output
+
+```
+fintel fintel--abcd1234 read [Fintel] Threat Landscape: Q1 2025 Summary | 2025-03-15T12:00:00Z | Key findings from the first quarter include…
+forum_post post--77ef7990-f8f2-5076-9126-1c22b463c515 unread [Forum Post] Selling access to corporate VPN… | 2025-03-14T08:30:00Z
+credential_occurrence credential_occurrence--a1b2c3 unread [Credential Occurrence] https://example.com/login | email | 2025-03-13T10:00:00Z
+malware_report malware_report--x9y8z7 read [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
+```
+
 ## Documentation for API Endpoints
 
 All URIs are relative to *https://api.intel471.cloud*

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import concurrent.futures
 from dataclasses import dataclass
 from typing import Any
 
@@ -139,22 +139,13 @@ class AlertTarget:
     object — a report, forum post, credential, or whatever the alert refers to.
     ``target`` is ``None`` when the URL could not be mapped to a known route.
 
-    Convenience properties mirror the most-used fields from ``alert`` so you
-    rarely need to drill into ``.alert.source_type``.  ``target_summary``
-    provides a compact, human-readable one-liner for the target (e.g. report
-    title + date, indicator type + value, credential login + domain).
+    ``target_summary`` provides a compact, human-readable one-liner for the
+    target (e.g. report title + date, indicator type + value, credential
+    login + domain).
     """
 
     alert: StreamingWatcherAlert
     target: Any
-
-    @property
-    def source_type(self) -> str:
-        return self.alert.source_type
-
-    @property
-    def source_id(self) -> str:
-        return self.alert.source_id
 
     @property
     def target_summary(self) -> str | None:
@@ -194,7 +185,7 @@ def fetch_alert_targets(
 
         alerts = alerts_api.get_alerts_stream(size=10)
         for r in fetch_alert_targets(alerts, api_client):
-            print(r.source_type, r.alert.status, r.target)
+            print(r.alert.source_type, r.alert.status, r.target)
     """
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
@@ -217,9 +208,9 @@ def fetch_alert_targets(
 
     alerts = alerts_response.alerts or []
     results: list[AlertTarget] = [None] * len(alerts)  # type: ignore[list-item]
-    with ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
         future_to_index = {executor.submit(_fetch, alert): i for i, alert in enumerate(alerts)}
-        for future in as_completed(future_to_index):
+        for future in concurrent.futures.as_completed(future_to_index):
             result = future.result()
             if result is not None:
                 results[future_to_index[future]] = result
