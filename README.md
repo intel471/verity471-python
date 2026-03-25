@@ -223,12 +223,6 @@ The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects t
 fetched target object — a report, forum post, credential, indicator, or any other supported type.
 
 ```python
-from verity471.helpers import fetch_alert_targets, AlertTarget
-```
-
-or directly from the top-level package:
-
-```python
 from verity471 import fetch_alert_targets, AlertTarget
 ```
 
