@@ -16,7 +16,7 @@ Method | HTTP request | Description
 
 
 # **get_data_leak_sites_file_listings_id**
-> bytearray get_data_leak_sites_file_listings_id(id)
+> bytes get_data_leak_sites_file_listings_id(id)
 
 Get a data leak site file listing content
 
@@ -74,7 +74,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**bytearray**
+**bytes**
 
 ### Authorization
 
@@ -575,7 +575,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_images_image_type_hash_name**
-> bytearray get_images_image_type_hash_name(image_type, hash, name)
+> bytes get_images_image_type_hash_name(image_type, hash, name)
 
 Download image by type hash and name
 
@@ -636,7 +636,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**bytearray**
+**bytes**
 
 ### Authorization
 

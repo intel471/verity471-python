@@ -6,6 +6,7 @@ Threat data information for the entity
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**bulletproof_hosting** | [**BulletproofHosting**](BulletproofHosting.md) | Information about the bulletproof hosting | [optional] 
 **malware** | [**Malware**](Malware.md) | Information about the malware | [optional] 
 **malware_family** | [**MalwareFamily**](MalwareFamily.md) | Information about the malware family | [optional] 
 
