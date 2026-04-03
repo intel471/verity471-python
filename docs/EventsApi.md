@@ -128,12 +128,12 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.EventsApi(api_client)
-    type = 'download_plugin' # str | Search events by type (optional)
+    type = 'download_plugin' # str | Search by event type (optional)
     cursor = 'NTg2ZDYwOWUtNzhmMS00MDY5LTg3M2QtYTI5MWRjNzBhNTYyOjE3MDU0NTA5MDgwMDA6ZmM5NGY1NGM2MzZlOTc2ZmFhZmVjMTAwMmY2Y2U1OWIxYWY0ZjcxZg==' # str | Continue scrolling from cursor (optional)
-    text_filter = 'Georgia' # str | Free text indicator search (all fields included) (optional)
-    malware_id = 'malware--61617350-6466-5fd8-8272-1266be341a1e' # str | Search indicators by malware id (optional)
-    malware_family_id = 'malware-family--92eb4b5f-cfc5-5460-bd43-53fae450ac9a' # str | Search indicators by malware family id (optional)
-    malware_family_name = 'dreambot' # str | Search indicators by malware family (optional)
+    text_filter = 'Georgia' # str | Free text search (all fields included) (optional)
+    malware_id = 'malware--61617350-6466-5fd8-8272-1266be341a1e' # str | Search by malware id (optional)
+    malware_family_id = 'malware-family--92eb4b5f-cfc5-5460-bd43-53fae450ac9a' # str | Search by malware family id (optional)
+    malware_family_name = 'dreambot' # str | Search by malware family name (optional)
     girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter result by custom GIRs (General intel requirements), `my_girs` or `company_pirs`. Using multiple value will return result based on the aggregated GIR list (optional)
     size = 1000 # int | The size of the page to be returned. Max size: `1000` (optional) (default to 1000)
     var_from = 56 # int | Long unix timestamp in milliseconds. Search data starting from given `activity.first_seen_ts` and `activity.last_seen_ts` (including). Example - `1627776000000` (optional)
@@ -155,12 +155,12 @@ with verity471.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **type** | **str**| Search events by type | [optional] 
+ **type** | **str**| Search by event type | [optional] 
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
- **text_filter** | **str**| Free text indicator search (all fields included) | [optional] 
- **malware_id** | **str**| Search indicators by malware id | [optional] 
- **malware_family_id** | **str**| Search indicators by malware family id | [optional] 
- **malware_family_name** | **str**| Search indicators by malware family | [optional] 
+ **text_filter** | **str**| Free text search (all fields included) | [optional] 
+ **malware_id** | **str**| Search by malware id | [optional] 
+ **malware_family_id** | **str**| Search by malware family id | [optional] 
+ **malware_family_name** | **str**| Search by malware family name | [optional] 
  **girs** | **str**| Filter result by custom GIRs (General intel requirements), &#x60;my_girs&#x60; or &#x60;company_pirs&#x60;. Using multiple value will return result based on the aggregated GIR list | [optional] 
  **size** | **int**| The size of the page to be returned. Max size: &#x60;1000&#x60; | [optional] [default to 1000]
  **var_from** | **int**| Long unix timestamp in milliseconds. Search data starting from given &#x60;activity.first_seen_ts&#x60; and &#x60;activity.last_seen_ts&#x60; (including). Example - &#x60;1627776000000&#x60; | [optional] 

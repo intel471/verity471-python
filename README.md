@@ -9,9 +9,9 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.3
+- API version: 1.1.4
   - creds: 1.0.1
-  - indicators: 1.0.0
+  - indicators: 1.0.1
   - malware: 1.0.1
   - reports: 1.0.1
   - sources: 1.0.3
@@ -21,8 +21,8 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.3
-- Generator version: 7.19.0
+- Package version: 1.1.4
+- Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
 ## Requirements.
@@ -443,9 +443,7 @@ Class | Method | HTTP request | Description
  - [ThreadResponse1](docs/ThreadResponse1.md)
  - [Threat](docs/Threat.md)
  - [ThreatData](docs/ThreatData.md)
- - [ThreatDataMalware](docs/ThreatDataMalware.md)
  - [ThreatInfo](docs/ThreatInfo.md)
- - [ThreatMalware](docs/ThreatMalware.md)
  - [ThreatRating](docs/ThreatRating.md)
  - [TranslationStatus](docs/TranslationStatus.md)
  - [Trigger](docs/Trigger.md)
