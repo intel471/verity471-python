@@ -282,6 +282,67 @@ credential_occurrence unread cred_watcher Credential Alerts [Credential Occurren
 malware_report read malware_tracker My Watchers [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
 ```
 
+## Helper: `get_latest`
+
+Stream endpoints return data in ascending (oldest-first) order only — there is no way to sort
+descending or jump directly to the most recent page. `get_latest` works around this by probing the
+API with a small time window, expanding it until enough items exist, and then fetching and slicing
+the tail.
+
+```python
+from verity471.helpers import get_latest
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `stream_method` | callable | *(required)* | A bound stream API method, e.g. `reports_api.get_reports_spot_stream`. Must end with `_stream`. |
+| `n` | `int` | *(required)* | Number of most-recent items to return. |
+| `**kwargs` | | | Additional filter parameters forwarded verbatim to the stream method (e.g. `malware_family_name`, `threat_type`, `girs`). Do not pass `var_from`, `until`, `size`, or `cursor` — these are managed internally. |
+
+### Returns
+
+A list of at most `n` items in ascending order (oldest first), so the last element is always the
+single most-recent item. When fewer than `n` items exist in the full history the function returns
+however many are available.
+
+### How probing works
+
+The helper issues lightweight `size=1` probe calls to count matching items in progressively wider
+time windows (doubling each round), starting from an endpoint-specific seed tuned to typical data
+density. Once `count >= n`, a single fetch retrieves all items in that window and the tail is
+sliced. For very high-density endpoints where the window contains more than 1 000 items the helper
+paginates automatically and keeps only the last `n`.
+
+### Example usage
+
+```python
+import verity471
+from verity471.helpers import get_latest
+
+configuration = verity471.Configuration(
+    username="your_username",
+    password="your_password",
+)
+
+with verity471.ApiClient(configuration) as api_client:
+    reports_api = verity471.ReportsApi(api_client)
+
+    # 20 most recent spot reports
+    reports = get_latest(reports_api.get_reports_spot_stream, n=20)
+    for r in reports:
+        print(r.title, r.released_ts)
+
+    # 50 most recent malware events for a specific family
+    events_api = verity471.EventsApi(api_client)
+    events = get_latest(
+        events_api.get_events_stream,
+        n=50,
+        malware_family_name="Cobalt Strike",
+    )
+```
+
 ## Documentation for API Endpoints
 
 All URIs are relative to *https://api.intel471.cloud*
