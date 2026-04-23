@@ -1,0 +1,60 @@
+{
+    "count": 1,
+    "indicators": [
+        {
+            "activity": {
+                "first_seen_ts": "2026-03-03T15:00:27Z",
+                "last_seen_ts": "2026-03-03T15:00:27Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Bulletproof hosting (BPH) services",
+                        "path": "3.1.1"
+                    }
+                ]
+            },
+            "confidence": 85,
+            "data": {
+                "ipv4": {
+                    "geo_ip": {
+                        "city": "Test City",
+                        "country": "Test Country",
+                        "country_code": "TC",
+                        "isp": {
+                            "autonomous_system": "AS64496 TEST",
+                            "isp": "Test ISP",
+                            "network": "192.0.2.0/24",
+                            "organization": "Test ISP"
+                        },
+                        "subdivision": [
+                            "Test Region"
+                        ]
+                    },
+                    "ip_address": "192.0.2.1"
+                }
+            },
+            "description": "Bulletproof hosting infrastructure provided by: testprovider",
+            "expiration_ts": "2026-03-05T03:00:27Z",
+            "id": "bph-indicator--00000000-0000-0000-0000-000000000001",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "resource_development"
+                }
+            ],
+            "pattern": "[ipv4-addr:value = '192.0.2.1']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "threat": {
+                "data": {
+                    "bulletproof_hosting": {
+                        "provider": "testprovider"
+                    }
+                },
+                "type": "bulletproof_hosting"
+            },
+            "type": "ipv4"
+        }
+    ]
+}

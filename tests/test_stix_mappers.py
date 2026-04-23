@@ -32,6 +32,7 @@ def strip_random_values(bundle: dict) -> dict:
         pytest.param("indicators_yara_input.json", "indicators_yara_stix.json", id="indicators-yara"),
         pytest.param("indicators_domain_input.json", "indicators_domain_stix.json", id="indicators-domain"),
         pytest.param("indicators_email_input.json", "indicators_email_stix.json", id="indicators-email"),
+        pytest.param("indicators_bph_input.json", "indicators_bph_stix.json", id="indicators-bph"),
         pytest.param("cves_input.json", "cves_stix.json", id="cves"),
         pytest.param("report_breach_alert_input.json", "report_breach_alert_stix.json", id="report_breach_alert"),
         pytest.param("report_fintel_input.json", "report_fintel_stix.json", id="report_fintel"),
