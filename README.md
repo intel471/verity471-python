@@ -9,11 +9,11 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.4
+- API version: 1.1.6
   - creds: 1.0.1
   - indicators: 1.0.1
   - malware: 1.0.1
-  - reports: 1.0.1
+  - reports: 1.0.3
   - sources: 1.0.3
   - actors: 1.0.2
   - watchers: 1.0.0
@@ -21,7 +21,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.4
+- Package version: 1.1.6
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -242,12 +242,17 @@ Class | Method | HTTP request | Description
 *ReportsApi* | [**get_reports_breach_alert_id**](docs/ReportsApi.md#get_reports_breach_alert_id) | **GET** /integrations/intel-report/v1/reports/breach-alert/{id} | Get a breach alert report details
 *ReportsApi* | [**get_reports_breach_alert_stream**](docs/ReportsApi.md#get_reports_breach_alert_stream) | **GET** /integrations/intel-report/v1/reports/breach-alert/stream | Get all breach alert reports (stream)
 *ReportsApi* | [**get_reports_fintel_id**](docs/ReportsApi.md#get_reports_fintel_id) | **GET** /integrations/intel-report/v1/reports/fintel/{id} | Get a fintel report details
+*ReportsApi* | [**get_reports_fintel_report_id_attachments_attachment_id**](docs/ReportsApi.md#get_reports_fintel_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/fintel/{report_id}/attachments/{attachment_id} | Get attachment for fintel report
 *ReportsApi* | [**get_reports_fintel_stream**](docs/ReportsApi.md#get_reports_fintel_stream) | **GET** /integrations/intel-report/v1/reports/fintel/stream | Get all fintel reports (stream)
 *ReportsApi* | [**get_reports_geopol_id**](docs/ReportsApi.md#get_reports_geopol_id) | **GET** /integrations/intel-report/v1/reports/geopol/{id} | Get a geopol report details
+*ReportsApi* | [**get_reports_geopol_report_id_attachments_attachment_id**](docs/ReportsApi.md#get_reports_geopol_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/geopol/{report_id}/attachments/{attachment_id} | Get attachment for geopol report
 *ReportsApi* | [**get_reports_geopol_stream**](docs/ReportsApi.md#get_reports_geopol_stream) | **GET** /integrations/intel-report/v1/reports/geopol/stream | Get all geopol reports (stream)
+*ReportsApi* | [**get_reports_id_download_as_pdf**](docs/ReportsApi.md#get_reports_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/{id}/download-as-pdf | Get a report as PDF
 *ReportsApi* | [**get_reports_info_id**](docs/ReportsApi.md#get_reports_info_id) | **GET** /integrations/intel-report/v1/reports/info/{id} | Get an info report details
+*ReportsApi* | [**get_reports_info_report_id_attachments_attachment_id**](docs/ReportsApi.md#get_reports_info_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/info/{report_id}/attachments/{attachment_id} | Get attachment for info report
 *ReportsApi* | [**get_reports_info_stream**](docs/ReportsApi.md#get_reports_info_stream) | **GET** /integrations/intel-report/v1/reports/info/stream | Get all info reports (stream)
 *ReportsApi* | [**get_reports_malware_id**](docs/ReportsApi.md#get_reports_malware_id) | **GET** /integrations/intel-report/v1/reports/malware/{id} | Get a malware report details
+*ReportsApi* | [**get_reports_malware_report_id_attachments_attachment_id**](docs/ReportsApi.md#get_reports_malware_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/malware/{report_id}/attachments/{attachment_id} | Get attachment for malware report
 *ReportsApi* | [**get_reports_malware_stream**](docs/ReportsApi.md#get_reports_malware_stream) | **GET** /integrations/intel-report/v1/reports/malware/stream | Get all malware reports (stream)
 *ReportsApi* | [**get_reports_spot_id**](docs/ReportsApi.md#get_reports_spot_id) | **GET** /integrations/intel-report/v1/reports/spot/{id} | Get a spot report details
 *ReportsApi* | [**get_reports_spot_stream**](docs/ReportsApi.md#get_reports_spot_stream) | **GET** /integrations/intel-report/v1/reports/spot/stream | Get all spot reports (stream)
