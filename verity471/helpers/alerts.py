@@ -212,6 +212,8 @@ def fetch_alert_targets(
 
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
+        if url and "/integrations/marketplaces/" in url:
+            return None
         if not url:
             if raise_on_error:
                 raise ValueError("Alert %s has no verity_api link" % alert.source_id)
