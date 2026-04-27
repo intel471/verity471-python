@@ -9,11 +9,11 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.6
+- API version: 1.1.7
   - creds: 1.0.1
   - indicators: 1.0.1
   - malware: 1.0.1
-  - reports: 1.0.3
+  - reports: 1.0.4
   - sources: 1.0.3
   - actors: 1.0.2
   - watchers: 1.0.0
@@ -21,7 +21,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.0
   - girs: 1.0.0
 
-- Package version: 1.1.6
+- Package version: 1.1.7
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -257,6 +257,7 @@ Class | Method | HTTP request | Description
 *ReportsApi* | [**get_reports_spot_id**](docs/ReportsApi.md#get_reports_spot_id) | **GET** /integrations/intel-report/v1/reports/spot/{id} | Get a spot report details
 *ReportsApi* | [**get_reports_spot_stream**](docs/ReportsApi.md#get_reports_spot_stream) | **GET** /integrations/intel-report/v1/reports/spot/stream | Get all spot reports (stream)
 *ReportsApi* | [**get_reports_stream**](docs/ReportsApi.md#get_reports_stream) | **GET** /integrations/intel-report/v1/reports/stream | Get all reports (stream)
+*ReportsApi* | [**get_reports_vulnerabilities_id_download_as_pdf**](docs/ReportsApi.md#get_reports_vulnerabilities_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerabilities/{id}/download-as-pdf | Get a vulnerability report as PDF
 *ReportsApi* | [**get_reports_vulnerability_id**](docs/ReportsApi.md#get_reports_vulnerability_id) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id} | Get a vulnerability report details
 *ReportsApi* | [**get_reports_vulnerability_stream**](docs/ReportsApi.md#get_reports_vulnerability_stream) | **GET** /integrations/intel-report/v1/reports/vulnerability/stream | Get all vulnerabilities reports (stream)
 *SourcesApi* | [**get_data_leak_sites_file_listings_id**](docs/SourcesApi.md#get_data_leak_sites_file_listings_id) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id} | Get a data leak site file listing content

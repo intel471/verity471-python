@@ -22,6 +22,7 @@ Method | HTTP request | Description
 [**get_reports_spot_id**](ReportsApi.md#get_reports_spot_id) | **GET** /integrations/intel-report/v1/reports/spot/{id} | Get a spot report details
 [**get_reports_spot_stream**](ReportsApi.md#get_reports_spot_stream) | **GET** /integrations/intel-report/v1/reports/spot/stream | Get all spot reports (stream)
 [**get_reports_stream**](ReportsApi.md#get_reports_stream) | **GET** /integrations/intel-report/v1/reports/stream | Get all reports (stream)
+[**get_reports_vulnerabilities_id_download_as_pdf**](ReportsApi.md#get_reports_vulnerabilities_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerabilities/{id}/download-as-pdf | Get a vulnerability report as PDF
 [**get_reports_vulnerability_id**](ReportsApi.md#get_reports_vulnerability_id) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id} | Get a vulnerability report details
 [**get_reports_vulnerability_stream**](ReportsApi.md#get_reports_vulnerability_stream) | **GET** /integrations/intel-report/v1/reports/vulnerability/stream | Get all vulnerabilities reports (stream)
 
@@ -1648,6 +1649,90 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_reports_vulnerabilities_id_download_as_pdf**
+> bytes get_reports_vulnerabilities_id_download_as_pdf(id)
+
+Get a vulnerability report as PDF
+
+Download vulnerability report as pdf
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    id = 'vulnerability--527c3004-241f-599d-9dbd-00ac1d6d52f6' # str | 
+
+    try:
+        # Get a vulnerability report as PDF
+        api_response = api_instance.get_reports_vulnerabilities_id_download_as_pdf(id)
+        print("The response of ReportsApi->get_reports_vulnerabilities_id_download_as_pdf:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_vulnerabilities_id_download_as_pdf: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Type -  <br>  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
