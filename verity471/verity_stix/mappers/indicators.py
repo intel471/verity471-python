@@ -8,7 +8,7 @@ from .. import author_identity, StixObjects
 from .common import StixMapper, BaseMapper, MappingConfig
 from ..constants import MARKING, PLATFORM_VERITY471
 from ..sco import map_domain, map_url, map_ipv4, map_file, map_email_address
-from ..sdo import map_malware
+from ..sdo import map_malware, map_infrastructure
 
 
 log = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 @StixMapper.register(
     "indicator",
     lambda x: isinstance(x, dict)
-    and (x.get("id") or "").startswith("malware-indicator--"),
+    and (x.get("id") or "").startswith(("malware-indicator--", "bph-indicator--")),
 )
 class IndicatorsMapper(BaseMapper):
 
@@ -84,9 +84,17 @@ class IndicatorsMapper(BaseMapper):
             mapping_config = self.mapping_configs.get(item["type"])
             if not mapping_config:
                 continue
-            malware_family_name = item["threat"]["data"]["malware_family"]["name"]
-            malware = map_malware(malware_family_name)
-            labels = [malware_family_name, PLATFORM_VERITY471]
+            threat_data = item["threat"]["data"]
+            if "malware_family" in threat_data:
+                name = threat_data["malware_family"]["name"]
+                threat_object = map_malware(name)
+            elif "bulletproof_hosting" in threat_data:
+                name = threat_data["bulletproof_hosting"]["provider"]
+                threat_object = map_infrastructure(name)
+            else:
+                log.warning("Unknown threat data for indicator %s", item.get("id"))
+                continue
+            labels = [name, PLATFORM_VERITY471]
             try:
                 labels.extend(self.get_girs_labels(item["classification"]["girs"]))
             except KeyError:
@@ -130,17 +138,17 @@ class IndicatorsMapper(BaseMapper):
                 id=pycti.StixCoreRelationship.generate_id(
                     relationship_type="indicates",
                     source_ref=indicator.id,
-                    target_ref=malware.id),
+                    target_ref=threat_object.id),
                 source_ref=indicator,
                 relationship_type="indicates",
-                target_ref=malware,
+                target_ref=threat_object,
                 created_by_ref=author_identity,
                 labels=[PLATFORM_VERITY471],
                 object_marking_refs=[MARKING]
             )
 
             for stix_object in [
-                malware,
+                threat_object,
                 indicator,
                 r1,
                 author_identity,

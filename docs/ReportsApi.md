@@ -7,16 +7,22 @@ Method | HTTP request | Description
 [**get_reports_breach_alert_id**](ReportsApi.md#get_reports_breach_alert_id) | **GET** /integrations/intel-report/v1/reports/breach-alert/{id} | Get a breach alert report details
 [**get_reports_breach_alert_stream**](ReportsApi.md#get_reports_breach_alert_stream) | **GET** /integrations/intel-report/v1/reports/breach-alert/stream | Get all breach alert reports (stream)
 [**get_reports_fintel_id**](ReportsApi.md#get_reports_fintel_id) | **GET** /integrations/intel-report/v1/reports/fintel/{id} | Get a fintel report details
+[**get_reports_fintel_report_id_attachments_attachment_id**](ReportsApi.md#get_reports_fintel_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/fintel/{report_id}/attachments/{attachment_id} | Get attachment for fintel report
 [**get_reports_fintel_stream**](ReportsApi.md#get_reports_fintel_stream) | **GET** /integrations/intel-report/v1/reports/fintel/stream | Get all fintel reports (stream)
 [**get_reports_geopol_id**](ReportsApi.md#get_reports_geopol_id) | **GET** /integrations/intel-report/v1/reports/geopol/{id} | Get a geopol report details
+[**get_reports_geopol_report_id_attachments_attachment_id**](ReportsApi.md#get_reports_geopol_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/geopol/{report_id}/attachments/{attachment_id} | Get attachment for geopol report
 [**get_reports_geopol_stream**](ReportsApi.md#get_reports_geopol_stream) | **GET** /integrations/intel-report/v1/reports/geopol/stream | Get all geopol reports (stream)
+[**get_reports_id_download_as_pdf**](ReportsApi.md#get_reports_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/{id}/download-as-pdf | Get a report as PDF
 [**get_reports_info_id**](ReportsApi.md#get_reports_info_id) | **GET** /integrations/intel-report/v1/reports/info/{id} | Get an info report details
+[**get_reports_info_report_id_attachments_attachment_id**](ReportsApi.md#get_reports_info_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/info/{report_id}/attachments/{attachment_id} | Get attachment for info report
 [**get_reports_info_stream**](ReportsApi.md#get_reports_info_stream) | **GET** /integrations/intel-report/v1/reports/info/stream | Get all info reports (stream)
 [**get_reports_malware_id**](ReportsApi.md#get_reports_malware_id) | **GET** /integrations/intel-report/v1/reports/malware/{id} | Get a malware report details
+[**get_reports_malware_report_id_attachments_attachment_id**](ReportsApi.md#get_reports_malware_report_id_attachments_attachment_id) | **GET** /integrations/intel-report/v1/reports/malware/{report_id}/attachments/{attachment_id} | Get attachment for malware report
 [**get_reports_malware_stream**](ReportsApi.md#get_reports_malware_stream) | **GET** /integrations/intel-report/v1/reports/malware/stream | Get all malware reports (stream)
 [**get_reports_spot_id**](ReportsApi.md#get_reports_spot_id) | **GET** /integrations/intel-report/v1/reports/spot/{id} | Get a spot report details
 [**get_reports_spot_stream**](ReportsApi.md#get_reports_spot_stream) | **GET** /integrations/intel-report/v1/reports/spot/stream | Get all spot reports (stream)
 [**get_reports_stream**](ReportsApi.md#get_reports_stream) | **GET** /integrations/intel-report/v1/reports/stream | Get all reports (stream)
+[**get_reports_vulnerabilities_id_download_as_pdf**](ReportsApi.md#get_reports_vulnerabilities_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerabilities/{id}/download-as-pdf | Get a vulnerability report as PDF
 [**get_reports_vulnerability_id**](ReportsApi.md#get_reports_vulnerability_id) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id} | Get a vulnerability report details
 [**get_reports_vulnerability_stream**](ReportsApi.md#get_reports_vulnerability_stream) | **GET** /integrations/intel-report/v1/reports/vulnerability/stream | Get all vulnerabilities reports (stream)
 
@@ -288,6 +294,92 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_reports_fintel_report_id_attachments_attachment_id**
+> bytes get_reports_fintel_report_id_attachments_attachment_id(report_id, attachment_id)
+
+Get attachment for fintel report
+
+Returns attachment in form of byte stream
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    report_id = 'report--2e3c8a71-5811-59e0-a7bc-4a4a31a1b22f' # str | 
+    attachment_id = '18a8df76cb766e9aed83c9450a30921a920c6509e44cd7e6a6cdac6a58e549e7' # str | 
+
+    try:
+        # Get attachment for fintel report
+        api_response = api_instance.get_reports_fintel_report_id_attachments_attachment_id(report_id, attachment_id)
+        print("The response of ReportsApi->get_reports_fintel_report_id_attachments_attachment_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_fintel_report_id_attachments_attachment_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **report_id** | **str**|  | 
+ **attachment_id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/octet-stream, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Disposition -  <br>  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **get_reports_fintel_stream**
 > FintelReportsResponseStream get_reports_fintel_stream(text_filter=text_filter, girs=girs, sub_type=sub_type, var_from=var_from, until=until, size=size, cursor=cursor)
 
@@ -472,6 +564,92 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_reports_geopol_report_id_attachments_attachment_id**
+> bytes get_reports_geopol_report_id_attachments_attachment_id(report_id, attachment_id)
+
+Get attachment for geopol report
+
+Returns attachment in form of byte stream
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    report_id = 'report--7c404c08-ff9c-5107-99fd-bc56d21151b1' # str | 
+    attachment_id = 'c681d9e851ab6663adea8b1c229c35d322dd1b19e7810f3601c6e022fc5dff99' # str | 
+
+    try:
+        # Get attachment for geopol report
+        api_response = api_instance.get_reports_geopol_report_id_attachments_attachment_id(report_id, attachment_id)
+        print("The response of ReportsApi->get_reports_geopol_report_id_attachments_attachment_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_geopol_report_id_attachments_attachment_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **report_id** | **str**|  | 
+ **attachment_id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/octet-stream, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Disposition -  <br>  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **get_reports_geopol_stream**
 > GeopolReportsResponseStream get_reports_geopol_stream(sub_type=sub_type, country=country, report_location_country=report_location_country, text_filter=text_filter, girs=girs, var_from=var_from, until=until, size=size, cursor=cursor)
 
@@ -573,6 +751,90 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_reports_id_download_as_pdf**
+> bytes get_reports_id_download_as_pdf(id)
+
+Get a report as PDF
+
+Download report as pdf
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    id = 'report--407ec14f-23c5-5d6b-8e3d-0b8d9d7413a2' # str | 
+
+    try:
+        # Get a report as PDF
+        api_response = api_instance.get_reports_id_download_as_pdf(id)
+        print("The response of ReportsApi->get_reports_id_download_as_pdf:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_id_download_as_pdf: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Type -  <br>  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **get_reports_info_id**
 > InfoReportResponse get_reports_info_id(id, include_inline_images=include_inline_images)
 
@@ -651,6 +913,92 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_reports_info_report_id_attachments_attachment_id**
+> bytes get_reports_info_report_id_attachments_attachment_id(report_id, attachment_id)
+
+Get attachment for info report
+
+Returns attachment in form of byte stream
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    report_id = 'report--f9a6b8f4-f931-5781-856e-f435af22074e' # str | 
+    attachment_id = 'a19d91df22cfd225c2942d519b2e3f05451602b6a0c51a6b6acbb548db00861b' # str | 
+
+    try:
+        # Get attachment for info report
+        api_response = api_instance.get_reports_info_report_id_attachments_attachment_id(report_id, attachment_id)
+        print("The response of ReportsApi->get_reports_info_report_id_attachments_attachment_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_info_report_id_attachments_attachment_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **report_id** | **str**|  | 
+ **attachment_id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/octet-stream, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Disposition -  <br>  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
@@ -833,6 +1181,92 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_reports_malware_report_id_attachments_attachment_id**
+> bytes get_reports_malware_report_id_attachments_attachment_id(report_id, attachment_id)
+
+Get attachment for malware report
+
+Returns attachment in form of byte stream
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    report_id = 'report--407ec14f-23c5-5d6b-8e3d-0b8d9d7413a2' # str | 
+    attachment_id = 'd2149d75c7c32facda76ca586d696a6fe968d859a525d84788f18cf5f00ade52' # str | 
+
+    try:
+        # Get attachment for malware report
+        api_response = api_instance.get_reports_malware_report_id_attachments_attachment_id(report_id, attachment_id)
+        print("The response of ReportsApi->get_reports_malware_report_id_attachments_attachment_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_malware_report_id_attachments_attachment_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **report_id** | **str**|  | 
+ **attachment_id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/octet-stream, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Disposition -  <br>  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
@@ -1215,6 +1649,90 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_reports_vulnerabilities_id_download_as_pdf**
+> bytes get_reports_vulnerabilities_id_download_as_pdf(id)
+
+Get a vulnerability report as PDF
+
+Download vulnerability report as pdf
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.ReportsApi(api_client)
+    id = 'vulnerability--527c3004-241f-599d-9dbd-00ac1d6d52f6' # str | 
+
+    try:
+        # Get a vulnerability report as PDF
+        api_response = api_instance.get_reports_vulnerabilities_id_download_as_pdf(id)
+        print("The response of ReportsApi->get_reports_vulnerabilities_id_download_as_pdf:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ReportsApi->get_reports_vulnerabilities_id_download_as_pdf: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+
+### Return type
+
+**bytes**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/pdf, application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  * Content-Type -  <br>  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |

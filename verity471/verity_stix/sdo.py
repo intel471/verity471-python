@@ -1,4 +1,4 @@
-from stix2 import Malware, ThreatActor, Identity, Vulnerability
+from stix2 import Malware, ThreatActor, Identity, Vulnerability, Infrastructure
 import pycti
 from . import author_identity
 from .constants import MARKING, PLATFORM_VERITY471
@@ -31,6 +31,17 @@ def map_vulnerability(value: str, *args, **kwargs) -> Vulnerability:
     return Vulnerability(
         id=pycti.Vulnerability.generate_id(value),
         name=value,
+        created_by_ref=author_identity,
+        labels=[PLATFORM_VERITY471],
+        object_marking_refs=[MARKING],
+    )
+
+
+def map_infrastructure(value: str, *args, **kwargs) -> Infrastructure:
+    return Infrastructure(
+        id=pycti.Infrastructure.generate_id(value),
+        name=value,
+        infrastructure_types=["hosting-malware"],
         created_by_ref=author_identity,
         labels=[PLATFORM_VERITY471],
         object_marking_refs=[MARKING],
