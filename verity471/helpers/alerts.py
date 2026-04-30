@@ -4,16 +4,19 @@ import logging
 import concurrent.futures
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import quote
 
 from verity471.api_client import ApiClient
 from verity471.api.watchers_api import WatchersApi
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
+from verity471.models.data_leak_site_post_item import DataLeakSitePostItem
 from verity471.models.fintel_response import FintelResponse
 from verity471.models.geopol_report_details_response import GeopolReportDetailsResponse
 from verity471.models.get_cred_occurrence_response import GetCredOccurrenceResponse
 from verity471.models.get_cred_response import GetCredResponse
 from verity471.models.get_cred_set_response import GetCredSetResponse
+from verity471.models.href import Href
 from verity471.models.info_report_response import InfoReportResponse
 from verity471.models.integrations_event import IntegrationsEvent
 from verity471.models.integrations_indicator import IntegrationsIndicator
@@ -33,6 +36,58 @@ from verity471.helpers.url_router import UnresolvableURL, call_url
 log = logging.getLogger(__name__)
 
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
+
+# ---------------------------------------------------------------------------
+# TEMPORARY WORKAROUND — remove this block (and its call site in _fetch)
+# once the API populates links.verity_portal on all alert types.
+# ---------------------------------------------------------------------------
+
+def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
+    """Backfill alert.links.verity_portal when the API omits it.
+
+    Temporary workaround for an API bug where certain source types do not
+    include a verity_portal link.  Remove once the API is fixed.
+    """
+    if alert.links and alert.links.verity_portal:
+        return
+
+    url: str | None = None
+
+    if isinstance(target, PostDetails1):
+        thread = target.thread
+        if (thread and thread.links and thread.links.verity_portal
+                and thread.links.verity_portal.href):
+            url = thread.links.verity_portal.href + "?postId=" + target.post.id
+
+    elif isinstance(target, DataLeakSitePostItem):
+        url = (
+            "https://verity.intel471.com/sources/data-leak-sites/"
+            + target.website.id
+            + "/threads/"
+            + target.thread.id
+        )
+
+    elif isinstance(target, ChatRoomMessageStream):
+        msg = target.message
+        if (msg.links and msg.links.verity_portal
+                and msg.links.verity_portal.href):
+            url = msg.links.verity_portal.href + "?messageId=" + msg.id
+
+    elif isinstance(target, GetCredSetResponse):
+        q = quote("cred_set.name=" + target.data.name, safe="")
+        url = f"https://verity.intel471.com/search?q={q}&category=creds_cred_set"
+
+    if url:
+        alert.links.verity_portal = Href(href=url)
+    else:
+        log.debug(
+            "Could not build portal URL for alert %s (source_type=%s)",
+            alert.source_id, alert.source_type,
+        )
+
+# ---------------------------------------------------------------------------
+# END TEMPORARY WORKAROUND
+# ---------------------------------------------------------------------------
 
 
 def _snippet(text: str, limit: int = _SUMMARY_SNIPPET_LEN) -> str:
@@ -234,6 +289,7 @@ def fetch_alert_targets(
                 raise
             log.error("Failed to fetch target for alert %s (%s)", alert.source_id, url, exc_info=True)
             return None
+        _patch_portal_url(alert, target)  # TEMPORARY WORKAROUND — remove once API is fixed
         return AlertTarget(
             alert=alert,
             target=target,

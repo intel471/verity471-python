@@ -1,12 +1,17 @@
 import json
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from tests.conftest import PREFIX, read_fixture
 from verity471 import fetch_alert_targets
+from verity471.helpers.alerts import _patch_portal_url
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
+from verity471.models.href import Href
+from verity471.models.links import Links
+from verity471.models.streaming_watcher_alert import StreamingWatcherAlert
 import verity471
 
 
@@ -103,3 +108,95 @@ def test_alert_target_watcher_enrichment(rest_client_class_mock, watchers_api_mo
     assert response[0].watcher.name == 'my_watcher'
     assert response[0].watcher_group is mock_group
     assert response[0].watcher_group.name == 'my_group'
+
+
+# ---------------------------------------------------------------------------
+# Tests for the temporary portal URL workaround (_patch_portal_url).
+# Remove this class when the API bug is fixed and _patch_portal_url is deleted.
+# ---------------------------------------------------------------------------
+
+def _make_alert(portal_href=None):
+    return StreamingWatcherAlert(
+        id=1,
+        watcher_group_id=1,
+        watcher_id=1,
+        status="pending",
+        source_type="test",
+        source_id="test--id",
+        links=Links(verity_portal=Href(href=portal_href) if portal_href else None),
+        creation_ts=datetime.now(timezone.utc),
+        is_trashed=False,
+    )
+
+
+class TestPatchPortalUrl:
+    def test_forum_post_patches_url(self):
+        alert = _make_alert()
+        target = verity471.PostDetails1.from_dict(
+            read_fixture(f"{PREFIX}/fixtures/api_responses/PostDetails1.json")
+        )
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == (
+            "https://example.com?postId=post--00000000-0000-0000-0000-000000000000"
+        )
+
+    def test_forum_post_skips_when_portal_already_set(self):
+        alert = _make_alert(portal_href="https://existing.example.com")
+        target = verity471.PostDetails1.from_dict(
+            read_fixture(f"{PREFIX}/fixtures/api_responses/PostDetails1.json")
+        )
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == "https://existing.example.com"
+
+    def test_forum_post_skips_when_thread_has_no_portal_url(self):
+        alert = _make_alert()
+        data = read_fixture(f"{PREFIX}/fixtures/api_responses/PostDetails1.json")
+        data["thread"]["links"].pop("verity_portal", None)
+        target = verity471.PostDetails1.from_dict(data)
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal is None
+
+    def test_data_leak_site_patches_url(self):
+        alert = _make_alert()
+        data = read_fixture(f"{PREFIX}/fixtures/api_responses/DataLeakSitePostsStreamingPage.json")
+        target = verity471.DataLeakSitePostItem.from_dict(data["posts"][0])
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == (
+            "https://verity.intel471.com/sources/data-leak-sites/"
+            "website--00000000-0000-0000-0000-000000000000"
+            "/threads/thread--00000000-0000-0000-0000-000000000000"
+        )
+
+    def test_messaging_service_patches_url(self):
+        alert = _make_alert()
+        target = verity471.ChatRoomMessageStream.from_dict(
+            read_fixture(f"{PREFIX}/fixtures/api_responses/ChatRoomMessageStream.json")
+        )
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == (
+            "https://example.com?messageId=message--00000000-0000-0000-0000-000000000000"
+        )
+
+    def test_messaging_service_skips_when_message_has_no_portal_url(self):
+        alert = _make_alert()
+        data = read_fixture(f"{PREFIX}/fixtures/api_responses/ChatRoomMessageStream.json")
+        data["message"]["links"].pop("verity_portal", None)
+        target = verity471.ChatRoomMessageStream.from_dict(data)
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal is None
+
+    def test_credential_set_patches_url(self):
+        alert = _make_alert()
+        target = verity471.GetCredSetResponse.from_dict(
+            read_fixture(f"{PREFIX}/fixtures/api_responses/GetCredSetResponse.json")
+        )
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == (
+            "https://verity.intel471.com/search"
+            "?q=cred_set.name%3Ddummy&category=creds_cred_set"
+        )
+
+    def test_no_op_for_unmatched_target_type(self):
+        alert = _make_alert()
+        _patch_portal_url(alert, None)
+        assert alert.links.verity_portal is None
