@@ -1,0 +1,125 @@
+{
+    "type": "bundle",
+    "id": "bundle--713bd447-7d0b-4067-b88f-da4acb63f593",
+    "objects": [
+        {
+            "type": "infrastructure",
+            "spec_version": "2.1",
+            "id": "infrastructure--238fe039-65c3-5fec-9977-82150eb38c8c",
+            "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "created": "2026-04-23T13:39:30.768901Z",
+            "modified": "2026-04-23T13:39:30.768901Z",
+            "name": "testprovider",
+            "infrastructure_types": [
+                "hosting-malware"
+            ],
+            "labels": [
+                "platform:verity471"
+            ],
+            "object_marking_refs": [
+                "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--1a3e6677-2d0a-53c0-a2e9-5866beb3652a",
+            "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "created": "2026-04-23T13:39:30.769273Z",
+            "modified": "2026-04-23T13:39:30.769273Z",
+            "name": "192.0.2.1",
+            "description": "Bulletproof hosting infrastructure provided by: testprovider",
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": "[ipv4-addr:value = '192.0.2.1']",
+            "pattern_type": "stix",
+            "object_marking_refs": [
+                "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+            ],
+            "pattern_version": "2.1",
+            "valid_from": "2026-03-03T15:00:27Z",
+            "valid_until": "2026-03-05T03:00:27Z",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "resource-development"
+                }
+            ],
+            "labels": [
+                "testprovider",
+                "platform:verity471",
+                "Intel 471 - GIR 3.1.1 - Bulletproof hosting (BPH) services"
+            ],
+            "confidence": 85,
+            "x_opencti_main_observable_type": "IPv4-Addr"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--b16e4f31-ca57-5f91-83e7-86a342d3afd9",
+            "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "created": "2026-04-23T13:39:30.772362Z",
+            "modified": "2026-04-23T13:39:30.772362Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--1a3e6677-2d0a-53c0-a2e9-5866beb3652a",
+            "target_ref": "infrastructure--238fe039-65c3-5fec-9977-82150eb38c8c",
+            "labels": [
+                "platform:verity471"
+            ],
+            "object_marking_refs": [
+                "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+            ]
+        },
+        {
+            "type": "identity",
+            "spec_version": "2.1",
+            "id": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "created": "2022-01-01T00:00:00.000Z",
+            "modified": "2022-01-01T00:00:00.000Z",
+            "name": "Intel 471 Inc.",
+            "identity_class": "organization"
+        },
+        {
+            "type": "marking-definition",
+            "spec_version": "2.1",
+            "id": "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82",
+            "created": "2017-01-20T00:00:00.000Z",
+            "definition_type": "tlp",
+            "name": "TLP:AMBER",
+            "definition": {
+                "tlp": "amber"
+            }
+        },
+        {
+            "type": "ipv4-addr",
+            "spec_version": "2.1",
+            "id": "ipv4-addr--8dded90c-40c0-545a-8027-5b212bb37e8e",
+            "value": "192.0.2.1",
+            "x_opencti_created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "x_opencti_labels": [
+                "platform:verity471"
+            ],
+            "object_marking_refs": [
+                "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+            ]
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--5ab7b4e8-a2c1-53b3-b960-2280a30896b4",
+            "created_by_ref": "identity--ba6a107e-4a66-5fd3-833c-43318ba163fd",
+            "created": "2026-04-23T13:39:30.772723Z",
+            "modified": "2026-04-23T13:39:30.772723Z",
+            "relationship_type": "based-on",
+            "source_ref": "indicator--1a3e6677-2d0a-53c0-a2e9-5866beb3652a",
+            "target_ref": "ipv4-addr--8dded90c-40c0-545a-8027-5b212bb37e8e",
+            "labels": [
+                "platform:verity471"
+            ],
+            "object_marking_refs": [
+                "marking-definition--f88d31f6-486f-44da-b317-01333bde0b82"
+            ]
+        }
+    ]
+}
