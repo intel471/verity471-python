@@ -8,6 +8,7 @@ from urllib.parse import quote
 
 from verity471.api_client import ApiClient
 from verity471.api.watchers_api import WatchersApi
+from verity471.exceptions import ForbiddenException
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
 from verity471.models.data_leak_site_post_item import DataLeakSitePostItem
@@ -284,6 +285,9 @@ def fetch_alert_targets(
                 watcher=watchers_by_id.get(alert.watcher_id),
                 watcher_group=groups_by_id.get(alert.watcher_group_id),
             )
+        except ForbiddenException:
+            log.debug("Failed to fetch target for alert %s (%s) - Forbidden", alert.source_id, url)
+            return None
         except Exception:
             if raise_on_error:
                 raise
