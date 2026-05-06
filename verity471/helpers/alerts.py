@@ -49,6 +49,18 @@ def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
     Temporary workaround for an API bug where certain source types do not
     include a verity_portal link.  Remove once the API is fixed.
     """
+    # Geopol reports return /intelligence/geopolReportView/{id} but the correct
+    # path prefix is /geopol/.
+    if isinstance(target, GeopolReportDetailsResponse):
+        if (alert.links and alert.links.verity_portal
+                and alert.links.verity_portal.href):
+            alert.links.verity_portal.href = alert.links.verity_portal.href.replace(
+                "intel471.com/intelligence/geopolReportView/",
+                "intel471.com/geopol/geopolReportView/",
+                1,
+            )
+        return
+
     if alert.links and alert.links.verity_portal:
         return
 
@@ -75,8 +87,9 @@ def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
             url = msg.links.verity_portal.href + "?messageId=" + msg.id
 
     elif isinstance(target, GetCredSetResponse):
-        q = quote("cred_set.name=" + target.data.name, safe="")
-        url = f"https://verity.intel471.com/search?q={q}&category=creds_cred_set"
+        if target.data.name:
+            q = quote("cred_set.name=" + target.data.name, safe="")
+            url = f"https://verity.intel471.com/search?q={q}&category=creds_cred_set"
 
     if url:
         alert.links.verity_portal = Href(href=url)
@@ -167,7 +180,8 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, IntegrationsIndicator):
         value = None
         if target.data:
-            value = (target.data.domain or target.data.email or target.data.url or target.data.file.sha256
+            value = (target.data.domain or target.data.email or target.data.url
+                     or (target.data.file.sha256 if target.data.file else None)
                      or (target.data.ipv4.ip_address if target.data.ipv4 else None))
         conf = f"confidence: {target.confidence}" if target.confidence is not None else None
         return _prefixed("Indicator", _join([target.type, value, conf]))
