@@ -252,20 +252,6 @@ def fetch_alert_targets(
         for r in fetch_alert_targets(alerts, api_client):
             print(r.alert.source_type, r.alert.status, r.target)
     """
-    watchers_by_id: dict[int, GetWatcherResponse] = {}
-    groups_by_id: dict[int, GetWatcherGroupResponse] = {}
-    try:
-        watchers_api = WatchersApi(api_client)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as watcher_executor:
-            future_watchers = watcher_executor.submit(watchers_api.get_watchers)
-            future_groups = watcher_executor.submit(watchers_api.get_watcher_groups)
-            watchers_resp = future_watchers.result()
-            groups_resp = future_groups.result()
-        watchers_by_id = {w.id: w for w in (watchers_resp.watchers or [])}
-        groups_by_id = {g.id: g for g in (groups_resp.watchers_groups or [])}
-    except Exception:
-        log.warning("Failed to fetch watchers/watcher groups; watcher enrichment will be skipped", exc_info=True)
-
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
         if url and "/integrations/marketplaces/" in url:
@@ -279,12 +265,7 @@ def fetch_alert_targets(
             target = call_url(api_client, url)
         except UnresolvableURL:
             log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
-            return AlertTarget(
-                alert=alert,
-                target=None,
-                watcher=watchers_by_id.get(alert.watcher_id),
-                watcher_group=groups_by_id.get(alert.watcher_group_id),
-            )
+            return AlertTarget(alert=alert, target=None)
         except ForbiddenException:
             log.debug("Failed to fetch target for alert %s (%s) - Forbidden", alert.source_id, url)
             return None
@@ -294,12 +275,7 @@ def fetch_alert_targets(
             log.error("Failed to fetch target for alert %s (%s)", alert.source_id, url, exc_info=True)
             return None
         _patch_portal_url(alert, target)  # TEMPORARY WORKAROUND — remove once API is fixed
-        return AlertTarget(
-            alert=alert,
-            target=target,
-            watcher=watchers_by_id.get(alert.watcher_id),
-            watcher_group=groups_by_id.get(alert.watcher_group_id),
-        )
+        return AlertTarget(alert=alert, target=target)
 
     alerts = alerts_response.alerts or []
     results: list[AlertTarget] = [None] * len(alerts)  # type: ignore[list-item]
@@ -309,4 +285,24 @@ def fetch_alert_targets(
             result = future.result()
             if result is not None:
                 results[future_to_index[future]] = result
-    return [r for r in results if r is not None]
+
+    enriched = [r for r in results if r is not None]
+    if not enriched:
+        return []
+
+    try:
+        watchers_api = WatchersApi(api_client)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as watcher_executor:
+            future_watchers = watcher_executor.submit(watchers_api.get_watchers)
+            future_groups = watcher_executor.submit(watchers_api.get_watcher_groups)
+            watchers_resp = future_watchers.result()
+            groups_resp = future_groups.result()
+        watchers_by_id = {w.id: w for w in (watchers_resp.watchers or [])}
+        groups_by_id = {g.id: g for g in (groups_resp.watchers_groups or [])}
+        for r in enriched:
+            r.watcher = watchers_by_id.get(r.alert.watcher_id)
+            r.watcher_group = groups_by_id.get(r.alert.watcher_group_id)
+    except Exception:
+        log.warning("Failed to fetch watchers/watcher groups; watcher enrichment will be skipped", exc_info=True)
+
+    return enriched
