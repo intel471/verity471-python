@@ -6,7 +6,9 @@ import pytest
 
 from tests.conftest import PREFIX, read_fixture
 from verity471 import fetch_alert_targets
+from verity471.exceptions import ForbiddenException
 from verity471.helpers.alerts import _patch_portal_url
+from verity471.helpers.url_router import UnresolvableURL
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
 from verity471.models.href import Href
@@ -20,7 +22,7 @@ configuration = verity471.Configuration()
 
 test_params = {
     'IndicatorsApi:get_indicator_by_id': ('IntegrationsIndicator', 'https://api.intel471.cloud/integrations/indicators/v1/indicators/malware-indicator--00000000-0000-0000-0000-000000000000', '[Indicator] file | 0000000000000000000000000000000000000000000000000000000000000000 | confidence: 50'),
-    'EventsApi:get_event_by_id': ('IntegrationsEvent', 'https://api.intel471.cloud/integrations/malware-intel/v1/events/malware-event--00000000-0000-0000-0000-000000000000', '[Artifact Extraction] dummy'),
+    'EventsApi:get_event_by_id': ('IntegrationsEvent', 'https://api.intel471.cloud/integrations/malware-intel/v1/events/malware-event--00000000-0000-0000-0000-000000000000', '[Artifact Extraction] dummy | C2: hxxps://example[.]com'),
     'MalwareApi:get_malware_family_by_id': ('SimplifiedMalwareProfile', 'https://api.intel471.cloud/integrations/malware-intel/v1/malware/malware-family--00000000-0000-0000-0000-000000000000', '[Malware] dummy | dummy'),
     'CredentialsApi:get_credential_sets_id': ('GetCredSetResponse', 'https://api.intel471.cloud/integrations/creds/v1/credential-sets/cred-set--84c92b87-ed31-5103-8101-97b87c03a47a', '[Credential Set] dummy | 913706 records | 2023-01-16 00:00:00+00:00'),
     'CredentialsApi:get_credentials_id': ('GetCredResponse', 'https://api.intel471.cloud/integrations/creds/v1/credentials/cred--3f2abe55-8469-59db-b25a-f8268eb31f34', '[Credential] user@example.com | dummy | 2023-01-18T08:08:19.994Z'),
@@ -200,3 +202,116 @@ class TestPatchPortalUrl:
         alert = _make_alert()
         _patch_portal_url(alert, None)
         assert alert.links.verity_portal is None
+
+
+# ---------------------------------------------------------------------------
+# Tests for fetch_alert_targets control flow and error handling.
+# ---------------------------------------------------------------------------
+
+_SPOT_URL = "https://api.intel471.cloud/integrations/intel-report/v1/reports/spot/report--test"
+_MARKETPLACE_URL = "https://api.intel471.cloud/integrations/marketplaces/v1/product/marketplace-product--test"
+
+
+def _mock_alert(url=_SPOT_URL, source_id="src--test", watcher_id=1, watcher_group_id=1):
+    alert = MagicMock()
+    alert.links.verity_api.href = url
+    alert.source_id = source_id
+    alert.watcher_id = watcher_id
+    alert.watcher_group_id = watcher_group_id
+    return alert
+
+
+def _alerts_response(*alerts):
+    resp = MagicMock()
+    resp.alerts = list(alerts)
+    return resp
+
+
+def _no_watchers(watchers_mock):
+    watchers_mock.return_value.get_watchers.return_value.watchers = []
+    watchers_mock.return_value.get_watcher_groups.return_value.watchers_groups = []
+
+
+@patch('verity471.helpers.alerts.WatchersApi')
+@patch('verity471.helpers.alerts.call_url')
+class TestFetchAlertTargets:
+
+    def test_empty_alerts_returns_empty_list(self, call_url_mock, _watchers_mock):
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(), api_client)
+        assert result == []
+        call_url_mock.assert_not_called()
+
+    def test_marketplace_url_is_skipped(self, call_url_mock, _watchers_mock):
+        alert = _mock_alert(url=_MARKETPLACE_URL)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert result == []
+        call_url_mock.assert_not_called()
+
+    def test_missing_link_is_skipped(self, _call_url_mock, _watchers_mock):
+        alert = _mock_alert()
+        alert.links = None
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert result == []
+
+    def test_missing_link_raises_when_requested(self, _call_url_mock, _watchers_mock):
+        alert = _mock_alert()
+        alert.links = None
+        with verity471.ApiClient(configuration) as api_client:
+            with pytest.raises(ValueError):
+                fetch_alert_targets(_alerts_response(alert), api_client, raise_on_error=True)
+
+    def test_unresolvable_url_yields_none_target(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = UnresolvableURL("no route")
+        _no_watchers(watchers_mock)
+        alert = _mock_alert()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert len(result) == 1
+        assert result[0].alert is alert
+        assert result[0].target is None
+
+    def test_forbidden_is_skipped(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = ForbiddenException()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert result == []
+
+    def test_api_error_skipped_by_default(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = RuntimeError("boom")
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert result == []
+
+    def test_api_error_raises_when_requested(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = RuntimeError("boom")
+        with verity471.ApiClient(configuration) as api_client:
+            with pytest.raises(RuntimeError):
+                fetch_alert_targets(_alerts_response(_mock_alert()), api_client, raise_on_error=True)
+
+    def test_watcher_enrichment_failure_still_returns_results(self, call_url_mock, watchers_mock):
+        target = MagicMock()
+        call_url_mock.return_value = target
+        watchers_mock.return_value.get_watchers.side_effect = RuntimeError("watcher API down")
+        alert = _mock_alert()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert len(result) == 1
+        assert result[0].target is target
+        assert result[0].watcher is None
+        assert result[0].watcher_group is None
+
+    def test_result_order_preserved(self, call_url_mock, watchers_mock):
+        _no_watchers(watchers_mock)
+        targets = {i: MagicMock(name=f"target_{i}") for i in range(5)}
+        urls = {f"{_SPOT_URL}--{i}": targets[i] for i in range(5)}
+        call_url_mock.side_effect = lambda _client, url: urls[url]
+        alerts = [_mock_alert(url=f"{_SPOT_URL}--{i}", source_id=f"src--{i}") for i in range(5)]
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(*alerts), api_client)
+        assert len(result) == 5
+        for i, r in enumerate(result):
+            assert r.alert is alerts[i]
+            assert r.target is targets[i]

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import logging
+import re
 import concurrent.futures
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import quote
 
 from verity471.api_client import ApiClient
@@ -104,6 +105,11 @@ def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _defang(text: Optional[str]) -> str:
+    text = str(text).replace("http://", "hxxp://").replace("https://", "hxxps://")
+    return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
+
+
 def _snippet(text: str, limit: int = _SUMMARY_SNIPPET_LEN) -> str:
     """Truncate *text* to roughly *limit* chars, ending on a word boundary."""
     if len(text) <= limit:
@@ -165,11 +171,14 @@ def _summarize_target(target: Any) -> str | None:
 
     if isinstance(target, GetCredOccurrenceResponse):
         return _prefixed("Credential Occurrence", _join([
-            target.data.accessed_url, target.data.credential_type, target.last_updated_ts]))
+            _defang(target.data.accessed_url) if target.data.accessed_url else None,
+            target.data.credential_type, target.last_updated_ts]))
 
     if isinstance(target, GetCredResponse):
         return _prefixed("Credential", _join([
-            target.data.credential_login, target.data.credential_domain, target.last_updated_ts]))
+            target.data.credential_login,
+            _defang(target.data.credential_domain) if target.data.credential_domain else None,
+            target.last_updated_ts]))
 
     if isinstance(target, GetCredSetResponse):
         return _prefixed("Credential Set", _join([
@@ -184,15 +193,41 @@ def _summarize_target(target: Any) -> str | None:
                      or (target.data.file.sha256 if target.data.file else None)
                      or (target.data.ipv4.ip_address if target.data.ipv4 else None))
         conf = f"confidence: {target.confidence}" if target.confidence is not None else None
-        return _prefixed("Indicator", _join([target.type, value, conf]))
+        return _prefixed("Indicator", _join([target.type, _defang(value) if value else None, conf]))
 
     if isinstance(target, IntegrationsEvent):
-        family = None
-        if target.threat and target.threat.data and target.threat.data.malware_family:
-            family = target.threat.data.malware_family.name
+        family_str = None
+        if target.threat and target.threat.data:
+            td = target.threat.data
+            name = td.malware_family.name if td.malware_family else None
+            version = td.malware.version if td.malware else None
+            if name:
+                family_str = f"{name} v{version}" if version else name
+
+        parts: list = []
+        d = target.data
+        if d:
+            if d.attack_type:
+                parts.append(d.attack_type)
+            if d.inject_type:
+                parts.append(d.inject_type)
+            if d.plugin_type:
+                parts.append(d.plugin_type)
+            elif d.plugin_name:
+                parts.append(d.plugin_name)
+            if d.component_type:
+                parts.append(d.component_type)
+            if d.target_type:
+                parts.append(f"target: {d.target_type}")
+            if d.exfil_location:
+                parts.append(f"exfil: {_defang(d.exfil_location)}")
+            elif d.controllers and d.controllers[0].url:
+                parts.append(f"C2: {_defang(d.controllers[0].url)}")
+            elif d.controller and d.controller.url:
+                parts.append(f"C2: {_defang(d.controller.url)}")
+
         label = _type_label(target.type) if target.type else "Event"
-        return _prefixed(label, _join([
-            family, target.data.attack_type if target.data else None]))
+        return _prefixed(label, _join([family_str] + parts))
 
     if isinstance(target, SimplifiedMalwareProfile):
         aliases = ", ".join(target.aliases[:3]) if target.aliases else None
