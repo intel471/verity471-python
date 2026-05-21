@@ -6,11 +6,11 @@ Sub-document containing credential information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique credential identifier. | 
-**credential_login** | **str** | Login of the credential. | [optional] 
-**credential_domain** | **str** | Domain of the credential. | [optional] 
-**detection_domain** | **str** | Detection domain of the credential. | [optional] 
 **affiliations** | **List[str]** | Affiliation of the credential. Allowed values: my_employees, vip_emails, my_customers, third_parties. | [optional] 
+**credential_domain** | **str** | Domain of the credential. | [optional] 
+**credential_login** | **str** | Login of the credential. | [optional] 
+**detection_domain** | **str** | Detection domain of the credential. | [optional] 
+**id** | **str** | Unique credential identifier. | 
 **password** | [**CredPasswordResponse**](CredPasswordResponse.md) |  | [optional] 
 
 ## Example

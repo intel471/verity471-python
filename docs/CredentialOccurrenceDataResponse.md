@@ -6,13 +6,13 @@ Credential occurrence with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**file_path** | **str** | Credential occurrence file path. | [optional] 
 **accessed_url** | **str** | Accessed URL. | [optional] 
 **credential** | [**CredentialOccurrenceCredResponse**](CredentialOccurrenceCredResponse.md) |  | [optional] 
 **credential_set** | [**CredCredentialSetResponse**](CredCredentialSetResponse.md) |  | [optional] 
+**credential_type** | **str** | Type of the credential set this credential belongs to. | [optional] 
+**file_path** | **str** | Credential occurrence file path. | [optional] 
 **info_stealer** | [**InfoStealerResponseOption**](InfoStealerResponseOption.md) |  | 
 **software_name** | **str** | Name of the software. | [optional] 
-**credential_type** | **str** | Type of the credential set this credential belongs to. | [optional] 
 
 ## Example
 

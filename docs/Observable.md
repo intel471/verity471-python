@@ -5,12 +5,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**activity** | [**Activity**](Activity.md) |  | 
+**geo_ip** | [**GeoIpObservables**](GeoIpObservables.md) |  | [optional] 
 **id** | **str** | Unique identifier of the observable | 
+**report** | [**Report**](Report.md) |  | 
 **type** | [**ObservableType**](ObservableType.md) |  | 
 **value** | **str** | Value of the observable | 
-**geo_ip** | [**GeoIpObservables**](GeoIpObservables.md) |  | [optional] 
-**activity** | [**Activity**](Activity.md) |  | 
-**report** | [**ReportObservables**](ReportObservables.md) |  | 
 
 ## Example
 

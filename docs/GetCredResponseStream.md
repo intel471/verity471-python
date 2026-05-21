@@ -6,8 +6,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **count** | **int** | Number of total credentials | 
-**cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
 **credentials** | [**List[GetCredResponse]**](GetCredResponse.md) | The credentials | [optional] 
+**cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
 
 ## Example
 

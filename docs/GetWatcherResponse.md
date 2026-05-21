@@ -5,19 +5,19 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | 
-**watcher_group_id** | **int** |  | 
-**name** | **str** |  | 
+**created_by** | **str** |  | 
+**creation_ts** | **datetime** |  | 
+**data_sets** | **List[str]** |  | [optional] 
 **description** | **str** |  | 
 **dsl_query** | **str** |  | 
-**created_by** | **str** |  | 
+**id** | **int** |  | 
 **is_muted** | **bool** |  | 
-**data_sets** | **List[str]** |  | [optional] 
-**query_fields** | **List[str]** |  | [optional] 
-**notification_settings** | [**List[NotificationSettingsResponse]**](NotificationSettingsResponse.md) |  | [optional] 
-**updated_by** | **str** |  | [optional] 
-**creation_ts** | **datetime** |  | 
 **last_updated_ts** | **datetime** |  | 
+**name** | **str** |  | 
+**notification_settings** | [**List[NotificationSettingsResponse]**](NotificationSettingsResponse.md) |  | [optional] 
+**query_fields** | **List[str]** |  | [optional] 
+**updated_by** | **str** |  | [optional] 
+**watcher_group_id** | **int** |  | 
 
 ## Example
 

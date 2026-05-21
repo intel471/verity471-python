@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**alerts** | [**List[StreamingWatcherAlert]**](StreamingWatcherAlert.md) |  | [optional] 
 **count** | **int** |  | 
 **cursor_next** | **str** |  | [optional] 
-**alerts** | [**List[StreamingWatcherAlert]**](StreamingWatcherAlert.md) |  | [optional] 
 
 ## Example
 

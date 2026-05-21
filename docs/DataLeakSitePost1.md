@@ -8,9 +8,11 @@ Name | Type | Description | Notes
 **attachments** | [**List[AttachmentData]**](AttachmentData.md) | Attachments and images in the post | [optional] 
 **creation_ts** | **str** | First scraping date in ISO 8601 format | 
 **file_listing** | [**DataLeakSiteFileListingUrl**](DataLeakSiteFileListingUrl.md) |  | [optional] 
+**id** | **str** | Post unique id | 
 **inactive_since** | **str** | The date post became inactive or was reactivated again in ISO 8601 format | [optional] 
 **is_inactive** | **bool** | True if post is inactive | [optional] 
 **last_updated_ts** | **str** | Timestamp of last update | 
+**links** | [**SourcesLinks**](SourcesLinks.md) |  | 
 **message** | **str** | Message of post | 
 **title** | **str** | Title of post | 
 

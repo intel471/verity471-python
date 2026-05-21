@@ -6,7 +6,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **post** | [**DataLeakSitePost1**](DataLeakSitePost1.md) |  | 
-**thread** | [**DataLeakSitePostThread**](DataLeakSitePostThread.md) |  | 
 **website** | [**DataLeakSitePostWebsite**](DataLeakSitePostWebsite.md) |  | 
 
 ## Example

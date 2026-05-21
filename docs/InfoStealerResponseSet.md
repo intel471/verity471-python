@@ -6,17 +6,17 @@ Array of malware family objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**antivirus_software** | **List[str]** | Antivirus software. | [optional] 
+**computer_username** | **List[str]** | Name of the user account. | [optional] 
+**infection_ts** | **List[str]** | Date of infection. | [optional] 
+**ip** | **List[str]** | IP address. | [optional] 
+**isp** | **List[str]** | Internet Service Provider. | [optional] 
+**machine_id** | **List[str]** | Id of the machine. | [optional] 
 **malware_family** | **List[str]** | Malware family name. | [optional] 
 **malware_install_path** | **List[str]** | Malware installation path. | [optional] 
-**screenshot_path** | **List[str]** | Screenshot path. | [optional] 
-**infection_ts** | **List[str]** | Date of infection. | [optional] 
-**machine_id** | **List[str]** | Id of the machine. | [optional] 
-**pc_name** | **List[str]** | Name of the machine. | [optional] 
-**computer_username** | **List[str]** | Name of the user account. | [optional] 
-**ip** | **List[str]** | IP address. | [optional] 
 **os** | **List[str]** | Operating system. | [optional] 
-**antivirus_software** | **List[str]** | Antivirus software. | [optional] 
-**isp** | **List[str]** | Internet Service Provider. | [optional] 
+**pc_name** | **List[str]** | Name of the machine. | [optional] 
+**screenshot_path** | **List[str]** | Screenshot path. | [optional] 
 **version** | **List[str]** | Version. | [optional] 
 
 ## Example

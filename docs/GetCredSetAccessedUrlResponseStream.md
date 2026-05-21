@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**access_urls** | [**List[GetCredSetAccessedUrlResponse]**](GetCredSetAccessedUrlResponse.md) | Access urls | [optional] 
 **count** | **int** | Number of total access urls | 
 **cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
-**access_urls** | [**List[GetCredSetAccessedUrlResponse]**](GetCredSetAccessedUrlResponse.md) | Access urls | [optional] 
 
 ## Example
 

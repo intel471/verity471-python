@@ -5,16 +5,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**creation_ts** | **datetime** |  | 
+**highlights** | [**List[HighlightWatchers]**](HighlightWatchers.md) |  | [optional] 
 **id** | **int** |  | 
+**is_trashed** | **bool** |  | 
+**links** | [**Links**](Links.md) |  | 
+**source_id** | **str** |  | 
+**source_type** | **str** |  | 
+**status** | **str** |  | 
 **watcher_group_id** | **int** |  | 
 **watcher_id** | **int** |  | 
-**status** | **str** |  | 
-**source_type** | **str** |  | 
-**source_id** | **str** |  | 
-**links** | [**Links**](Links.md) |  | 
-**highlights** | [**List[HighlightWatchers]**](HighlightWatchers.md) |  | [optional] 
-**creation_ts** | **datetime** |  | 
-**is_trashed** | **bool** |  | 
 
 ## Example
 

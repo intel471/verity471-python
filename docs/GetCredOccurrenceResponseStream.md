@@ -6,8 +6,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **count** | **int** | Number of total credential occurrences | 
-**cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
 **credential_occurrences** | [**List[GetCredOccurrenceResponse]**](GetCredOccurrenceResponse.md) | Credential occurrences | [optional] 
+**cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
 
 ## Example
 

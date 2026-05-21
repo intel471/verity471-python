@@ -9,19 +9,19 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.7
-  - creds: 1.0.1
+- API version: 1.1.9
+  - creds: 1.0.2
   - indicators: 1.0.1
   - malware: 1.0.1
-  - reports: 1.0.4
-  - sources: 1.0.3
+  - reports: 1.0.5
+  - sources: 1.0.5
   - actors: 1.0.2
-  - watchers: 1.0.0
-  - observables: 1.0.0
-  - entities: 1.0.0
+  - watchers: 1.0.1
+  - observables: 1.0.1
+  - entities: 1.0.1
   - girs: 1.0.0
 
-- Package version: 1.1.7
+- Package version: 1.1.9
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -385,10 +385,11 @@ Class | Method | HTTP request | Description
 *ReportsApi* | [**get_reports_spot_id**](docs/ReportsApi.md#get_reports_spot_id) | **GET** /integrations/intel-report/v1/reports/spot/{id} | Get a spot report details
 *ReportsApi* | [**get_reports_spot_stream**](docs/ReportsApi.md#get_reports_spot_stream) | **GET** /integrations/intel-report/v1/reports/spot/stream | Get all spot reports (stream)
 *ReportsApi* | [**get_reports_stream**](docs/ReportsApi.md#get_reports_stream) | **GET** /integrations/intel-report/v1/reports/stream | Get all reports (stream)
-*ReportsApi* | [**get_reports_vulnerabilities_id_download_as_pdf**](docs/ReportsApi.md#get_reports_vulnerabilities_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerabilities/{id}/download-as-pdf | Get a vulnerability report as PDF
 *ReportsApi* | [**get_reports_vulnerability_id**](docs/ReportsApi.md#get_reports_vulnerability_id) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id} | Get a vulnerability report details
+*ReportsApi* | [**get_reports_vulnerability_id_download_as_pdf**](docs/ReportsApi.md#get_reports_vulnerability_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id}/download-as-pdf | Get a vulnerability report as PDF
 *ReportsApi* | [**get_reports_vulnerability_stream**](docs/ReportsApi.md#get_reports_vulnerability_stream) | **GET** /integrations/intel-report/v1/reports/vulnerability/stream | Get all vulnerabilities reports (stream)
 *SourcesApi* | [**get_data_leak_sites_file_listings_id**](docs/SourcesApi.md#get_data_leak_sites_file_listings_id) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id} | Get a data leak site file listing content
+*SourcesApi* | [**get_data_leak_sites_posts_id**](docs/SourcesApi.md#get_data_leak_sites_posts_id) | **GET** /integrations/sources/v1/data-leak-sites/posts/{id} | Get a data leak site post by id
 *SourcesApi* | [**get_data_leak_sites_posts_stream**](docs/SourcesApi.md#get_data_leak_sites_posts_stream) | **GET** /integrations/sources/v1/data-leak-sites/posts/stream | Get data leak sites posts (stream)
 *SourcesApi* | [**get_forums_posts_post_id**](docs/SourcesApi.md#get_forums_posts_post_id) | **GET** /integrations/sources/v1/forums/posts/{post_id} | Get a forum post by id
 *SourcesApi* | [**get_forums_posts_stream**](docs/SourcesApi.md#get_forums_posts_stream) | **GET** /integrations/sources/v1/forums/posts/stream | Get forums posts (stream)
@@ -448,9 +449,9 @@ Class | Method | HTTP request | Description
  - [CredentialOccurrenceDataResponse](docs/CredentialOccurrenceDataResponse.md)
  - [Cvss](docs/Cvss.md)
  - [DataLeakSiteFileListingUrl](docs/DataLeakSiteFileListingUrl.md)
+ - [DataLeakSitePost](docs/DataLeakSitePost.md)
  - [DataLeakSitePost1](docs/DataLeakSitePost1.md)
  - [DataLeakSitePostItem](docs/DataLeakSitePostItem.md)
- - [DataLeakSitePostThread](docs/DataLeakSitePostThread.md)
  - [DataLeakSitePostWebsite](docs/DataLeakSitePostWebsite.md)
  - [DataLeakSitePostsStreamingPage](docs/DataLeakSitePostsStreamingPage.md)
  - [Encryption](docs/Encryption.md)
@@ -520,8 +521,6 @@ Class | Method | HTTP request | Description
  - [KillChainPhase](docs/KillChainPhase.md)
  - [Link](docs/Link.md)
  - [Links](docs/Links.md)
- - [LinksEntities](docs/LinksEntities.md)
- - [LinksObservables](docs/LinksObservables.md)
  - [LinksSource](docs/LinksSource.md)
  - [Location](docs/Location.md)
  - [Malware](docs/Malware.md)
@@ -547,9 +546,7 @@ Class | Method | HTTP request | Description
  - [Report](docs/Report.md)
  - [ReportAttachment](docs/ReportAttachment.md)
  - [ReportContent](docs/ReportContent.md)
- - [ReportEntities](docs/ReportEntities.md)
  - [ReportLocation](docs/ReportLocation.md)
- - [ReportObservables](docs/ReportObservables.md)
  - [ReportResponseStream](docs/ReportResponseStream.md)
  - [ReportType](docs/ReportType.md)
  - [ReportingStatus](docs/ReportingStatus.md)

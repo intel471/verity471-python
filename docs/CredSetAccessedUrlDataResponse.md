@@ -6,8 +6,8 @@ Credential set accessed URL with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accessed_url** | **str** | Accessed URL. | 
 **accessed_domain** | **str** | Accessed domain. | [optional] 
+**accessed_url** | **str** | Accessed URL. | 
 **credential_set** | [**CredCredentialSetResponse**](CredCredentialSetResponse.md) |  | [optional] 
 
 ## Example

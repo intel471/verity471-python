@@ -5,6 +5,7 @@ All URIs are relative to *https://api.intel471.cloud*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_data_leak_sites_file_listings_id**](SourcesApi.md#get_data_leak_sites_file_listings_id) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id} | Get a data leak site file listing content
+[**get_data_leak_sites_posts_id**](SourcesApi.md#get_data_leak_sites_posts_id) | **GET** /integrations/sources/v1/data-leak-sites/posts/{id} | Get a data leak site post by id
 [**get_data_leak_sites_posts_stream**](SourcesApi.md#get_data_leak_sites_posts_stream) | **GET** /integrations/sources/v1/data-leak-sites/posts/stream | Get data leak sites posts (stream)
 [**get_forums_posts_post_id**](SourcesApi.md#get_forums_posts_post_id) | **GET** /integrations/sources/v1/forums/posts/{post_id} | Get a forum post by id
 [**get_forums_posts_stream**](SourcesApi.md#get_forums_posts_stream) | **GET** /integrations/sources/v1/forums/posts/stream | Get forums posts (stream)
@@ -90,6 +91,91 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  * Content-Disposition -  <br>  * Content-Type -  <br>  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_data_leak_sites_posts_id**
+> DataLeakSitePost get_data_leak_sites_posts_id(id)
+
+Get a data leak site post by id
+
+Return a single data leak site post by id
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.models.data_leak_site_post import DataLeakSitePost
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.SourcesApi(api_client)
+    id = 'post--03d22f83-14f1-5d28-a94e-5807161c92f6' # str | 
+
+    try:
+        # Get a data leak site post by id
+        api_response = api_instance.get_data_leak_sites_posts_id(id)
+        print("The response of SourcesApi->get_data_leak_sites_posts_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling SourcesApi->get_data_leak_sites_posts_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+
+### Return type
+
+[**DataLeakSitePost**](DataLeakSitePost.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  -  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |

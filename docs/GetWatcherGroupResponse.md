@@ -5,22 +5,22 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | 
-**name** | **str** |  | 
-**description** | **str** |  | 
 **created_by** | **str** |  | 
-**owner_user_id** | **str** |  | 
-**organisation_id** | **str** |  | 
-**watcher_ids** | **List[int]** |  | [optional] 
+**creation_ts** | **datetime** |  | 
+**description** | **str** |  | 
+**id** | **int** |  | 
 **is_editable** | **bool** |  | 
 **is_global** | **bool** |  | 
-**is_subscribed** | **bool** |  | 
 **is_muted** | **bool** |  | 
+**is_subscribed** | **bool** |  | 
+**last_updated_ts** | **datetime** |  | 
+**name** | **str** |  | 
 **notification_settings** | [**List[NotificationSettingsResponse]**](NotificationSettingsResponse.md) |  | [optional] 
+**organisation_id** | **str** |  | 
+**owner_user_id** | **str** |  | 
 **sharing_settings** | [**List[ShareSettingsResponse]**](ShareSettingsResponse.md) |  | [optional] 
 **updated_by** | **str** |  | [optional] 
-**creation_ts** | **datetime** |  | 
-**last_updated_ts** | **datetime** |  | 
+**watcher_ids** | **List[int]** |  | [optional] 
 
 ## Example
 

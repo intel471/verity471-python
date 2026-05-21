@@ -6,14 +6,14 @@ Credential set with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **str** | Name of the credential set. | [optional] 
-**description** | **str** | Description of the credential set. | [optional] 
-**record_count** | **int** | Number of records. | [optional] 
-**disclosure_ts** | **datetime** | Date of disclosure. | [optional] 
 **breach_ts** | **datetime** | Date of breach. | [optional] 
 **collected_ts** | **datetime** | Date of collection. | [optional] 
-**victims** | [**List[VictimResponse]**](VictimResponse.md) | List of purported victims. | [optional] 
+**description** | **str** | Description of the credential set. | [optional] 
+**disclosure_ts** | **datetime** | Date of disclosure. | [optional] 
+**name** | **str** | Name of the credential set. | [optional] 
+**record_count** | **int** | Number of records. | [optional] 
 **sources** | [**List[LinksSource]**](LinksSource.md) | List of sources. | [optional] 
+**victims** | [**List[VictimResponse]**](VictimResponse.md) | List of purported victims. | [optional] 
 
 ## Example
 
