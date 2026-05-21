@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tests.conftest import PREFIX, read_fixture
-from verity471 import fetch_alert_targets
+from verity471.helpers import fetch_alert_targets
 from verity471.exceptions import ForbiddenException
 from verity471.helpers.alerts import _patch_portal_url
 from verity471.helpers.url_router import UnresolvableURL

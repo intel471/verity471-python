@@ -223,7 +223,7 @@ The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects t
 fetched target object — a report, forum post, credential, indicator, or any other supported type.
 
 ```python
-from verity471 import fetch_alert_targets, AlertTarget
+from verity471.helpers import fetch_alert_targets, AlertTarget
 ```
 
 ### Parameters
@@ -256,6 +256,7 @@ share the same watcher.
 
 ```python
 import verity471
+from verity471.helpers import fetch_alert_targets
 
 configuration = verity471.Configuration(
     username="your_username",
@@ -266,7 +267,7 @@ with verity471.ApiClient(configuration) as api_client:
     alerts_api = verity471.AlertsApi(api_client)
     alerts_response = alerts_api.get_alerts_stream(size=10)
 
-    targets = verity471.fetch_alert_targets(alerts_response, api_client)
+    targets = fetch_alert_targets(alerts_response, api_client)
     for t in targets:
         watcher_name = t.watcher.name if t.watcher else None
         group_name = t.watcher_group.name if t.watcher_group else None
