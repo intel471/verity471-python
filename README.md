@@ -215,6 +215,134 @@ Client's class/method | API endpoint | Produced outcome
 
 *Empty cells inherit the value from the previous row.*
 
+## Helper: `fetch_alert_targets`
+
+The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects that carry metadata
+(status, watcher IDs, timestamps, highlights) but not the actual content the alert refers to.
+`fetch_alert_targets` resolves each alert's API link in parallel and pairs it with the fully
+fetched target object — a report, forum post, credential, indicator, or any other supported type.
+
+```python
+from verity471 import fetch_alert_targets, AlertTarget
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `alerts_response` | `StreamingAlertsResponse` | *(required)* | The page returned by `AlertsApi.get_alerts_stream()`. |
+| `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
+| `raise_on_error` | `bool` | `False` | When `True`, re-raise exceptions instead of logging and skipping the alert. |
+
+### Returns
+
+A list of `AlertTarget` objects in the same order as `alerts_response.alerts`.
+
+Each `AlertTarget` exposes:
+
+| Attribute | Type | Description |
+|---|---|---|
+| `.alert` | `StreamingWatcherAlert` | The original alert object (status, watcher IDs, timestamps, highlights, etc.). |
+| `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. |
+| `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
+| `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
+
+Watcher and group data is fetched once per `fetch_alert_targets` call (two parallel API requests) and
+shared by reference across all `AlertTarget` objects — there is no duplication even when many alerts
+share the same watcher.
+
+### Example usage
+
+```python
+import verity471
+
+configuration = verity471.Configuration(
+    username="your_username",
+    password="your_password",
+)
+
+with verity471.ApiClient(configuration) as api_client:
+    alerts_api = verity471.AlertsApi(api_client)
+    alerts_response = alerts_api.get_alerts_stream(size=10)
+
+    targets = verity471.fetch_alert_targets(alerts_response, api_client)
+    for t in targets:
+        watcher_name = t.watcher.name if t.watcher else None
+        group_name = t.watcher_group.name if t.watcher_group else None
+        print(t.alert.source_type, t.alert.status, watcher_name, group_name, t.target_summary)
+```
+
+### Example output
+
+```
+fintel read threat_actor Ransomware actors [Fintel] Threat Landscape: Q1 2025 Summary | 2025-03-15T12:00:00Z | Key findings from the first quarter include…
+forum_post unread ddos_monitor My Watchers [Forum Post] Selling access to corporate VPN… | 2025-03-14T08:30:00Z
+credential_occurrence unread cred_watcher Credential Alerts [Credential Occurrence] https://example.com/login | email | 2025-03-13T10:00:00Z
+malware_report read malware_tracker My Watchers [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
+```
+
+## Helper: `get_latest`
+
+Stream endpoints return data in ascending (oldest-first) order only — there is no way to sort
+descending or jump directly to the most recent page. `get_latest` works around this by probing the
+API with a small time window, expanding it until enough items exist, and then fetching and slicing
+the tail.
+
+```python
+from verity471.helpers import get_latest
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `stream_method` | callable | *(required)* | A bound stream API method, e.g. `reports_api.get_reports_spot_stream`. Must end with `_stream`. |
+| `n` | `int` | *(required)* | Number of most-recent items to return. |
+| `**kwargs` | | | Additional filter parameters forwarded verbatim to the stream method (e.g. `malware_family_name`, `threat_type`, `girs`). Do not pass `var_from`, `until`, `size`, or `cursor` — these are managed internally. |
+
+### Returns
+
+A list of at most `n` items in ascending order (oldest first), so the last element is always the
+single most-recent item. When fewer than `n` items exist in the full history the function returns
+however many are available.
+
+### How probing works
+
+The helper issues lightweight `size=1` probe calls to count matching items in progressively wider
+time windows (doubling each round), starting from an endpoint-specific seed tuned to typical data
+density. Once `count >= n`, a single fetch retrieves all items in that window and the tail is
+sliced. For very high-density endpoints where the window contains more than 1 000 items the helper
+paginates automatically and keeps only the last `n`.
+
+### Example usage
+
+```python
+import verity471
+from verity471.helpers import get_latest
+
+configuration = verity471.Configuration(
+    username="your_username",
+    password="your_password",
+)
+
+with verity471.ApiClient(configuration) as api_client:
+    reports_api = verity471.ReportsApi(api_client)
+
+    # 20 most recent spot reports
+    reports = get_latest(reports_api.get_reports_spot_stream, n=20)
+    for r in reports:
+        print(r.title, r.released_ts)
+
+    # 50 most recent malware events for a specific family
+    events_api = verity471.EventsApi(api_client)
+    events = get_latest(
+        events_api.get_events_stream,
+        n=50,
+        malware_family_name="Cobalt Strike",
+    )
+```
+
 ## Documentation for API Endpoints
 
 All URIs are relative to *https://api.intel471.cloud*
