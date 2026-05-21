@@ -45,13 +45,13 @@ with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.AlertsApi(api_client)
     cursor = 'cursor_example' # str | Cursor to be used to fetch next batch from stream (optional)
-    size = 1000 # int | Size of the batch to return. Defaults to 1000. Max value 1000 (if size is bigger than this onlyfirst 1000 alerts will be returned) (optional) (default to 1000)
+    size = 56 # int | Size of the batch to return. Defaults to 1000. Max value 1000 (if size is bigger than this onlyfirst 1000 alerts will be returned) (optional)
     var_from = 56 # int | Long unix time. Example - 1627776000000 (By timestamp) (optional)
     until = 56 # int | Long unix time. Example - 1627776000000 (By timestamp) (optional)
     watcher_group_ids = '121,3553,5334' # str | Comma separated watcher group ids to filter alerts. (optional)
     watcher_ids = '121,3553,5334' # str | Comma separated watcher ids to filter alerts. (optional)
     statuses = 'generated,needs_action,completed' # str | Comma separated statuses to filter alerts. Allowed values are generated, needs_action, in_progress, completed and false_positive. (optional)
-    is_trashed_included = False # bool | Include trashed alerts in the response. Defaults to false. (optional) (default to False)
+    is_trashed_included = True # bool | Include trashed alerts in the response. Defaults to false. (optional)
 
     try:
         # Get alerts for the current user in a stream way
@@ -70,13 +70,13 @@ with verity471.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **cursor** | **str**| Cursor to be used to fetch next batch from stream | [optional] 
- **size** | **int**| Size of the batch to return. Defaults to 1000. Max value 1000 (if size is bigger than this onlyfirst 1000 alerts will be returned) | [optional] [default to 1000]
+ **size** | **int**| Size of the batch to return. Defaults to 1000. Max value 1000 (if size is bigger than this onlyfirst 1000 alerts will be returned) | [optional] 
  **var_from** | **int**| Long unix time. Example - 1627776000000 (By timestamp) | [optional] 
  **until** | **int**| Long unix time. Example - 1627776000000 (By timestamp) | [optional] 
  **watcher_group_ids** | **str**| Comma separated watcher group ids to filter alerts. | [optional] 
  **watcher_ids** | **str**| Comma separated watcher ids to filter alerts. | [optional] 
  **statuses** | **str**| Comma separated statuses to filter alerts. Allowed values are generated, needs_action, in_progress, completed and false_positive. | [optional] 
- **is_trashed_included** | **bool**| Include trashed alerts in the response. Defaults to false. | [optional] [default to False]
+ **is_trashed_included** | **bool**| Include trashed alerts in the response. Defaults to false. | [optional] 
 
 ### Return type
 

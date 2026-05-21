@@ -6,15 +6,15 @@ Credential with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**credential_login** | **str** | Login of the credential. | [optional] 
-**credential_domain** | **str** | Domain of the credential. | [optional] 
-**detection_domain** | **str** | Detection domain of the credential. | [optional] 
-**affiliations** | **List[str]** | Affiliation of the credential. Allowed values: my_employees, vip_emails, my_customers, third_parties. | [optional] 
-**password** | [**CredPasswordResponse**](CredPasswordResponse.md) |  | [optional] 
-**credential_sets** | [**List[CredCredentialSetResponse]**](CredCredentialSetResponse.md) | Credential sets associated with the credential. | [optional] 
-**info_stealer** | [**InfoStealerResponseSet**](InfoStealerResponseSet.md) |  | 
 **accessed_url** | **str** | Accessed URL of the credential. | [optional] 
+**affiliations** | **List[str]** | Affiliation of the credential. Allowed values: my_employees, vip_emails, my_customers, third_parties. | [optional] 
+**credential_domain** | **str** | Domain of the credential. | [optional] 
+**credential_login** | **str** | Login of the credential. | [optional] 
 **credential_set_type** | **List[str]** | Type(s) of the credential set(s) this credential belongs to. | [optional] 
+**credential_sets** | [**List[CredCredentialSetResponse]**](CredCredentialSetResponse.md) | Credential sets associated with the credential. | [optional] 
+**detection_domain** | **str** | Detection domain of the credential. | [optional] 
+**info_stealer** | [**InfoStealerResponseSet**](InfoStealerResponseSet.md) |  | 
+**password** | [**CredPasswordResponse**](CredPasswordResponse.md) |  | [optional] 
 
 ## Example
 

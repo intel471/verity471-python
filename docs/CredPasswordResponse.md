@@ -7,9 +7,9 @@ Credential password details.
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **complexity** | [**CredPasswordComplexityResponse**](CredPasswordComplexityResponse.md) |  | [optional] 
-**strength** | **str** | Password strength. Allowed values: excellent, strong, medium, weak, poor, not_provided. | [optional] 
 **id** | **str** | ID of the password. | [optional] 
 **password_plain** | **str** | Password plain text. | [optional] 
+**strength** | **str** | Password strength. Allowed values: excellent, strong, medium, weak, poor, not_provided. | [optional] 
 
 ## Example
 

@@ -28,11 +28,10 @@ import re  # noqa: F401
 import json
 
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictBool, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from verity471.models.activity import Activity
 from verity471.models.attachment_data import AttachmentData
-from verity471.models.data_leak_site_file_listing_url import DataLeakSiteFileListingUrl
-from verity471.models.sources_links import SourcesLinks
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
 
@@ -41,21 +40,21 @@ if TYPE_CHECKING:
     from verity471.verity_stix import STIXMapperSettings
 
 
-class DataLeakSitePost1(BaseModel):
+class DataLeakSitePost(BaseModel):
     """
-    DataLeakSitePost1
+    DataLeakSitePost
     """ # noqa: E501
-    attachments: Optional[List[AttachmentData]] = Field(default=None, description="Attachments and images in the post")
-    creation_ts: StrictStr = Field(description="First scraping date in ISO 8601 format")
-    file_listing: Optional[DataLeakSiteFileListingUrl] = None
-    id: StrictStr = Field(description="Post unique id")
-    inactive_since: Optional[StrictStr] = Field(default=None, description="The date post became inactive or was reactivated again in ISO 8601 format")
-    is_inactive: Optional[StrictBool] = Field(default=None, description="True if post is inactive")
-    last_updated_ts: StrictStr = Field(description="Timestamp of last update")
-    links: SourcesLinks
-    message: StrictStr = Field(description="Message of post")
-    title: StrictStr = Field(description="Title of post")
-    __properties: ClassVar[List[str]] = ["attachments", "creation_ts", "file_listing", "id", "inactive_since", "is_inactive", "last_updated_ts", "links", "message", "title"]
+    activity: Activity
+    attachment_data: Dict[str, AttachmentData]
+    created_at: Optional[StrictStr] = None
+    id: StrictStr
+    inactive_since: Optional[StrictStr] = None
+    is_inactive: Optional[StrictBool] = None
+    message: StrictStr
+    published_at: Optional[StrictStr] = None
+    source_url: Optional[StrictStr] = None
+    title: StrictStr
+    __properties: ClassVar[List[str]] = ["activity", "attachment_data", "created_at", "id", "inactive_since", "is_inactive", "message", "published_at", "source_url", "title"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -86,7 +85,7 @@ class DataLeakSitePost1(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of DataLeakSitePost1 from a JSON string"""
+        """Create an instance of DataLeakSitePost from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -107,24 +106,21 @@ class DataLeakSitePost1(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in attachments (list)
-        _items = []
-        if self.attachments:
-            for _item_attachments in self.attachments:
-                if _item_attachments:
-                    _items.append(_item_attachments.to_dict())
-            _dict['attachments'] = _items
-        # override the default output from pydantic by calling `to_dict()` of file_listing
-        if self.file_listing:
-            _dict['file_listing'] = self.file_listing.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of links
-        if self.links:
-            _dict['links'] = self.links.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of activity
+        if self.activity:
+            _dict['activity'] = self.activity.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each value in attachment_data (dict)
+        _field_dict = {}
+        if self.attachment_data:
+            for _key_attachment_data in self.attachment_data:
+                if self.attachment_data[_key_attachment_data]:
+                    _field_dict[_key_attachment_data] = self.attachment_data[_key_attachment_data].to_dict()
+            _dict['attachment_data'] = _field_dict
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of DataLeakSitePost1 from a dict"""
+        """Create an instance of DataLeakSitePost from a dict"""
         if obj is None:
             return None
 
@@ -132,15 +128,20 @@ class DataLeakSitePost1(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "attachments": [AttachmentData.from_dict(_item) for _item in obj["attachments"]] if obj.get("attachments") is not None else None,
-            "creation_ts": obj.get("creation_ts"),
-            "file_listing": DataLeakSiteFileListingUrl.from_dict(obj["file_listing"]) if obj.get("file_listing") is not None else None,
+            "activity": Activity.from_dict(obj["activity"]) if obj.get("activity") is not None else None,
+            "attachment_data": dict(
+                (_k, AttachmentData.from_dict(_v))
+                for _k, _v in obj["attachment_data"].items()
+            )
+            if obj.get("attachment_data") is not None
+            else None,
+            "created_at": obj.get("created_at"),
             "id": obj.get("id"),
             "inactive_since": obj.get("inactive_since"),
             "is_inactive": obj.get("is_inactive"),
-            "last_updated_ts": obj.get("last_updated_ts"),
-            "links": SourcesLinks.from_dict(obj["links"]) if obj.get("links") is not None else None,
             "message": obj.get("message"),
+            "published_at": obj.get("published_at"),
+            "source_url": obj.get("source_url"),
             "title": obj.get("title")
         })
         return _obj

@@ -5,10 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**notification_preference_type** | [**NotificationPreferenceType**](NotificationPreferenceType.md) |  | 
-**notification_channel** | **str** |  | 
-**notify_at_utc_hour** | **int** |  | [optional] 
 **created** | **datetime** |  | 
+**notification_channel** | **str** |  | 
+**notification_preference_type** | [**NotificationPreferenceType**](NotificationPreferenceType.md) |  | 
+**notify_at_utc_hour** | **int** |  | [optional] 
 
 ## Example
 

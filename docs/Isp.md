@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**network** | **str** |  | [optional] 
 **autonomous_system** | **str** |  | [optional] 
 **isp** | **str** |  | [optional] 
+**network** | **str** |  | [optional] 
 **organization** | **str** |  | [optional] 
 
 ## Example

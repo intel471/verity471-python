@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **count** | **int** | Total count of matched post entities | 
 **cursor_next** | **str** | Stream position identifier to continue scrolling from | [optional] 
-**posts** | [**List[DataLeakSitePostItem]**](DataLeakSitePostItem.md) | A page of matched post entities with nested thread and website | [optional] 
+**posts** | [**List[DataLeakSitePostItem]**](DataLeakSitePostItem.md) | A page of matched post entities with nested website | [optional] 
 
 ## Example
 

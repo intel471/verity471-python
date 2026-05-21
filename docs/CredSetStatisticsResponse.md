@@ -6,9 +6,9 @@ Statistics regarding returned objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**credentials_count** | **int** | Number of credentials. | [optional] 
-**credential_occurrences_count** | **int** | Number of credential occurrences. | [optional] 
 **accessed_urls_count** | **int** | Number of accessed URLs. | [optional] 
+**credential_occurrences_count** | **int** | Number of credential occurrences. | [optional] 
+**credentials_count** | **int** | Number of credentials. | [optional] 
 
 ## Example
 

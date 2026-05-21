@@ -5,11 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique credential set accessed url identifier. | 
-**data** | [**CredSetAccessedUrlDataResponse**](CredSetAccessedUrlDataResponse.md) |  | 
-**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
-**last_updated_ts** | **str** | Credential set accessed url last modification date. | 
 **activity** | [**ActivityResponse**](ActivityResponse.md) |  | 
+**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
+**data** | [**CredSetAccessedUrlDataResponse**](CredSetAccessedUrlDataResponse.md) |  | 
+**id** | **str** | Unique credential set accessed url identifier. | 
+**last_updated_ts** | **str** | Credential set accessed url last modification date. | 
 
 ## Example
 

@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**path** | **str** | Path of the General Intelligence Requirement. | 
 **name** | **str** | Name of the General Intelligence Requirement. | 
+**path** | **str** | Path of the General Intelligence Requirement. | 
 
 ## Example
 

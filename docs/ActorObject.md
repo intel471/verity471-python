@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** |  | 
-**handles** | **List[str]** | Actor names - from most current in use first, and list historical handles. | [optional] 
 **forum** | [**ForumObject**](ForumObject.md) |  | [optional] 
+**handles** | **List[str]** | Actor names - from most current in use first, and list historical handles. | [optional] 
+**id** | **str** |  | 
 
 ## Example
 

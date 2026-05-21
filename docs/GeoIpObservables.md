@@ -6,11 +6,11 @@ Geo IP information for the observable
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**city** | **str** |  | [optional] 
 **country** | **str** |  | [optional] 
 **country_code** | **str** |  | [optional] 
-**city** | **str** |  | [optional] 
-**subdivision** | **List[str]** |  | [optional] 
 **isp** | [**Isp**](Isp.md) |  | [optional] 
+**subdivision** | **List[str]** |  | [optional] 
 
 ## Example
 

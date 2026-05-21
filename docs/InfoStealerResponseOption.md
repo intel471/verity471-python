@@ -6,17 +6,17 @@ Array of malware family objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**antivirus_software** | **str** | Antivirus software. | [optional] 
+**computer_username** | **str** | Name of the user account. | [optional] 
+**infection_ts** | **str** | Date of infection. | [optional] 
+**ip** | **str** | IP address. | [optional] 
+**isp** | **str** | Internet Service Provider. | [optional] 
+**machine_id** | **str** | Id of the machine. | [optional] 
 **malware_family** | **str** | Malware family name. | [optional] 
 **malware_install_path** | **str** | Malware installation path. | [optional] 
-**screenshot_path** | **str** | Screenshot path. | [optional] 
-**infection_ts** | **str** | Date of infection. | [optional] 
-**machine_id** | **str** | Id of the machine. | [optional] 
-**pc_name** | **str** | Name of the machine. | [optional] 
-**computer_username** | **str** | Name of the user account. | [optional] 
-**ip** | **str** | IP address. | [optional] 
 **os** | **str** | Operating system. | [optional] 
-**antivirus_software** | **str** | Antivirus software. | [optional] 
-**isp** | **str** | Internet Service Provider. | [optional] 
+**pc_name** | **str** | Name of the machine. | [optional] 
+**screenshot_path** | **str** | Screenshot path. | [optional] 
 **version** | **str** | Version. | [optional] 
 
 ## Example

@@ -5,12 +5,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique credential identifier. | 
-**data** | [**CredDataResponse**](CredDataResponse.md) |  | 
-**statistics** | [**CredStatisticsResponse**](CredStatisticsResponse.md) |  | [optional] 
-**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
-**last_updated_ts** | **str** | Credential last modification date. | 
 **activity** | [**ActivityResponse**](ActivityResponse.md) |  | 
+**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
+**data** | [**CredDataResponse**](CredDataResponse.md) |  | 
+**id** | **str** | Unique credential identifier. | 
+**last_updated_ts** | **str** | Credential last modification date. | 
+**statistics** | [**CredStatisticsResponse**](CredStatisticsResponse.md) |  | [optional] 
 
 ## Example
 

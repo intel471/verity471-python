@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**user_id** | **str** |  | 
-**organisation_id** | **str** |  | 
 **created** | **datetime** |  | 
+**organisation_id** | **str** |  | 
+**user_id** | **str** |  | 
 
 ## Example
 

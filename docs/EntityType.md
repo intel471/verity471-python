@@ -21,6 +21,14 @@
 
 * `HANDLE` (value: `'Handle'`)
 
+* `OLDHANDLE` (value: `'OldHandle'`)
+
+* `REGDATE` (value: `'RegDate'`)
+
+* `ACTORAVATARURL` (value: `'ActorAvatarURL'`)
+
+* `VCARD` (value: `'vCard'`)
+
 * `ICQ` (value: `'ICQ'`)
 
 * `IPV4PREFIX` (value: `'IPv4Prefix'`)

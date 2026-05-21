@@ -5,11 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** | Unique credential occurrence identifier. | 
-**data** | [**CredentialOccurrenceDataResponse**](CredentialOccurrenceDataResponse.md) |  | 
-**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
-**last_updated_ts** | **str** | Credential occurrence last modification date. | 
 **activity** | [**ActivityResponse**](ActivityResponse.md) |  | 
+**classification** | [**ClassificationResponse**](ClassificationResponse.md) |  | [optional] 
+**data** | [**CredentialOccurrenceDataResponse**](CredentialOccurrenceDataResponse.md) |  | 
+**id** | **str** | Unique credential occurrence identifier. | 
+**last_updated_ts** | **str** | Credential occurrence last modification date. | 
 
 ## Example
 
