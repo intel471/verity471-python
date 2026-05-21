@@ -4,6 +4,15 @@
   "posts": [
     {
       "post": {
+        "id": "post--00000000-0000-0000-0000-000000000000",
+        "links": {
+          "external": {
+            "href": "dummy"
+          },
+          "verity_portal": {
+            "href": "https://verity.intel471.com/sources/data-leak-sites/website--00000000-0000-0000-0000-000000000000/threads/thread--00000000-0000-0000-0000-000000000000"
+          }
+        },
         "attachments": [
           {
             "attachment_highlights": [],
@@ -37,18 +46,6 @@
         },
         "message": "dummy",
         "last_updated_ts": "2024-12-09T09:00:00Z",
-        "title": "dummy"
-      },
-      "thread": {
-        "id": "thread--00000000-0000-0000-0000-000000000000",
-        "links": {
-          "external": {
-            "href": "dummy"
-          },
-          "verity_portal": {
-            "href": "https://example.com"
-          }
-        },
         "title": "dummy"
       },
       "website": {

@@ -74,12 +74,10 @@ def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
             url = thread.links.verity_portal.href + "?postId=" + target.post.id
 
     elif isinstance(target, DataLeakSitePostItem):
-        url = (
-            "https://verity.intel471.com/sources/data-leak-sites/"
-            + target.website.id
-            + "/threads/"
-            + target.thread.id
-        )
+        post = target.post
+        if (post and post.links and post.links.verity_portal
+                and post.links.verity_portal.href):
+            url = post.links.verity_portal.href
 
     elif isinstance(target, ChatRoomMessageStream):
         msg = target.message
