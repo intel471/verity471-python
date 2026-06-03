@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import logging
 import re
 import concurrent.futures
@@ -236,6 +237,41 @@ def _summarize_target(target: Any) -> str | None:
     return None
 
 
+def _summarize_alert(alert: StreamingWatcherAlert) -> str | None:
+    """Best-effort one-liner from the alert envelope alone (no target needed).
+
+    Used as a fallback when the target couldn't be fetched or isn't
+    summarizable: ``"<Type>: <url>"`` plus the first highlight snippet if
+    present.
+    """
+    label = _type_label(alert.source_type) if alert.source_type else None
+
+    url = None
+    if alert.links:
+        if alert.links.verity_portal and alert.links.verity_portal.href:
+            url = alert.links.verity_portal.href
+        elif alert.links.verity_api and alert.links.verity_api.href:
+            url = alert.links.verity_api.href
+
+    head = f"{label}: {url}" if (label and url) else (label or url)
+
+    snippet = None
+    if alert.highlights and alert.highlights[0].snippets:
+        snippet = _snippet(alert.highlights[0].snippets[0])
+
+    return _join([head, snippet])
+
+
+class AlertTargetStatus(str, enum.Enum):
+    """HTTP-style outcome of fetching an alert's target."""
+
+    OK = "ok"                      # target fetched
+    NO_LINK = "no_link"            # alert had no links.verity_api.href
+    UNRESOLVABLE = "unresolvable"  # URL matched no known SDK route (404-ish)
+    FORBIDDEN = "forbidden"        # API returned 403
+    ERROR = "error"                # unexpected fetch error (5xx-ish)
+
+
 @dataclass
 class AlertTarget:
     """An alert paired with its fully fetched target object.
@@ -245,9 +281,16 @@ class AlertTarget:
     object — a report, forum post, credential, or whatever the alert refers to.
     ``target`` is ``None`` when the URL could not be mapped to a known route.
 
+    ``status`` is the :class:`AlertTargetStatus` for the fetch — ``OK`` when the
+    target was fetched, otherwise the reason it could not be (``NO_LINK``,
+    ``UNRESOLVABLE``, ``FORBIDDEN``, ``ERROR``).  ``target is None`` together
+    with ``status != OK`` means the fetch failed; ``status_reason`` carries the
+    human-readable detail (e.g. the URL or the underlying error message).
+
     ``target_summary`` provides a compact, human-readable one-liner for the
     target (e.g. report title + date, indicator type + value, credential
-    login + domain).
+    login + domain).  When the target is missing or not summarizable, it falls
+    back to a summary built from the alert envelope itself.
 
     ``watcher`` is the full :class:`GetWatcherResponse` for the watcher that
     triggered this alert, or ``None`` if not found in the fetched list.
@@ -256,18 +299,21 @@ class AlertTarget:
 
     alert: StreamingWatcherAlert
     target: Any
+    status: AlertTargetStatus = AlertTargetStatus.OK
+    status_reason: str | None = None
     watcher: GetWatcherResponse | None = None
     watcher_group: GetWatcherGroupResponse | None = None
 
     @property
     def target_summary(self) -> str | None:
-        return _summarize_target(self.target)
+        return _summarize_target(self.target) or _summarize_alert(self.alert)
 
 
 def fetch_alert_targets(
     alerts_response: StreamingAlertsResponse,
     api_client: ApiClient,
     raise_on_error: bool = False,
+    skip_missing_targets: bool = False,
 ) -> list[AlertTarget]:
     """Fetch the full target object for every alert in *alerts_response*.
 
@@ -276,18 +322,25 @@ def fetch_alert_targets(
     URL and returns :class:`AlertTarget` pairs so you can work with the actual
     content (report body, forum post text, etc.) alongside the alert metadata.
 
-    URLs that cannot be mapped to a known SDK route always produce an
-    :class:`AlertTarget` with ``target=None`` (and emit a warning).  Other
-    errors (missing link, API call failure) follow *raise_on_error*: when
-    ``True`` the exception propagates; when ``False`` an error is logged and
-    the alert is omitted from the result.
+    When a target cannot be fetched (no link, no known SDK route, forbidden, or
+    an unexpected error), the behaviour depends on *skip_missing_targets*: by
+    default (``False``) the alert is still returned with ``target=None`` and a
+    non-``OK`` :class:`AlertTargetStatus` (plus a ``status_reason``) so callers
+    can see it failed and why; when ``True`` such alerts are omitted from the
+    result entirely.  Marketplace alerts are always skipped silently, regardless
+    of either flag.
 
     Args:
         alerts_response: The page returned by :meth:`AlertsApi.get_alerts_stream`.
         api_client: An active :class:`ApiClient` (must share credentials with
             the alerts call).
-        raise_on_error: When ``True``, re-raise unexpected errors instead of
-            logging and skipping the alert. Defaults to ``False``.
+        raise_on_error: When ``True``, re-raise unexpected errors (and the
+            missing-link ``ValueError``) instead of recording them on the
+            result. Defaults to ``False``.
+        skip_missing_targets: When ``True``, alerts whose target cannot be
+            fetched are omitted from the result. When ``False`` (default) they
+            are returned with ``target=None`` and a failure ``status``.
+            Defaults to ``False``.
 
     Returns:
         A list of :class:`AlertTarget` objects in the same order as
@@ -297,7 +350,7 @@ def fetch_alert_targets(
 
         alerts = alerts_api.get_alerts_stream(size=10)
         for r in fetch_alert_targets(alerts, api_client):
-            print(r.alert.source_type, r.alert.status, r.target)
+            print(r.alert.source_type, r.status, r.status_reason, r.target)
     """
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
@@ -307,20 +360,32 @@ def fetch_alert_targets(
             if raise_on_error:
                 raise ValueError("Alert %s has no verity_api link" % alert.source_id)
             log.error("Alert %s has no verity_api link", alert.source_id)
-            return None
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.NO_LINK,
+                               status_reason="Alert has no verity_api link")
         try:
             target = call_url(api_client, url)
         except UnresolvableURL:
             log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
-            return AlertTarget(alert=alert, target=None)
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.UNRESOLVABLE,
+                               status_reason=f"No SDK route for URL: {url}")
         except ForbiddenException:
             log.debug("Failed to fetch target for alert %s (%s) - Forbidden", alert.source_id, url)
-            return None
-        except Exception:
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.FORBIDDEN,
+                               status_reason="Forbidden (403) fetching target")
+        except Exception as exc:
             if raise_on_error:
                 raise
             log.error("Failed to fetch target for alert %s (%s)", alert.source_id, url, exc_info=True)
-            return None
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.ERROR,
+                               status_reason=f"Error fetching target: {exc}")
         _patch_portal_url(alert, target)  # TEMPORARY WORKAROUND — remove once API is fixed
         return AlertTarget(alert=alert, target=target)
 
