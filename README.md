@@ -222,8 +222,13 @@ The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects t
 `fetch_alert_targets` resolves each alert's API link in parallel and pairs it with the fully
 fetched target object — a report, forum post, credential, indicator, or any other supported type.
 
+When a target cannot be fetched (no link, no known SDK route, forbidden, or an unexpected error),
+the alert is still returned by default with `target=None` and a `status` explaining why, so nothing
+is silently lost. Pass `skip_missing_targets=True` to omit such alerts instead. Marketplace alerts
+are always skipped silently.
+
 ```python
-from verity471.helpers import fetch_alert_targets, AlertTarget
+from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatus
 ```
 
 ### Parameters
@@ -232,7 +237,8 @@ from verity471.helpers import fetch_alert_targets, AlertTarget
 |---|---|---|---|
 | `alerts_response` | `StreamingAlertsResponse` | *(required)* | The page returned by `AlertsApi.get_alerts_stream()`. |
 | `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
-| `raise_on_error` | `bool` | `False` | When `True`, re-raise exceptions instead of logging and skipping the alert. |
+| `raise_on_error` | `bool` | `False` | When `True`, re-raise unexpected errors (and the missing-link error) instead of recording them on the result. |
+| `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. Marketplace alerts are always skipped regardless. |
 
 ### Returns
 
@@ -243,8 +249,10 @@ Each `AlertTarget` exposes:
 | Attribute | Type | Description |
 |---|---|---|
 | `.alert` | `StreamingWatcherAlert` | The original alert object (status, watcher IDs, timestamps, highlights, etc.). |
-| `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
-| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. |
+| `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the target could not be fetched (see `.status`). |
+| `.status` | `AlertTargetStatus` | The fetch outcome: `OK` when the target was fetched, otherwise `NO_LINK`, `UNRESOLVABLE`, `FORBIDDEN`, or `ERROR`. |
+| `.status_reason` | `str \| None` | A human-readable detail for a non-`OK` status (e.g. the URL or the underlying error message). `None` when `status` is `OK`. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. Falls back to a summary built from the alert envelope (type, link, first highlight snippet) when the target is missing or not summarizable. |
 | `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
 | `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
 
@@ -256,7 +264,7 @@ share the same watcher.
 
 ```python
 import verity471
-from verity471.helpers import fetch_alert_targets
+from verity471.helpers import fetch_alert_targets, AlertTargetStatus
 
 configuration = verity471.Configuration(
     username="your_username",
@@ -271,6 +279,9 @@ with verity471.ApiClient(configuration) as api_client:
     for t in targets:
         watcher_name = t.watcher.name if t.watcher else None
         group_name = t.watcher_group.name if t.watcher_group else None
+        if t.status is not AlertTargetStatus.OK:
+            print(t.alert.source_type, t.alert.status, f"[{t.status.value}: {t.status_reason}]", t.target_summary)
+            continue
         print(t.alert.source_type, t.alert.status, watcher_name, group_name, t.target_summary)
 ```
 
@@ -280,6 +291,7 @@ with verity471.ApiClient(configuration) as api_client:
 fintel read threat_actor Ransomware actors [Fintel] Threat Landscape: Q1 2025 Summary | 2025-03-15T12:00:00Z | Key findings from the first quarter include…
 forum_post unread ddos_monitor My Watchers [Forum Post] Selling access to corporate VPN… | 2025-03-14T08:30:00Z
 credential_occurrence unread cred_watcher Credential Alerts [Credential Occurrence] https://example.com/login | email | 2025-03-13T10:00:00Z
+forum_post unread [forbidden: Forbidden (403) fetching target] Forums Post: https://api.intel471.cloud/integrations/sources/v1/forums/posts/post--… | …matched snippet text…
 malware_report read malware_tracker My Watchers [Malware Report] New variant of Lumma Stealer | 2025-03-12T15:45:00Z | A new variant has been observed…
 ```
 
