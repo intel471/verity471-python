@@ -5,9 +5,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tests.conftest import PREFIX, read_fixture
-from verity471.helpers import fetch_alert_targets
+from types import SimpleNamespace
+
+from verity471.helpers import fetch_alert_targets, AlertTargetStatus
 from verity471.exceptions import ForbiddenException
-from verity471.helpers.alerts import _patch_portal_url
+from verity471.helpers.alerts import _patch_portal_url, _summarize_alert
 from verity471.helpers.url_router import UnresolvableURL
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
@@ -227,6 +229,19 @@ def _alerts_response(*alerts):
     return resp
 
 
+def _alert_like(source_type="forums_post", portal=None, api=_SPOT_URL, snippets=None,
+                source_id="src--test", watcher_id=1, watcher_group_id=1):
+    """A lightweight alert with real string attributes (for summary tests)."""
+    links = SimpleNamespace(
+        verity_portal=SimpleNamespace(href=portal) if portal else None,
+        verity_api=SimpleNamespace(href=api) if api else None,
+    )
+    highlights = [SimpleNamespace(field_name="x", snippets=snippets)] if snippets else None
+    return SimpleNamespace(
+        source_type=source_type, links=links, highlights=highlights,
+        source_id=source_id, watcher_id=watcher_id, watcher_group_id=watcher_group_id)
+
+
 def _no_watchers(watchers_mock):
     watchers_mock.return_value.get_watchers.return_value.watchers = []
     watchers_mock.return_value.get_watcher_groups.return_value.watchers_groups = []
@@ -253,7 +268,7 @@ class TestFetchAlertTargets:
         alert = _mock_alert()
         alert.links = None
         with verity471.ApiClient(configuration) as api_client:
-            result = fetch_alert_targets(_alerts_response(alert), api_client)
+            result = fetch_alert_targets(_alerts_response(alert), api_client, skip_missing_targets=True)
         assert result == []
 
     def test_missing_link_raises_when_requested(self, _call_url_mock, _watchers_mock):
@@ -272,18 +287,85 @@ class TestFetchAlertTargets:
         assert len(result) == 1
         assert result[0].alert is alert
         assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.UNRESOLVABLE
+        assert result[0].status_reason
 
     def test_forbidden_is_skipped(self, call_url_mock, _watchers_mock):
         call_url_mock.side_effect = ForbiddenException()
         with verity471.ApiClient(configuration) as api_client:
-            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
         assert result == []
 
-    def test_api_error_skipped_by_default(self, call_url_mock, _watchers_mock):
+    def test_api_error_skipped_when_requested(self, call_url_mock, _watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
         with verity471.ApiClient(configuration) as api_client:
-            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
         assert result == []
+
+    # --- default (skip_missing_targets=False): failures kept with a status ---
+
+    def test_missing_link_kept_with_status_by_default(self, _call_url_mock, watchers_mock):
+        _no_watchers(watchers_mock)
+        alert = _mock_alert()
+        alert.links = None
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert len(result) == 1
+        assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.NO_LINK
+        assert "link" in result[0].status_reason.lower()
+
+    def test_forbidden_kept_with_status_by_default(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = ForbiddenException()
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert len(result) == 1
+        assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.FORBIDDEN
+
+    def test_api_error_kept_with_status_by_default(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = RuntimeError("boom")
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert len(result) == 1
+        assert result[0].status == AlertTargetStatus.ERROR
+        assert "boom" in result[0].status_reason
+
+    def test_unresolvable_skipped_when_skip_true(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = UnresolvableURL("no route")
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
+        assert result == []
+
+    def test_error_raise_takes_priority_over_skip_false(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = RuntimeError("boom")
+        with verity471.ApiClient(configuration) as api_client:
+            with pytest.raises(RuntimeError):
+                fetch_alert_targets(_alerts_response(_mock_alert()), api_client,
+                                    raise_on_error=True, skip_missing_targets=False)
+
+    def test_success_has_ok_status(self, call_url_mock, watchers_mock):
+        _no_watchers(watchers_mock)
+        call_url_mock.return_value = MagicMock()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert len(result) == 1
+        assert result[0].status == AlertTargetStatus.OK
+        assert result[0].status_reason is None
+
+    def test_failure_result_still_enriched_with_watcher(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = ForbiddenException()
+        watcher = MagicMock(spec=GetWatcherResponse)
+        watcher.id = 1
+        watchers_mock.return_value.get_watchers.return_value.watchers = [watcher]
+        watchers_mock.return_value.get_watcher_groups.return_value.watchers_groups = []
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert(watcher_id=1)), api_client)
+        assert len(result) == 1
+        assert result[0].status == AlertTargetStatus.FORBIDDEN
+        assert result[0].watcher is watcher
 
     def test_api_error_raises_when_requested(self, call_url_mock, _watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
@@ -315,3 +397,40 @@ class TestFetchAlertTargets:
         for i, r in enumerate(result):
             assert r.alert is alerts[i]
             assert r.target is targets[i]
+
+    def test_alert_summary_used_when_target_missing(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = ForbiddenException()
+        _no_watchers(watchers_mock)
+        alert = _alert_like(source_type="forums_post", api=_SPOT_URL, snippets=["hello world"])
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert len(result) == 1
+        summary = result[0].target_summary
+        assert summary.startswith("Forums Post: ")
+        assert _SPOT_URL in summary
+        assert "hello world" in summary
+
+
+# ---------------------------------------------------------------------------
+# Tests for the alert-envelope fallback summary (_summarize_alert).
+# ---------------------------------------------------------------------------
+
+class TestSummarizeAlert:
+
+    def test_uses_type_url_and_snippet(self):
+        summary = _summarize_alert(_alert_like(api=_SPOT_URL, snippets=["a snippet"]))
+        assert summary == f"Forums Post: {_SPOT_URL} | a snippet"
+
+    def test_link_prefers_portal_over_api(self):
+        portal = "https://portal.intel471.com/forum/post/123"
+        summary = _summarize_alert(_alert_like(portal=portal, api=_SPOT_URL))
+        assert portal in summary
+        assert _SPOT_URL not in summary
+
+    def test_link_falls_back_to_api(self):
+        summary = _summarize_alert(_alert_like(portal=None, api=_SPOT_URL))
+        assert _SPOT_URL in summary
+
+    def test_without_highlights_has_no_snippet(self):
+        summary = _summarize_alert(_alert_like(api=_SPOT_URL, snippets=None))
+        assert summary == f"Forums Post: {_SPOT_URL}"
