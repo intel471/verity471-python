@@ -6,6 +6,7 @@ Credential occurrence with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**accessed_domain** | **str** | Accessed domain. | [optional] 
 **accessed_url** | **str** | Accessed URL. | [optional] 
 **credential** | [**CredentialOccurrenceCredResponse**](CredentialOccurrenceCredResponse.md) |  | [optional] 
 **credential_set** | [**CredCredentialSetResponse**](CredCredentialSetResponse.md) |  | [optional] 

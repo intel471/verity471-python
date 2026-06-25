@@ -4,6 +4,7 @@ All URIs are relative to *https://api.intel471.cloud*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**get_credential_sets_accessed_domains_stream**](CredentialsApi.md#get_credential_sets_accessed_domains_stream) | **GET** /integrations/creds/v1/credential-sets/accessed-domains/stream | Credential set accessed domains stream
 [**get_credential_sets_accessed_urls_stream**](CredentialsApi.md#get_credential_sets_accessed_urls_stream) | **GET** /integrations/creds/v1/credential-sets/accessed-urls/stream | Credential set accessed url stream
 [**get_credential_sets_id**](CredentialsApi.md#get_credential_sets_id) | **GET** /integrations/creds/v1/credential-sets/{id} | Get credential set by ID
 [**get_credential_sets_stream**](CredentialsApi.md#get_credential_sets_stream) | **GET** /integrations/creds/v1/credential-sets/stream | Credential set stream
@@ -12,6 +13,114 @@ Method | HTTP request | Description
 [**get_credentials_occurrences_stream**](CredentialsApi.md#get_credentials_occurrences_stream) | **GET** /integrations/creds/v1/credentials/occurrences/stream | Credential occurrence stream
 [**get_credentials_stream**](CredentialsApi.md#get_credentials_stream) | **GET** /integrations/creds/v1/credentials/stream | Credential stream
 
+
+# **get_credential_sets_accessed_domains_stream**
+> GetCredSetAccessedDomainsResponseStream get_credential_sets_accessed_domains_stream(credential_set_id=credential_set_id, credential_set_name=credential_set_name, accessed_domain=accessed_domain, girs=girs, victim=victim, var_from=var_from, until=until, last_updated_from=last_updated_from, last_updated_until=last_updated_until, size=size, cursor=cursor)
+
+Credential set accessed domains stream
+
+Returns list of Credential set accessed domains matching filter criteria. Stream pagination is based on a cursor.
+        The response is the same as for the credentialsets/accesseddomains endpoint but with the additional “cursorNext”
+        field. Results are sorted by ascending order of the lastUpdated field.\nTwo indications of the end of the stream
+        are possible: the result list is empty or its size is less than the requested items count.
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.models.get_cred_set_accessed_domains_response_stream import GetCredSetAccessedDomainsResponseStream
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.CredentialsApi(api_client)
+    credential_set_id = 'credential_set_id_example' # str | Search by credential set id. (optional)
+    credential_set_name = 'credential_set_name_example' # str | Search by credential set name. (optional)
+    accessed_domain = 'accessed_domain_example' # str |  (optional)
+    girs = '1.0.1,2.1.0,my_girs,company_pirs' # str | Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list (optional)
+    victim = 'victim_example' # str |  (optional)
+    var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
+    until = 56 # int | UNIX timestamp(in milliseconds) (optional)
+    last_updated_from = 'last_updated_from_example' # str | UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days (optional)
+    last_updated_until = 'last_updated_until_example' # str | UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days (optional)
+    size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
+    cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
+
+    try:
+        # Credential set accessed domains stream
+        api_response = api_instance.get_credential_sets_accessed_domains_stream(credential_set_id=credential_set_id, credential_set_name=credential_set_name, accessed_domain=accessed_domain, girs=girs, victim=victim, var_from=var_from, until=until, last_updated_from=last_updated_from, last_updated_until=last_updated_until, size=size, cursor=cursor)
+        print("The response of CredentialsApi->get_credential_sets_accessed_domains_stream:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CredentialsApi->get_credential_sets_accessed_domains_stream: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credential_set_id** | **str**| Search by credential set id. | [optional] 
+ **credential_set_name** | **str**| Search by credential set name. | [optional] 
+ **accessed_domain** | **str**|  | [optional] 
+ **girs** | **str**| Filter results by custom GIRs (General Intelligence Requirements), my_girs or company_pirs. Using multiple values will return results based on the aggregated GIR list | [optional] 
+ **victim** | **str**|  | [optional] 
+ **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
+ **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
+ **last_updated_from** | **str**| UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days | [optional] 
+ **last_updated_until** | **str**| UNIX timestamp(in milliseconds) or period e.g. 24hours or 7days | [optional] 
+ **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
+ **cursor** | **str**| Continue scrolling from cursor | [optional] 
+
+### Return type
+
+[**GetCredSetAccessedDomainsResponseStream**](GetCredSetAccessedDomainsResponseStream.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  -  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_credential_sets_accessed_urls_stream**
 > GetCredSetAccessedUrlResponseStream get_credential_sets_accessed_urls_stream(credential_set_id=credential_set_id, credential_set_name=credential_set_name, accessed_url=accessed_url, girs=girs, victim=victim, var_from=var_from, until=until, last_updated_from=last_updated_from, last_updated_until=last_updated_until, size=size, cursor=cursor)
