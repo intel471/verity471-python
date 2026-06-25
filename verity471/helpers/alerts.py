@@ -327,8 +327,10 @@ def fetch_alert_targets(
     default (``False``) the alert is still returned with ``target=None`` and a
     non-``OK`` :class:`AlertTargetStatus` (plus a ``status_reason``) so callers
     can see it failed and why; when ``True`` such alerts are omitted from the
-    result entirely.  Marketplace alerts are always skipped silently, regardless
-    of either flag.
+    result entirely.  Marketplace alerts have no SDK route yet, so they are
+    treated like any other unresolvable target: returned as bare alerts with
+    ``status=UNRESOLVABLE`` by default, or omitted when *skip_missing_targets*
+    is ``True``.
 
     Args:
         alerts_response: The page returned by :meth:`AlertsApi.get_alerts_stream`.
@@ -354,8 +356,6 @@ def fetch_alert_targets(
     """
     def _fetch(alert: StreamingWatcherAlert) -> AlertTarget | None:
         url = alert.links.verity_api.href if (alert.links and alert.links.verity_api) else None
-        if url and "/integrations/marketplaces/" in url:
-            return None
         if not url:
             if raise_on_error:
                 raise ValueError("Alert %s has no verity_api link" % alert.source_id)
