@@ -257,12 +257,25 @@ class TestFetchAlertTargets:
         assert result == []
         call_url_mock.assert_not_called()
 
-    def test_marketplace_url_is_skipped(self, call_url_mock, _watchers_mock):
+    def test_marketplace_url_returns_bare_alert(self, call_url_mock, watchers_mock):
+        # Marketplace hits have no SDK route, so they resolve as UnresolvableURL
+        # and come back as bare alerts (target=None) rather than being dropped.
+        call_url_mock.side_effect = UnresolvableURL("no route")
+        _no_watchers(watchers_mock)
         alert = _mock_alert(url=_MARKETPLACE_URL)
         with verity471.ApiClient(configuration) as api_client:
             result = fetch_alert_targets(_alerts_response(alert), api_client)
+        assert len(result) == 1
+        assert result[0].alert is alert
+        assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.UNRESOLVABLE
+
+    def test_marketplace_url_omitted_when_skipping(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = UnresolvableURL("no route")
+        alert = _mock_alert(url=_MARKETPLACE_URL)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(alert), api_client, skip_missing_targets=True)
         assert result == []
-        call_url_mock.assert_not_called()
 
     def test_missing_link_is_skipped(self, _call_url_mock, _watchers_mock):
         alert = _mock_alert()
