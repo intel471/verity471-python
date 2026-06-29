@@ -6,7 +6,8 @@ Credential with related objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accessed_url** | **str** | Accessed URL of the credential. | [optional] 
+**accessed_domain** | **str** | Accessed Domain of the credential. | [optional] 
+**accessed_url** | **str** | Deprecated. Use accessed_domain instead. Mirrors accessed_domain for backwards compatibility. | [optional] 
 **affiliations** | **List[str]** | Affiliation of the credential. Allowed values: my_employees, vip_emails, my_customers, third_parties. | [optional] 
 **credential_domain** | **str** | Domain of the credential. | [optional] 
 **credential_login** | **str** | Login of the credential. | [optional] 

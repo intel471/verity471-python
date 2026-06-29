@@ -6,7 +6,8 @@ Statistics regarding returned objects.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accessed_urls_count** | **int** | Number of accessed URLs. | [optional] 
+**accessed_domains_count** | **int** | Number of accessed domains. | [optional] 
+**accessed_urls_count** | **int** | Deprecated. Use accessed_domains_count instead. Mirrors accessed_domains_count for backwards compatibility. | [optional] 
 **credential_occurrences_count** | **int** | Number of credential occurrences. | [optional] 
 **credentials_count** | **int** | Number of credentials. | [optional] 
 

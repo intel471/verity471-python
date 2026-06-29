@@ -1,6 +1,6 @@
 # CredSetAccessedUrlDataResponse
 
-Credential set accessed URL with related objects.
+Credential set accessed url with related objects.
 
 ## Properties
 
