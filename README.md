@@ -222,6 +222,12 @@ The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects t
 `fetch_alert_targets` resolves each alert's API link in parallel and pairs it with the fully
 fetched target object — a report, forum post, credential, indicator, or any other supported type.
 
+When a target cannot be fetched (no link, no known SDK route, forbidden, or an unexpected error),
+the alert is still returned by default with `target=None` and a `status` explaining why, so nothing
+is silently lost. Pass `skip_missing_targets=True` to omit such alerts instead. Marketplace hits
+have no SDK route yet, so they come back as bare alerts with `status=UNRESOLVABLE` (or are omitted
+when `skip_missing_targets=True`), the same as any other unresolvable target.
+
 ```python
 from verity471 import fetch_alert_targets, AlertTarget
 ```
@@ -232,7 +238,8 @@ from verity471 import fetch_alert_targets, AlertTarget
 |---|---|---|---|
 | `alerts_response` | `StreamingAlertsResponse` | *(required)* | The page returned by `AlertsApi.get_alerts_stream()`. |
 | `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
-| `raise_on_error` | `bool` | `False` | When `True`, re-raise exceptions instead of logging and skipping the alert. |
+| `raise_on_error` | `bool` | `False` | When `True`, re-raise unexpected errors (and the missing-link error) instead of recording them on the result. |
+| `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. Marketplace hits (no SDK route yet) are treated like any other unresolvable target. |
 
 ### Returns
 
