@@ -8,9 +8,11 @@ from collections.abc import Callable
 from typing import Union, List, Optional, Any
 from enum import Enum
 
-from stix2 import Bundle
+import pycti
+from stix2 import Bundle, ExternalReference, Relationship
 
-from .. import INTEL_471, STIXMapperSettings
+from .. import INTEL_471, STIXMapperSettings, author_identity
+from ..constants import MARKING, PLATFORM_VERITY471
 from ..exceptions import EmptyBundle, StixMapperNotFound
 
 log = logging.getLogger(__name__)
@@ -173,3 +175,20 @@ class BaseMapper(ABC):
 
     def get_girs_labels(self, gir_paths: List[dict]):
         return [f'{INTEL_471} - GIR {i["path"]} - {i["name"]}' for i in gir_paths]
+
+    def external_references(self, links_sources: Union[dict, list[dict]]) -> list[ExternalReference]:
+        """Build STIX ExternalReference objects from a Verity ``links`` structure."""
+        return [ExternalReference(source_name=link.name, url=link.url)
+                for link in self.map_links(links_sources) if link.url]
+
+    def relate(self, source_ref: str, target_ref: str, relationship_type: str = "related-to") -> Relationship:
+        """Build a STIX Relationship with the standard author/marking/label wiring."""
+        return Relationship(
+            id=pycti.StixCoreRelationship.generate_id(relationship_type, source_ref, target_ref),
+            relationship_type=relationship_type,
+            source_ref=source_ref,
+            target_ref=target_ref,
+            created_by_ref=author_identity,
+            labels=[PLATFORM_VERITY471],
+            object_marking_refs=[MARKING],
+        )

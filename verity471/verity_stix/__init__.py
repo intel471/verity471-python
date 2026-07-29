@@ -14,6 +14,10 @@ class STIXMapperSettings(NamedTuple):
     # Only if given report from search endpoint is truncated or has inline images.
     report_full_content: bool = True
     ioc_opencti_score: Optional[int] = None
+    # When mapping alerts, wrap each alert's resolved target in an Incident
+    # (incident_type "alert"/"data-breach") linked to the content graph. When
+    # False, only the target content is emitted, tagged with watcher labels.
+    alerts_create_incident: bool = True
 
 
 class StixObjects:
