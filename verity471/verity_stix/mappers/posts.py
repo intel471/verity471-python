@@ -122,7 +122,7 @@ class PostsMapper(BaseMapper):
              "description": thread_title if thread.get("id") else None},
         ], media.id)
 
-        self._add_author(container, post.get("author"), media.id)
+        self._add_actor(container, post.get("author"), media.id, role="author")
         self._add_entities(container, post.get("entities"), media.id)
         self._add_attachments(container, post.get("attachments"), media.id)
 
@@ -147,8 +147,8 @@ class PostsMapper(BaseMapper):
              "channel_type": "forum", "links": forum.get("links")},
         ], media.id)
 
-        self._add_author(container, source.get("author"), media.id)
-        self._add_author(container, source.get("recipient"), media.id)
+        self._add_actor(container, source.get("author"), media.id, role="sender")
+        self._add_actor(container, source.get("recipient"), media.id, role="recipient")
 
     # -- chat / messaging-service message ----------------------------------
 
@@ -177,20 +177,23 @@ class PostsMapper(BaseMapper):
              "description": room.get("name") if room.get("id") else None},
         ], media.id)
 
-        self._add_author(container, message.get("author"), media.id)
+        self._add_actor(container, message.get("author"), media.id, role="author")
         self._add_attachments(container, message.get("attachments"), media.id)
 
     # -- shared -------------------------------------------------------------
 
-    def _add_author(self, container: StixObjects, author: dict, media_id: str):
-        if not isinstance(author, dict):
+    def _add_actor(self, container: StixObjects, actor: dict, media_id: str, role: str = None):
+        """Map a handle (author / sender / recipient) to an individual Identity and
+        link it to the post. ``role`` annotates the relationship so sender and
+        recipient are distinguishable (both edges are otherwise ``related-to``)."""
+        if not isinstance(actor, dict):
             return
-        name = author.get("user_name")
+        name = actor.get("user_name")
         if not name:
             return
-        individual = map_individual(name, aliases=author.get("historical_usernames") or None)
+        individual = map_individual(name, aliases=actor.get("historical_usernames") or None)
         container.add(individual)
-        container.add(self.relate(individual.id, media_id, "related-to"))
+        container.add(self.relate(individual.id, media_id, "related-to", description=role))
 
     def _add_entities(self, container: StixObjects, entities: list, media_id: str):
         for entity_source in entities or []:

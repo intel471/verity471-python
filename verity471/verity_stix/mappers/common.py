@@ -181,13 +181,19 @@ class BaseMapper(ABC):
         return [ExternalReference(source_name=link.name, url=link.url)
                 for link in self.map_links(links_sources) if link.url]
 
-    def relate(self, source_ref: str, target_ref: str, relationship_type: str = "related-to") -> Relationship:
-        """Build a STIX Relationship with the standard author/marking/label wiring."""
+    def relate(self, source_ref: str, target_ref: str, relationship_type: str = "related-to",
+               description: str = None) -> Relationship:
+        """Build a STIX Relationship with the standard author/marking/label wiring.
+
+        ``description`` annotates the role the edge represents (e.g. "sender" /
+        "recipient" / "author") when the relationship_type alone is ambiguous.
+        """
         return Relationship(
             id=pycti.StixCoreRelationship.generate_id(relationship_type, source_ref, target_ref),
             relationship_type=relationship_type,
             source_ref=source_ref,
             target_ref=target_ref,
+            description=description,
             created_by_ref=author_identity,
             labels=[PLATFORM_VERITY471],
             object_marking_refs=[MARKING],

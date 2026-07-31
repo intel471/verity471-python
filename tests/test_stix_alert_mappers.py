@@ -94,6 +94,21 @@ def test_posts_emit_channel_hierarchy_and_publishes(fixture, expected_channels):
     assert "persona" not in {o.type for o in bundle.objects}
 
 
+def test_private_message_distinguishes_sender_and_recipient():
+    src = _api_fixture("PrivateMessageDetails1")
+    src["author"]["user_name"] = "alice"
+    src["recipient"]["user_name"] = "bob"
+    bundle = StixMapper(_settings()).map(src)
+    media = _by_type(bundle, "media-content")[0]
+    ident = {i.id: i.name for i in _by_type(bundle, "identity") if i.identity_class == "individual"}
+    # the actor->post edges carry the role in their description
+    roles = {ident.get(r.source_ref): r.description
+             for r in _by_type(bundle, "relationship")
+             if r.relationship_type == "related-to" and r.target_ref == media.id
+             and r.source_ref in ident}
+    assert roles == {"alice": "sender", "bob": "recipient"}
+
+
 def test_chat_channels_use_server_type():
     bundle = StixMapper(_settings()).map(_api_fixture("ChatRoomMessageStream"))
     assert all(c.channel_types == ["discord"] for c in _by_type(bundle, "channel"))
