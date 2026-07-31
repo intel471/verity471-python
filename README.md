@@ -9,19 +9,19 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.11
+- API version: 1.1.12
   - creds: 1.0.4
   - indicators: 1.0.1
   - malware: 1.0.1
-  - reports: 1.0.5
-  - sources: 1.0.5
+  - reports: 1.0.6
+  - sources: 1.0.6
   - actors: 1.0.2
-  - watchers: 1.0.1
+  - watchers: 1.0.2
   - observables: 1.0.1
   - entities: 1.0.1
-  - girs: 1.0.0
+  - girs: 1.0.1
 
-- Package version: 1.1.11
+- Package version: 1.1.12
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -229,7 +229,7 @@ have no SDK route yet, so they come back as bare alerts with `status=UNRESOLVABL
 when `skip_missing_targets=True`), the same as any other unresolvable target.
 
 ```python
-from verity471 import fetch_alert_targets, AlertTarget
+from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatus
 ```
 
 ### Parameters
@@ -251,7 +251,9 @@ Each `AlertTarget` exposes:
 |---|---|---|
 | `.alert` | `StreamingWatcherAlert` | The original alert object (status, watcher IDs, timestamps, highlights, etc.). |
 | `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
-| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. |
+| `.status` | `AlertTargetStatus` | Outcome of the target fetch: `OK`, `NO_LINK`, `UNRESOLVABLE`, `FORBIDDEN`, or `ERROR`. Anything other than `OK` means `.target` is `None`. |
+| `.status_reason` | `str \| None` | Human-readable detail for a non-`OK` status (the unresolvable URL, the underlying error message, …). `None` when `.status` is `OK`. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. Falls back to a summary built from the alert envelope when the target is missing or not summarizable. |
 | `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
 | `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
 
@@ -263,6 +265,7 @@ share the same watcher.
 
 ```python
 import verity471
+from verity471.helpers import fetch_alert_targets
 
 configuration = verity471.Configuration(
     username="your_username",
@@ -273,7 +276,7 @@ with verity471.ApiClient(configuration) as api_client:
     alerts_api = verity471.AlertsApi(api_client)
     alerts_response = alerts_api.get_alerts_stream(size=10)
 
-    targets = verity471.fetch_alert_targets(alerts_response, api_client)
+    targets = fetch_alert_targets(alerts_response, api_client)
     for t in targets:
         watcher_name = t.watcher.name if t.watcher else None
         group_name = t.watcher_group.name if t.watcher_group else None
@@ -318,9 +321,10 @@ however many are available.
 
 The helper issues lightweight `size=1` probe calls to count matching items in progressively wider
 time windows (doubling each round), starting from an endpoint-specific seed tuned to typical data
-density. Once `count >= n`, a single fetch retrieves all items in that window and the tail is
-sliced. For very high-density endpoints where the window contains more than 1 000 items the helper
-paginates automatically and keeps only the last `n`.
+density. Once `count >= n`, the helper drains that window by paging through the cursor and keeps
+only the newest `n` items. Because responses are best-effort — a page may contain fewer items than
+requested when the payload is large — paging continues until the window is drained or an empty page
+arrives, rather than assuming one request returns the whole window.
 
 ### Example usage
 
@@ -463,6 +467,7 @@ Class | Method | HTTP request | Description
  - [DataLeakSitePostItem](docs/DataLeakSitePostItem.md)
  - [DataLeakSitePostWebsite](docs/DataLeakSitePostWebsite.md)
  - [DataLeakSitePostsStreamingPage](docs/DataLeakSitePostsStreamingPage.md)
+ - [DataLeakSitesWebsite](docs/DataLeakSitesWebsite.md)
  - [Encryption](docs/Encryption.md)
  - [Entities](docs/Entities.md)
  - [Entity](docs/Entity.md)
@@ -580,6 +585,7 @@ Class | Method | HTTP request | Description
  - [StreamingAlertsResponse](docs/StreamingAlertsResponse.md)
  - [StreamingWatcherAlert](docs/StreamingWatcherAlert.md)
  - [SubForumResponse1](docs/SubForumResponse1.md)
+ - [SubscriptionType](docs/SubscriptionType.md)
  - [Template](docs/Template.md)
  - [TensionPointResponse](docs/TensionPointResponse.md)
  - [ThreadResponse1](docs/ThreadResponse1.md)
@@ -595,6 +601,7 @@ Class | Method | HTTP request | Description
  - [VulnerabilitiesReportDetailsResponseStream](docs/VulnerabilitiesReportDetailsResponseStream.md)
  - [VulnerabilitiesReportsResponseStream](docs/VulnerabilitiesReportsResponseStream.md)
  - [VulnerabilityStatus](docs/VulnerabilityStatus.md)
+ - [WatcherAlertStatus](docs/WatcherAlertStatus.md)
  - [WatcherGroupType](docs/WatcherGroupType.md)
  - [YaraData](docs/YaraData.md)
 

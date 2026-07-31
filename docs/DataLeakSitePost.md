@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **published_at** | **str** |  | [optional] 
 **source_url** | **str** |  | [optional] 
 **title** | **str** |  | 
+**website** | [**DataLeakSitesWebsite**](DataLeakSitesWebsite.md) |  | 
 
 ## Example
 
