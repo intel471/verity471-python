@@ -22,6 +22,8 @@ Name | Type | Description | Notes
 **sources** | [**List[SourcesResponse]**](SourcesResponse.md) | List of sources referenced in the report | [optional] 
 **title** | **str** | Title of the report | 
 **type** | **str** | Type of the report | 
+**version_id** | **str** | UUID of the current major version. null for reports ingested before versioning. | [optional] 
+**version_number** | **int** | Integer version counter (e.g., 1, 2). null for pre-versioning reports. | [optional] 
 **victims** | [**List[ReportsVictimResponse]**](ReportsVictimResponse.md) | List of purported victims mentioned in the report | [optional] 
 
 ## Example

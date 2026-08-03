@@ -4,8 +4,8 @@
 
 Stream endpoints only return data in ascending (oldest-first) order.  To get
 the *latest* N results the helper probes the API with progressively wider time
-windows until ``count >= n``, then performs a single fetch (or a short
-pagination run for very high-density endpoints) and slices the tail.
+windows until ``count >= n``, then drains that window via the cursor while
+keeping only the newest *n* items.
 
 Usage::
 
@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import logging
 import time
+from collections import deque
 from typing import Any, Callable
 
 log = logging.getLogger(__name__)
@@ -62,6 +63,7 @@ _INITIAL_WINDOW_SECONDS: dict[str, int] = {
 }
 _DEFAULT_INITIAL_WINDOW_SECONDS = 86_400        # 24 h fallback for unknown methods
 _MAX_WINDOW_SECONDS = 365 * 24 * 3_600          # 1-year hard cap
+_MAX_PAGE_SIZE = 1_000                          # API cap on the `size` parameter
 
 
 def _extract_items(response: Any) -> list:
@@ -116,6 +118,9 @@ def get_latest(stream_method: Callable, n: int, **kwargs: Any) -> list:
             "do not pass them as keyword arguments."
         )
 
+    if n <= 0:
+        return []
+
     now_ms = int(time.time() * 1000)
     window_s = _INITIAL_WINDOW_SECONDS.get(method_name, _DEFAULT_INITIAL_WINDOW_SECONDS)
 
@@ -137,24 +142,43 @@ def get_latest(stream_method: Callable, n: int, **kwargs: Any) -> list:
     if count == 0:
         return []
 
-    # Phase 2a: everything fits in one page — single fetch, slice the tail.
-    if count <= 1000:
-        resp = stream_method(var_from=from_ms, until=now_ms, size=count, **kwargs)
-        return _extract_items(resp)[-n:]
-
-    # Phase 2b: high-density burst — paginate and keep only the last n items.
-    log.debug(
-        "%s: count=%d > 1000, paginating to collect last %d items", method_name, count, n
-    )
-    buffer: list = []
+    # Phase 2: drain the window via the cursor, keeping only the newest n items.
+    #
+    # A page may come back shorter than requested — responses are best-effort and
+    # the API truncates when the result payload is large.  Item counts are
+    # therefore never a "that was the last page" signal: keep paging until the
+    # window is drained (``seen >= count``) or an empty page arrives, which is
+    # the documented end-of-stream marker and may still carry a cursor.
+    page_size = min(count, _MAX_PAGE_SIZE)
+    tail: deque = deque(maxlen=n)
+    seen = 0
     cursor: str | None = None
-    while len(buffer) < count:
+    while True:
         if cursor:
-            resp = stream_method(cursor=cursor, size=1000, **kwargs)
+            resp = stream_method(cursor=cursor, size=page_size, **kwargs)
         else:
-            resp = stream_method(var_from=from_ms, until=now_ms, size=1000, **kwargs)
-        buffer.extend(_extract_items(resp))
+            resp = stream_method(var_from=from_ms, until=now_ms, size=page_size, **kwargs)
+
+        items = _extract_items(resp)
+        if not items:
+            log.debug(
+                "%s: empty page after %d/%d items", method_name, seen, count
+            )
+            break
+        if len(items) < page_size:
+            log.debug(
+                "%s: short page (%d of %d requested); continuing via cursor",
+                method_name, len(items), page_size,
+            )
+
+        tail.extend(items)
+        seen += len(items)
+        if seen >= count:
+            break
+
         cursor = resp.cursor_next
         if not cursor:
+            log.debug("%s: no cursor after %d/%d items", method_name, seen, count)
             break
-    return buffer[-n:]
+
+    return list(tail)

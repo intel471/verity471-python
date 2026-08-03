@@ -28,7 +28,8 @@
     "html": "dummy",
     "id": "post--00000000-0000-0000-0000-000000000000",
     "last_updated_ts": "2023-01-14T10:41:01Z",
-    "message": ""
+    "message": "",
+    "source_id": 0
   },
   "sub_forum": {
     "activity": {

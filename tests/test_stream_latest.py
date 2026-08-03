@@ -152,6 +152,39 @@ def test_pagination_collects_across_multiple_pages(_):
 
 
 @patch("verity471.helpers.stream_latest.time.time", return_value=1_000_000.0)
+def test_short_pages_keep_paging_and_return_newest(_):
+    # The API may return fewer items than requested (best-effort responses when
+    # the payload is large).  A short page must not be mistaken for the whole
+    # window, or the tail slice returns items from the middle of it.
+    items = list(range(400))
+    m = _method()
+    m.side_effect = [
+        _make_response(count=400, items=items[:1]),                          # probe
+        _make_response(count=400, items=items[0:120],   cursor_next="c1"),   # short
+        _make_response(count=400, items=items[120:240], cursor_next="c2"),   # short
+        _make_response(count=400, items=items[240:400], cursor_next="c3"),   # drained
+    ]
+    assert get_latest(m, n=10) == items[-10:]
+    assert m.call_count == 4  # probe + 3 pages
+
+
+@patch("verity471.helpers.stream_latest.time.time", return_value=1_000_000.0)
+def test_empty_page_terminates_even_with_live_cursor(_):
+    # End-of-stream is signalled by an empty page, and the cursor is still
+    # populated on it.  With count overstated relative to what can actually be
+    # drained, only the empty page stops the loop.
+    page1 = list(range(1000))
+    m = _method()
+    m.side_effect = [
+        _make_response(count=5000, items=page1[:1]),                  # probe
+        _make_response(count=5000, items=page1, cursor_next="c1"),    # page 1
+        _make_response(count=5000, items=[],    cursor_next="c2"),    # end of stream
+    ]
+    assert get_latest(m, n=10) == page1[-10:]
+    assert m.call_count == 3  # no further requests after the empty page
+
+
+@patch("verity471.helpers.stream_latest.time.time", return_value=1_000_000.0)
 def test_pagination_stops_at_count_not_cursor(_):
     # count=1500; cursor is always present but loop must stop after 2 pages
     page1 = list(range(1000))
