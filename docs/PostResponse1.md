@@ -9,10 +9,13 @@ Name | Type | Description | Notes
 **author** | [**AuthorActor1**](AuthorActor1.md) |  | [optional] 
 **creation_ts** | **str** | First scraping date in ISO 8601 format | 
 **entities** | [**List[EntityItem]**](EntityItem.md) | Entities extracted from the post | [optional] 
+**first_post** | **bool** | True when this post started the thread (the OP) | [optional] 
 **html** | **str** | HTML version of message | 
 **id** | **str** | Post unique id | 
 **last_updated_ts** | **str** | Timestamp of last update | 
 **message** | **str** | Original Message | 
+**source_id** | **int** | Post origin (source) id | 
+**thread_source_id** | **str** | Origin (source) id of the thread the post belongs to | [optional] 
 **translated_message** | **str** | Contains translated message if available | [optional] 
 **translation_status** | [**TranslationStatus**](TranslationStatus.md) |  | [optional] 
 

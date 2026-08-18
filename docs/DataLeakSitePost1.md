@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **is_inactive** | **bool** | True if post is inactive | [optional] 
 **last_updated_ts** | **str** | Timestamp of last update | 
 **links** | [**SourcesLinks**](SourcesLinks.md) |  | 
-**message** | **str** | Message of post | 
+**message** | **str** | Message of post. Absent on file-listing entries, which only surface the fileListing URL. | [optional] 
 **title** | **str** | Title of post | 
 
 ## Example

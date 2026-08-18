@@ -186,7 +186,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_data_leak_sites_posts_stream**
-> DataLeakSitePostsStreamingPage get_data_leak_sites_posts_stream(website_id=website_id, thread_id=thread_id, text_filter=text_filter, var_from=var_from, until=until, size=size, cursor=cursor)
+> DataLeakSitePostsStreamingPage get_data_leak_sites_posts_stream(website_id=website_id, text_filter=text_filter, var_from=var_from, until=until, size=size, cursor=cursor)
 
 Get data leak sites posts (stream)
 
@@ -224,16 +224,15 @@ with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.SourcesApi(api_client)
     website_id = 'website_id_example' # str | Search data leak posts in a given data leak blog (optional)
-    thread_id = 'thread--b0bf6f45-a087-5006-b7b6-f19916c3a88b' # str | Search data leak posts by thread id (optional)
     text_filter = 'text_filter_example' # str | Apply text filter to search posts based on a keyword (optional)
     var_from = 56 # int | UNIX timestamp in milliseconds (optional)
     until = 56 # int | UNIX timestamp in milliseconds (optional)
-    size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
+    size = 100 # int | Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. (optional) (default to 100)
     cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
 
     try:
         # Get data leak sites posts (stream)
-        api_response = api_instance.get_data_leak_sites_posts_stream(website_id=website_id, thread_id=thread_id, text_filter=text_filter, var_from=var_from, until=until, size=size, cursor=cursor)
+        api_response = api_instance.get_data_leak_sites_posts_stream(website_id=website_id, text_filter=text_filter, var_from=var_from, until=until, size=size, cursor=cursor)
         print("The response of SourcesApi->get_data_leak_sites_posts_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -248,11 +247,10 @@ with verity471.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **website_id** | **str**| Search data leak posts in a given data leak blog | [optional] 
- **thread_id** | **str**| Search data leak posts by thread id | [optional] 
  **text_filter** | **str**| Apply text filter to search posts based on a keyword | [optional] 
  **var_from** | **int**| UNIX timestamp in milliseconds | [optional] 
  **until** | **int**| UNIX timestamp in milliseconds | [optional] 
- **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
+ **size** | **int**| Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. | [optional] [default to 100]
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
 
 ### Return type
@@ -412,7 +410,7 @@ with verity471.ApiClient(configuration) as api_client:
     text_filter = 'text_filter_example' # str | Apply text filter to search posts based on a keyword. (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
-    size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
+    size = 1000 # int | Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. (optional) (default to 1000)
     cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
 
     try:
@@ -438,7 +436,7 @@ Name | Type | Description  | Notes
  **text_filter** | **str**| Apply text filter to search posts based on a keyword. | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
- **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
+ **size** | **int**| Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. | [optional] [default to 1000]
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
 
 ### Return type
@@ -879,7 +877,7 @@ with verity471.ApiClient(configuration) as api_client:
     room_id = 'room--92ac69ca-9d08-5cb5-a8e4-4d26c5e50311roo' # str | Search for chat messages by chat room id. (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
-    size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
+    size = 250 # int | Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. (optional) (default to 250)
     cursor = 'cursor_example' # str | Continue scrolling from cursor (optional)
 
     try:
@@ -906,7 +904,7 @@ Name | Type | Description  | Notes
  **room_id** | **str**| Search for chat messages by chat room id. | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
- **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]
+ **size** | **int**| Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. | [optional] [default to 250]
  **cursor** | **str**| Continue scrolling from cursor | [optional] 
 
 ### Return type

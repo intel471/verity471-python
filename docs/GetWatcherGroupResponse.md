@@ -19,6 +19,7 @@ Name | Type | Description | Notes
 **organisation_id** | **str** |  | 
 **owner_user_id** | **str** |  | 
 **sharing_settings** | [**List[ShareSettingsResponse]**](ShareSettingsResponse.md) |  | [optional] 
+**subscription_type** | [**SubscriptionType**](SubscriptionType.md) |  | [optional] 
 **updated_by** | **str** |  | [optional] 
 **watcher_ids** | **List[int]** |  | [optional] 
 

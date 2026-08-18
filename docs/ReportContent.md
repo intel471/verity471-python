@@ -19,6 +19,8 @@ Name | Type | Description | Notes
 **summary** | **str** | Report summary | [optional] 
 **title** | **str** | Title of the related report | 
 **type** | [**ReportType**](ReportType.md) |  | 
+**version_id** | **str** | UUID of the current major version. null for reports ingested before versioning. | [optional] 
+**version_number** | **int** | Integer version counter (e.g., 1, 2). null for pre-versioning reports. | [optional] 
 
 ## Example
 
