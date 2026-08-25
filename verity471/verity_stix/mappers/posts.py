@@ -1,13 +1,14 @@
 import logging
 
 from stix2 import Bundle
+from stix2.exceptions import InvalidValueError
 
 from .. import author_identity, StixObjects
-from .common import StixMapper, BaseMapper
+from .common import StixMapper, BaseMapper, quote
 from .entities import EntitiesMapper
-from .sources import PORTAL_BASE, strip_html, portal_href, map_attachment
+from .sources import PORTAL_BASE, strip_html, portal_href, external_href, map_attachment
 from ..constants import MARKING
-from ..sco import map_media_content
+from ..sco import map_media_content, map_url
 from ..sdo import map_channel, map_individual
 
 log = logging.getLogger(__name__)
@@ -101,14 +102,20 @@ class PostsMapper(BaseMapper):
         thread_portal = portal_href(thread.get("links"))
         url = f"{thread_portal}?postId={post['id']}" if thread_portal else \
             f"{PORTAL_BASE}/sources/forums/posts/{post.get('id')}"
+        description = f"Raw forum post from {quote(forum.get('title') or 'unknown forum')}."
+        if forum.get("description"):
+            description += f" {quote(forum['description'])}"
         media = map_media_content(
             url,
             content=post.get("message") or strip_html(post.get("html")),
             title=thread.get("topic") or thread.get("topic_original"),
             media_category="forum post",
             publication_date=post.get("creation_ts"),
+            description=description,
         )
         container.add(media)
+        self._add_source_url(container, media.id,
+                             post.get("links"), thread.get("links"), forum.get("links"))
 
         thread_title = thread.get("topic") or thread.get("topic_original")
         self._channel_chain(container, [
@@ -133,14 +140,22 @@ class PostsMapper(BaseMapper):
         forum = source.get("forum") or {}
 
         url = f"{PORTAL_BASE}/sources/forums/private-messages/{pm.get('id')}"
+        sender = (source.get("author") or {}).get("user_name") or "unknown"
+        recipient = (source.get("recipient") or {}).get("user_name") or "unknown"
+        description = (f"Private message from {quote(sender)} to {quote(recipient)}"
+                       f" on {quote(pm.get('creation_ts'))} on {quote(forum.get('title') or 'unknown forum')}.")
+        if forum.get("description"):
+            description += f" {quote(forum['description'])}"
         media = map_media_content(
             url,
             content=pm.get("message"),
             title=pm.get("subject"),
             media_category="forum private message",
             publication_date=pm.get("creation_ts"),
+            description=description,
         )
         container.add(media)
+        self._add_source_url(container, media.id, forum.get("links"))
 
         self._channel_chain(container, [
             {"name": forum.get("title") or forum.get("id"),
@@ -161,13 +176,20 @@ class PostsMapper(BaseMapper):
         msg_portal = portal_href(message.get("links"))
         url = f"{msg_portal}?messageId={message['id']}" if msg_portal else \
             f"{PORTAL_BASE}/sources/messaging-services/messages/{message.get('id')}"
+        author_name = (message.get("author") or {}).get("user_name") or "unknown"
+        venue = room.get("name") or server.get("name") or "unknown channel"
+        description = (f"Message on {quote(server_type)} channel {quote(venue)}"
+                       f" by {quote(author_name)} on {quote(message.get('creation_ts'))}.")
         media = map_media_content(
             url,
             content=message.get("text") or strip_html(message.get("html")),
             media_category="instant message",
             publication_date=message.get("creation_ts"),
+            description=description,
         )
         container.add(media)
+        self._add_source_url(container, media.id, message.get("links"),
+                             room.get("links"), server.get("links"))
 
         self._channel_chain(container, [
             {"name": server.get("name") or server.get("id"),
@@ -194,6 +216,20 @@ class PostsMapper(BaseMapper):
         individual = map_individual(name, aliases=actor.get("historical_usernames") or None)
         container.add(individual)
         container.add(self.relate(individual.id, media_id, "related-to", description=role))
+
+    def _add_source_url(self, container: StixObjects, media_id: str, *links_dicts):
+        """Emit the post's own source (external) URL as a first-class URL observable
+        linked to the Media-Content. Media-Content is an SCO and can't carry
+        external_references, so the source link becomes an observable instead."""
+        href = external_href(*links_dicts)
+        if not href:
+            return
+        try:
+            url_obj = map_url(href)
+        except (InvalidValueError, ValueError):
+            return
+        container.add(url_obj)
+        container.add(self.relate(url_obj.id, media_id, "related-to", description="source"))
 
     def _add_entities(self, container: StixObjects, entities: list, media_id: str):
         for entity_source in entities or []:

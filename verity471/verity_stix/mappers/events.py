@@ -5,7 +5,7 @@ from stix2 import Bundle, Infrastructure, KillChainPhase, Malware
 from stix2.exceptions import InvalidValueError
 
 from .. import author_identity, StixObjects
-from .common import StixMapper, BaseMapper
+from .common import StixMapper, BaseMapper, quote
 from ..constants import MARKING, PLATFORM_VERITY471
 from ..sco import map_url, map_ipv4, map_file
 
@@ -40,7 +40,7 @@ class EventMapper(BaseMapper):
             url_obj = self._safe(map_url, c2_url)
             if not url_obj:
                 continue
-            infrastructure = self._infrastructure(c2_url)
+            infrastructure = self._infrastructure(c2_url, source, family_name)
             container.add(infrastructure)
             container.add(url_obj)
             container.add(self.relate(infrastructure.id, url_obj.id, "consists-of"))
@@ -75,13 +75,11 @@ class EventMapper(BaseMapper):
             return Bundle(*container.get(), allow_custom=True)
 
     def _malware(self, name: str, source: dict) -> Malware:
+        girs = self._girs(source)
         labels = [PLATFORM_VERITY471]
         if event_type := source.get("type"):
             labels.append(event_type)
-        try:
-            labels.extend(self.get_girs_labels(source["classification"]["girs"]))
-        except (KeyError, TypeError):
-            pass
+        labels.extend(self.get_girs_labels(girs))
         kwargs = {
             "id": pycti.Malware.generate_id(name),
             "name": name,
@@ -90,9 +88,49 @@ class EventMapper(BaseMapper):
             "labels": labels,
             "object_marking_refs": [MARKING],
         }
+        # Description: combined GIR names, else the humanised event type.
+        gir_names = [g.get("name") for g in girs if g.get("name")]
+        if gir_names:
+            kwargs["description"] = ", ".join(quote(n) for n in gir_names)
+        elif event_type:
+            kwargs["description"] = quote(event_type)
+        if malware_types := self.malware_types_from_girs(girs):
+            kwargs["malware_types"] = malware_types
+        self._apply_activity(kwargs, source)
         if kill_chain := self._kill_chain(source):
             kwargs["kill_chain_phases"] = kill_chain
         return Malware(**kwargs)
+
+    def _infrastructure(self, name: str, source: dict, family_name: str = None) -> Infrastructure:
+        girs = self._girs(source)
+        kwargs = {
+            "id": pycti.Infrastructure.generate_id(name),
+            "name": name,
+            "infrastructure_types": ["command-and-control"],
+            "created_by_ref": author_identity,
+            "labels": [PLATFORM_VERITY471] + self.get_girs_labels(girs),
+            "object_marking_refs": [MARKING],
+        }
+        if family_name:
+            kwargs["description"] = f"Command-and-control infrastructure for malware {quote(family_name)}."
+        else:
+            kwargs["description"] = "Command-and-control infrastructure."
+        self._apply_activity(kwargs, source)
+        if kill_chain := self._kill_chain(source):
+            kwargs["kill_chain_phases"] = kill_chain
+        return Infrastructure(**kwargs)
+
+    @staticmethod
+    def _girs(source: dict) -> list:
+        return ((source.get("classification") or {}).get("girs")) or []
+
+    @staticmethod
+    def _apply_activity(kwargs: dict, source: dict) -> None:
+        activity = source.get("activity") or {}
+        if first_seen := activity.get("first_seen_ts"):
+            kwargs["first_seen"] = first_seen
+        if last_seen := activity.get("last_seen_ts"):
+            kwargs["last_seen"] = last_seen
 
     @staticmethod
     def _kill_chain(source: dict) -> list:
@@ -104,17 +142,6 @@ class EventMapper(BaseMapper):
                     phase_name=phase["phase_name"].replace("_", "-"),
                 ))
         return phases
-
-    @staticmethod
-    def _infrastructure(name: str) -> Infrastructure:
-        return Infrastructure(
-            id=pycti.Infrastructure.generate_id(name),
-            name=name,
-            infrastructure_types=["command-and-control"],
-            created_by_ref=author_identity,
-            labels=[PLATFORM_VERITY471],
-            object_marking_refs=[MARKING],
-        )
 
     @staticmethod
     def _safe(mapper, value):

@@ -5,7 +5,7 @@ from stix2 import Bundle, ExternalReference, Incident
 
 from .. import author_identity, StixObjects
 from .common import StixMapper, BaseMapper
-from ..constants import MARKING, PLATFORM_VERITY471, SOURCE_VERITY
+from ..constants import INTEL_471, MARKING, PLATFORM_VERITY471, SOURCE_VERITY
 from ..exceptions import EmptyBundle, StixMapperNotFound
 
 from verity471.helpers.alerts import fetch_alert_targets
@@ -85,9 +85,13 @@ class AlertsMapper(BaseMapper):
             o for o in content_objects
             if o.type not in _NON_CONTENT_TYPES and o.id != author_identity.id
         ]
+        # Surface the target's GIR labels on the alert Incident too (they otherwise
+        # live only on the nested content objects, e.g. the Malware).
+        gir_labels = self._collect_gir_labels(content_objects)
 
         if self.settings.alerts_create_incident:
-            incident = self._build_incident(primary, watcher_labels + [PLATFORM_VERITY471], external_references)
+            incident = self._build_incident(
+                primary, watcher_labels + gir_labels + [PLATFORM_VERITY471], external_references)
             container.add(incident)
             container.add(author_identity)
             container.add(MARKING)
@@ -116,14 +120,15 @@ class AlertsMapper(BaseMapper):
         return list(bundle.objects)
 
     def _build_incident(self, primary, labels: list, external_references: list) -> Incident:
-        name = primary.target_summary or f"Verity alert {primary.alert.source_id}"
+        summary = primary.target_summary or f"Verity alert {primary.alert.source_id}"
         # A datetime is passed straight through: stix2 accepts datetime objects
         # but rejects isoformat strings with a "+00:00" offset.
         created = primary.alert.creation_ts
         incident_type = "data-breach" if isinstance(primary.target, _DATA_BREACH_TARGETS) else "alert"
         kwargs = {
-            "id": pycti.Incident.generate_id(name, created),
-            "name": name,
+            "id": pycti.Incident.generate_id(summary, created),
+            "name": summary,
+            "description": summary,
             "incident_type": incident_type,
             "source": SOURCE_VERITY,
             "created_by_ref": author_identity,
@@ -133,9 +138,23 @@ class AlertsMapper(BaseMapper):
         }
         if created:
             kwargs["created"] = created
+            kwargs["first_seen"] = created
+            kwargs["last_seen"] = created
         if external_references:
             kwargs["external_references"] = external_references
         return Incident(**kwargs)
+
+    @staticmethod
+    def _collect_gir_labels(content_objects: list) -> list:
+        """Gather GIR labels from content objects (SDO ``labels`` and SCO
+        ``x_opencti_labels``) so they can also be shown on the alert Incident."""
+        prefix = f"{INTEL_471} - GIR "
+        girs = []
+        for obj in content_objects:
+            for label in (obj.get("labels") or []) + (obj.get("x_opencti_labels") or []):
+                if label.startswith(prefix) and label not in girs:
+                    girs.append(label)
+        return girs
 
     @staticmethod
     def _external_references(alert) -> list:

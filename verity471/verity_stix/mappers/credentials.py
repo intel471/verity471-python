@@ -4,7 +4,7 @@ from stix2 import Bundle
 from stix2.exceptions import InvalidValueError
 
 from .. import author_identity, StixObjects
-from .common import StixMapper, BaseMapper
+from .common import StixMapper, BaseMapper, quote
 from ..constants import MARKING
 from ..sco import map_credential_account, map_email_address, map_domain
 from ..sdo import map_malware, map_organization
@@ -44,7 +44,10 @@ class CredentialMapper(BaseMapper):
         password = (cred.get("password") or {}).get("password_plain")
         account = None
         if login or password:
-            account = map_credential_account(login=login, password=password, extra_labels=labels)
+            account = map_credential_account(
+                login=login, password=password, extra_labels=labels,
+                description=self._describe(cred, data),
+            )
             container.add(account)
             if _is_email(login):
                 container.add(map_email_address(login, belongs_to_ref=account.id))
@@ -73,6 +76,28 @@ class CredentialMapper(BaseMapper):
             return self.get_girs_labels(source["classification"]["girs"])
         except (KeyError, TypeError):
             return []
+
+    @staticmethod
+    def _describe(cred: dict, data: dict) -> str:
+        login = cred.get("credential_login") or "unknown account"
+        parts = [f"Credential for {quote(login)}"]
+        if domain := cred.get("credential_domain"):
+            parts.append(f" on {quote(domain)}")
+        # credential set name lives under data.credential_sets[] (cred) or data.credential_set (occurrence)
+        cred_set = None
+        if isinstance(data.get("credential_set"), dict):
+            cred_set = data["credential_set"].get("name")
+        elif cred.get("credential_sets"):
+            cred_set = (cred["credential_sets"][0] or {}).get("name")
+        if cred_set:
+            parts.append(f", from credential set {quote(cred_set)}")
+        description = "".join(parts) + "."
+        # Password strength lives in the description, not x_opencti_score (see note):
+        # x_opencti_score is OpenCTI's threat score, a different axis from password strength.
+        strength = (cred.get("password") or {}).get("strength")
+        if strength and strength != "not_provided":
+            description += f" Password strength: {quote(strength)}."
+        return description
 
     @staticmethod
     def _malware_families(info_stealer) -> list:

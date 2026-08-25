@@ -18,6 +18,41 @@ from ..exceptions import EmptyBundle, StixMapperNotFound
 log = logging.getLogger(__name__)
 
 
+def quote(value) -> str:
+    """Single-quote a data-derived token for a generated description.
+
+    Convention for all generated descriptions: every value taken from the source
+    data is wrapped in single quotes so a reader can tell data from template text.
+    """
+    return f"'{value}'"
+
+
+# Keyword (matched against a GIR name, case-insensitive) -> STIX malware-type-ov value.
+# Ordered; longer/more-specific phrases first. Heuristic - tweak as GIR names evolve.
+_GIR_MALWARE_TYPES = [
+    ("ransomware", "ransomware"),
+    ("information stealer", "spyware"),
+    ("stealer", "spyware"),
+    ("loader", "dropper"),
+    ("downloader", "downloader"),
+    ("dropper", "dropper"),
+    ("banking", "trojan"),
+    ("banker", "trojan"),
+    ("remote access", "remote-access-trojan"),
+    ("backdoor", "backdoor"),
+    ("keylogger", "keylogger"),
+    ("rootkit", "rootkit"),
+    ("bootkit", "bootkit"),
+    ("wiper", "wiper"),
+    ("botnet", "bot"),
+    ("worm", "worm"),
+    ("webshell", "webshell"),
+    ("exploit kit", "exploit-kit"),
+    ("adware", "adware"),
+    ("trojan", "trojan"),
+]
+
+
 @dataclass
 class MappingConfig:
     entities_mapper: Callable
@@ -175,6 +210,16 @@ class BaseMapper(ABC):
 
     def get_girs_labels(self, gir_paths: List[dict]):
         return [f'{INTEL_471} - GIR {i["path"]} - {i["name"]}' for i in gir_paths]
+
+    def malware_types_from_girs(self, gir_paths: List[dict]) -> list:
+        """Derive STIX ``malware_types`` (open vocab) from GIR names, best-effort."""
+        types = []
+        for gir in gir_paths or []:
+            name = (gir.get("name") or "").lower()
+            for keyword, malware_type in _GIR_MALWARE_TYPES:
+                if keyword in name and malware_type not in types:
+                    types.append(malware_type)
+        return types
 
     def external_references(self, links_sources: Union[dict, list[dict]]) -> list[ExternalReference]:
         """Build STIX ExternalReference objects from a Verity ``links`` structure."""

@@ -1,7 +1,7 @@
 import re
 
 from pycti import CustomObservableCryptocurrencyWallet, CustomObservableMediaContent
-from stix2 import URL, IPv4Address, DomainName, File, AutonomousSystem, UserAccount, IPv6Address, EmailAddress
+from stix2 import URL, IPv4Address, DomainName, File, AutonomousSystem, UserAccount, IPv6Address, EmailAddress, Software
 from stix2.exceptions import InvalidValueError
 
 from verity471.verity_stix import author_identity
@@ -137,21 +137,41 @@ def map_filename(value: str, *args, **kwargs) -> File:
     return map_file(name=value)
 
 
+def map_software(value: str, *args, **kwargs) -> Software:
+    """Map an OS/platform name (e.g. "windows") to a ``software`` observable.
+
+    Used as a malware's ``operating_system_refs`` target. The STIX id is
+    deterministic on the name, so the same OS dedups to one node.
+    """
+    return Software(
+        name=value,
+        object_marking_refs=[MARKING],
+        custom_properties={
+            X_OPENCTI_CREATED_BY: author_identity.id,
+            X_OPENCTI_LABELS: [PLATFORM_VERITY471]
+            }
+    )
+
+
 def map_credential_account(login: str = None, password: str = None, display_name: str = None,
                            account_type: str = None, user_id: str = None,
-                           extra_labels: list = None, *args, **kwargs) -> UserAccount:
+                           extra_labels: list = None, description: str = None,
+                           *args, **kwargs) -> UserAccount:
     """Map a leaked credential to a ``user-account`` observable.
 
     The password (when present) is stored in the STIX ``credential`` field.
     The STIX id is derived from ``account_type``/``user_id``/``account_login``
-    only, so passing a password does not change the observable identity.
+    only, so passing a password/description does not change the identity.
     """
+    custom_properties = {
+        X_OPENCTI_CREATED_BY: author_identity.id,
+        X_OPENCTI_LABELS: [PLATFORM_VERITY471] + list(extra_labels or [])
+    }
+    if description:
+        custom_properties["x_opencti_description"] = description
     kwargs_ = {
         "object_marking_refs": [MARKING],
-        "custom_properties": {
-            X_OPENCTI_CREATED_BY: author_identity.id,
-            X_OPENCTI_LABELS: [PLATFORM_VERITY471] + list(extra_labels or [])
-            }
+        "custom_properties": custom_properties,
     }
     if account_type:
         kwargs_["account_type"] = account_type

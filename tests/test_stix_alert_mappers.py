@@ -1,6 +1,7 @@
 """Tests for the alert-target STIX mappers (posts, credentials, malware events,
 malware families, data-leak-site posts) and the alerts orchestrator."""
 import datetime
+import json
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -179,6 +180,55 @@ def test_credential_emits_user_account_and_linked_email(fixture):
     assert "credential" not in {o.type for o in bundle.objects}  # no CustomObservableCredential
 
 
+def test_credential_description_carries_strength_and_no_score():
+    source = _api_fixture("GetCredResponse")
+    source["data"]["password"]["strength"] = "strong"
+    bundle = StixMapper(_settings()).map(source)
+    account = json.loads(_by_type(bundle, "user-account")[0].serialize())
+    # password strength lives in the description, NOT in the threat-score field
+    assert "x_opencti_score" not in account
+    # every data-derived token is single-quoted
+    assert account["x_opencti_description"].startswith("Credential for 'user@example.com'")
+    assert "credential set 'dummy'" in account["x_opencti_description"]
+    assert "Password strength: 'strong'." in account["x_opencti_description"]
+
+
+def test_forum_post_has_description_and_source_url():
+    source = _api_fixture("PostDetails1")
+    source["forum"]["title"] = "XSS.is"
+    source["forum"]["description"] = "Russian-speaking forum"
+    # most-specific external href (the thread's) wins as the post's source URL
+    source["thread"]["links"] = {"external": {"href": "https://xss.is/thread/1"}}
+    bundle = StixMapper(_settings()).map(source)
+    media = json.loads(_by_type(bundle, "media-content")[0].serialize())
+    assert media["x_opencti_description"] == "Raw forum post from 'XSS.is'. 'Russian-speaking forum'"
+    # source (external) href becomes a URL observable linked to the post
+    urls = [u for u in _by_type(bundle, "url") if u.value == "https://xss.is/thread/1"]
+    assert len(urls) == 1
+    src_rel = [r for r in _by_type(bundle, "relationship")
+               if r.relationship_type == "related-to" and r.source_ref == urls[0].id
+               and r.description == "source"]
+    assert len(src_rel) == 1
+
+
+def test_event_malware_has_types_and_seen():
+    bundle = StixMapper(_settings()).map(_api_fixture("IntegrationsEvent"))
+    malware = _by_type(bundle, "malware")[0]
+    assert str(malware.first_seen).startswith("2018-08-07")
+    assert str(malware.last_seen).startswith("2018-08-07")
+    assert malware.description  # GIR names / event type
+
+
+def test_event_infrastructure_is_enriched():
+    bundle = StixMapper(_settings()).map(_api_fixture("IntegrationsEvent"))
+    infra = _by_type(bundle, "infrastructure")[0]
+    # C2 infra now carries first/last seen, a description and GIR labels
+    assert str(infra.first_seen).startswith("2018-08-07")
+    assert str(infra.last_seen).startswith("2018-08-07")
+    assert infra.description.startswith("Command-and-control infrastructure")
+    assert any(l.startswith("Intel 471 - GIR ") for l in infra.labels)
+
+
 def test_credential_password_stored_in_credential_field():
     source = _api_fixture("GetCredResponse")
     source["data"]["password"]["password_plain"] = "hunter2"
@@ -211,14 +261,28 @@ def test_event_emits_malware_and_c2_infrastructure():
     assert "artifact_extraction" in malware[0].labels
 
 
-def test_malware_family_is_family_with_platform_label():
+def test_malware_family_is_family_with_os_software_and_seen():
     source = _api_fixture("SimplifiedMalwareProfile")
     source["aliases"] = ["alias1", "alias2"]
+    source["classification"] = {"girs": [{"name": "Information Stealer Malware", "path": "1.2.3"}]}
     bundle = StixMapper(_settings()).map(source)
-    malware = _by_type(bundle, "malware")[0]
-    assert malware.is_family is True
-    assert set(malware.aliases) == {"alias1", "alias2"}
-    assert "windows" in malware.labels
+    malware = json.loads(_by_type(bundle, "malware")[0].serialize())
+    assert malware["is_family"] is True
+    assert set(malware["aliases"]) == {"alias1", "alias2"}
+    # OS/platform is a linked Software observable via an explicit relationship
+    # (OpenCTI doesn't render operating_system_refs, but does render relationships)
+    software = _by_type(bundle, "software")
+    assert [s.name for s in software] == ["windows"]
+    assert "operating_system_refs" not in malware
+    assert "architecture_execution_envs" not in malware
+    os_rel = [r for r in _by_type(bundle, "relationship")
+              if r.source_ref == malware["id"] and r.target_ref == software[0].id
+              and r.relationship_type == "related-to" and r.description == "operating system"]
+    assert len(os_rel) == 1
+    # GIR -> malware_types, and first/last seen from activity
+    assert "spyware" in malware["malware_types"]
+    assert str(malware["first_seen"]).startswith("2023-10-25")
+    assert str(malware["last_seen"]).startswith("2026-01-13")
 
 
 # ---------------------------------------------------------------------------
@@ -285,6 +349,19 @@ def test_alert_wraps_target_in_incident_with_watcher_context():
     related = [r for r in _by_type(bundle, "relationship")
                if r.relationship_type == "related-to" and r.source_ref == inc.id]
     assert related
+
+
+def test_incident_carries_gir_labels_and_description():
+    from verity471.models.integrations_event import IntegrationsEvent
+    ev = IntegrationsEvent.from_dict(_api_fixture("IntegrationsEvent"))
+    at = AlertTarget(alert=_alert("malware-event--1"), target=ev,
+                     watcher=_watcher("w1"), watcher_group=_watcher("g1"))
+    inc = _by_type(_map_alerts([at]), "incident")[0]
+    # GIR labels from the event's malware are surfaced on the incident
+    assert any(l.startswith("Intel 471 - GIR ") for l in inc.labels)
+    # incident has a populated description and first/last seen
+    assert inc.description
+    assert inc.first_seen is not None and inc.last_seen is not None
 
 
 def test_credential_set_alert_is_data_breach_incident():

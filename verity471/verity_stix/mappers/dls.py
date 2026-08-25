@@ -4,8 +4,8 @@ from stix2 import Bundle
 from stix2.exceptions import InvalidValueError
 
 from .. import author_identity, StixObjects
-from .common import StixMapper, BaseMapper
-from .sources import PORTAL_BASE, portal_href, map_attachment
+from .common import StixMapper, BaseMapper, quote
+from .sources import PORTAL_BASE, portal_href, external_href, map_attachment
 from ..constants import MARKING
 from ..sco import map_media_content, map_url
 from ..sdo import map_channel
@@ -44,16 +44,30 @@ class DataLeakSiteMapper(BaseMapper):
             container.add(channel)
 
         url = portal_href(post.get("links")) or f"{PORTAL_BASE}/sources/data-leak-sites/posts/{post.get('id')}"
+        title = post.get("title")
+        title_part = f" {quote(title)}" if title else ""
+        description = f"Data leak site post{title_part} on {quote(site_name or 'unknown site')}."
         media = map_media_content(
             url,
             content=post.get("message"),
-            title=post.get("title"),
+            title=title,
             media_category="data leak site post",
             publication_date=post.get("creation_ts"),
+            description=description,
         )
         container.add(media)
         if channel:
             container.add(self.relate(channel.id, media.id, "publishes"))
+
+        # source (external) URL of the post -> first-class URL observable
+        if source_href := external_href(post.get("links"), website.get("links")):
+            try:
+                src_obj = map_url(source_href)
+            except (InvalidValueError, ValueError):
+                src_obj = None
+            if src_obj:
+                container.add(src_obj)
+                container.add(self.relate(src_obj.id, media.id, "related-to", description="source"))
 
         download_url = (post.get("file_listing") or {}).get("download_url")
         if download_url:

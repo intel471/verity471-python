@@ -30,6 +30,16 @@ def portal_href(links: Optional[dict]) -> Optional[str]:
     return None
 
 
+def external_href(*links_dicts) -> Optional[str]:
+    """Return the first ``external`` href found across the given ``links`` dicts."""
+    for links in links_dicts:
+        if isinstance(links, dict):
+            external = links.get("external")
+            if isinstance(external, dict) and external.get("href"):
+                return external["href"]
+    return None
+
+
 def map_attachment(attachment: dict) -> Optional[File]:
     """Map a Verity AttachmentData dict to a File observable.
 
