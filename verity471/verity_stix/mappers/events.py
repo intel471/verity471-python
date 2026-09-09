@@ -76,9 +76,10 @@ class EventMapper(BaseMapper):
 
     def _malware(self, name: str, source: dict) -> Malware:
         girs = self._girs(source)
+        event_type = source.get("type")
         labels = [PLATFORM_VERITY471]
-        if event_type := source.get("type"):
-            labels.append(event_type)
+        if event_label := self._event_type_label(source):
+            labels.append(event_label)
         labels.extend(self.get_girs_labels(girs))
         kwargs = {
             "id": pycti.Malware.generate_id(name),
@@ -103,12 +104,16 @@ class EventMapper(BaseMapper):
 
     def _infrastructure(self, name: str, source: dict, family_name: str = None) -> Infrastructure:
         girs = self._girs(source)
+        labels = [PLATFORM_VERITY471]
+        if event_label := self._event_type_label(source):
+            labels.append(event_label)
+        labels.extend(self.get_girs_labels(girs))
         kwargs = {
             "id": pycti.Infrastructure.generate_id(name),
             "name": name,
             "infrastructure_types": ["command-and-control"],
             "created_by_ref": author_identity,
-            "labels": [PLATFORM_VERITY471] + self.get_girs_labels(girs),
+            "labels": labels,
             "object_marking_refs": [MARKING],
         }
         if family_name:
@@ -123,6 +128,11 @@ class EventMapper(BaseMapper):
     @staticmethod
     def _girs(source: dict) -> list:
         return ((source.get("classification") or {}).get("girs")) or []
+
+    @staticmethod
+    def _event_type_label(source: dict):
+        event_type = source.get("type")
+        return f"verity471:malware_event_{event_type}" if event_type else None
 
     @staticmethod
     def _apply_activity(kwargs: dict, source: dict) -> None:

@@ -187,10 +187,11 @@ def test_credential_description_carries_strength_and_no_score():
     account = json.loads(_by_type(bundle, "user-account")[0].serialize())
     # password strength lives in the description, NOT in the threat-score field
     assert "x_opencti_score" not in account
-    # every data-derived token is single-quoted
-    assert account["x_opencti_description"].startswith("Credential for 'user@example.com'")
+    # every data-derived token is single-quoted AND defanged (email -> user@example[.]com)
+    assert account["x_opencti_description"].startswith("Credential for 'user@example[.]com'")
     assert "credential set 'dummy'" in account["x_opencti_description"]
     assert "Password strength: 'strong'." in account["x_opencti_description"]
+    assert "verity471:credential" in account["x_opencti_labels"]
 
 
 def test_forum_post_has_description_and_source_url():
@@ -201,7 +202,9 @@ def test_forum_post_has_description_and_source_url():
     source["thread"]["links"] = {"external": {"href": "https://xss.is/thread/1"}}
     bundle = StixMapper(_settings()).map(source)
     media = json.loads(_by_type(bundle, "media-content")[0].serialize())
-    assert media["x_opencti_description"] == "Raw forum post from 'XSS.is'. 'Russian-speaking forum'"
+    # domains defanged in the description; type label present
+    assert media["x_opencti_description"] == "Raw forum post from 'XSS[.]is'. 'Russian-speaking forum'"
+    assert "verity471:raw_forum_post" in media["x_opencti_labels"]
     # source (external) href becomes a URL observable linked to the post
     urls = [u for u in _by_type(bundle, "url") if u.value == "https://xss.is/thread/1"]
     assert len(urls) == 1
@@ -209,6 +212,22 @@ def test_forum_post_has_description_and_source_url():
                if r.relationship_type == "related-to" and r.source_ref == urls[0].id
                and r.description == "source"]
     assert len(src_rel) == 1
+
+
+def test_description_defangs_urls_and_domains():
+    source = _api_fixture("PostDetails1")
+    source["forum"]["title"] = "evil.com"
+    source["forum"]["description"] = "See http://malware.example/drop for details"
+    media = json.loads(_by_type(StixMapper(_settings()).map(source), "media-content")[0].serialize())
+    desc = media["x_opencti_description"]
+    assert "evil[.]com" in desc
+    assert "hxxp://malware[.]example" in desc
+    assert "http://" not in desc and "evil.com" not in desc
+
+
+def test_malware_family_has_type_label():
+    bundle = StixMapper(_settings()).map(_api_fixture("SimplifiedMalwareProfile"))
+    assert "verity471:malware_family" in _by_type(bundle, "malware")[0].labels
 
 
 def test_event_malware_has_types_and_seen():
@@ -258,7 +277,7 @@ def test_event_emits_malware_and_c2_infrastructure():
     assert infra and infra[0].infrastructure_types == ["command-and-control"]
     rel_types = {r.relationship_type for r in _by_type(bundle, "relationship")}
     assert {"uses", "consists-of"} <= rel_types
-    assert "artifact_extraction" in malware[0].labels
+    assert "verity471:malware_event_artifact_extraction" in malware[0].labels
 
 
 def test_malware_family_is_family_with_os_software_and_seen():

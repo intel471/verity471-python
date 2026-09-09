@@ -4,7 +4,7 @@ from stix2 import Bundle
 from stix2.exceptions import InvalidValueError
 
 from .. import author_identity, StixObjects
-from .common import StixMapper, BaseMapper, quote
+from .common import StixMapper, BaseMapper, quote, quote_plain
 from .entities import EntitiesMapper
 from .sources import PORTAL_BASE, strip_html, portal_href, external_href, map_attachment
 from ..constants import MARKING
@@ -112,6 +112,7 @@ class PostsMapper(BaseMapper):
             media_category="forum post",
             publication_date=post.get("creation_ts"),
             description=description,
+            extra_labels=["verity471:raw_forum_post"],
         )
         container.add(media)
         self._add_source_url(container, media.id,
@@ -143,7 +144,7 @@ class PostsMapper(BaseMapper):
         sender = (source.get("author") or {}).get("user_name") or "unknown"
         recipient = (source.get("recipient") or {}).get("user_name") or "unknown"
         description = (f"Private message from {quote(sender)} to {quote(recipient)}"
-                       f" on {quote(pm.get('creation_ts'))} on {quote(forum.get('title') or 'unknown forum')}.")
+                       f" on {quote_plain(pm.get('creation_ts'))} on {quote(forum.get('title') or 'unknown forum')}.")
         if forum.get("description"):
             description += f" {quote(forum['description'])}"
         media = map_media_content(
@@ -153,6 +154,7 @@ class PostsMapper(BaseMapper):
             media_category="forum private message",
             publication_date=pm.get("creation_ts"),
             description=description,
+            extra_labels=["verity471:raw_private_message"],
         )
         container.add(media)
         self._add_source_url(container, media.id, forum.get("links"))
@@ -179,13 +181,14 @@ class PostsMapper(BaseMapper):
         author_name = (message.get("author") or {}).get("user_name") or "unknown"
         venue = room.get("name") or server.get("name") or "unknown channel"
         description = (f"Message on {quote(server_type)} channel {quote(venue)}"
-                       f" by {quote(author_name)} on {quote(message.get('creation_ts'))}.")
+                       f" by {quote(author_name)} on {quote_plain(message.get('creation_ts'))}.")
         media = map_media_content(
             url,
             content=message.get("text") or strip_html(message.get("html")),
             media_category="instant message",
             publication_date=message.get("creation_ts"),
             description=description,
+            extra_labels=["verity471:raw_instant_message"],
         )
         container.add(media)
         self._add_source_url(container, media.id, message.get("links"),

@@ -18,12 +18,26 @@ from ..exceptions import EmptyBundle, StixMapperNotFound
 log = logging.getLogger(__name__)
 
 
+def defang(value) -> str:
+    """Neutralise URLs/emails/domains so they aren't clickable or dangerous:
+    http(s) -> hxxp(s) and a[.]b between word characters."""
+    text = str(value).replace("http://", "hxxp://").replace("https://", "hxxps://")
+    return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
+
+
 def quote(value) -> str:
-    """Single-quote a data-derived token for a generated description.
+    """Defang + single-quote a data-derived token for a generated description.
 
     Convention for all generated descriptions: every value taken from the source
-    data is wrapped in single quotes so a reader can tell data from template text.
+    data is wrapped in single quotes (so a reader can tell data from template
+    text) and defanged (so any URL/email/domain it contains is not clickable).
     """
+    return f"'{defang(value)}'"
+
+
+def quote_plain(value) -> str:
+    """Single-quote a data token WITHOUT defanging - for values a naive defang
+    would mangle, e.g. timestamps with fractional seconds (``19.994``)."""
     return f"'{value}'"
 
 

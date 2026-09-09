@@ -54,6 +54,7 @@ class DataLeakSiteMapper(BaseMapper):
             media_category="data leak site post",
             publication_date=post.get("creation_ts"),
             description=description,
+            extra_labels=["verity471:data_leak_site_post"],
         )
         container.add(media)
         if channel:

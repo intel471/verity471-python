@@ -91,11 +91,14 @@ def map_channel(name: str, channel_type: str = None, external_references: list =
     portal / site link goes into ``external_references``.
     """
     formatted_name = f"[{channel_type}] - {name}" if channel_type else name
+    labels = [PLATFORM_VERITY471]
+    if channel_type:
+        labels.append(f"verity471:{channel_type}")  # e.g. verity471:forum - enables label drill-down
     kwargs_ = {
         "id": Channel.generate_id(formatted_name),
         "name": formatted_name,
         "created_by_ref": author_identity,
-        "labels": [PLATFORM_VERITY471],
+        "labels": labels,
         "object_marking_refs": [MARKING],
     }
     if channel_type:

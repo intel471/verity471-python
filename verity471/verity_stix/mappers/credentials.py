@@ -40,12 +40,16 @@ class CredentialMapper(BaseMapper):
         cred = data.get("credential") if isinstance(data.get("credential"), dict) else data
         labels = self._gir_labels(source)
 
+        type_labels = ["verity471:credential"]
+        if credential_type := data.get("credential_type"):
+            type_labels.append(f"verity471:credential_{credential_type}")
+
         login = cred.get("credential_login")
         password = (cred.get("password") or {}).get("password_plain")
         account = None
         if login or password:
             account = map_credential_account(
-                login=login, password=password, extra_labels=labels,
+                login=login, password=password, extra_labels=labels + type_labels,
                 description=self._describe(cred, data),
             )
             container.add(account)
