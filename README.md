@@ -212,6 +212,24 @@ Client's class/method | API endpoint | Produced outcome
 `ReportsApi.get_reports_spot_id` | `/reports/spot/{id}` |
 `ReportsApi.get_reports_vulnerability_stream` | `/reports/vulnerability/stream` | `Vulnerability` SDOs 
 `ReportsApi.get_reports_vulnerability_id` | `/reports/vulnerability/{id}` |  
+`SourcesApi.get_forums_posts_stream` | `/forums/posts/stream` | `Channel`(s) (forum → sub-forum → thread) + `Media-Content` (the post) joined by `publishes`; author handle as an individual `Identity`; extracted entities as observables; attachments as `File`
+`SourcesApi.get_forums_posts_post_id` | `/forums/posts/{id}` |
+`SourcesApi.get_forums_private_messages_stream` | `/forums/private-messages/stream` | `Channel` + `Media-Content` joined by `publishes`; sender/recipient handles as individual `Identity` objects
+`SourcesApi.get_forums_private_messages_private_message_id` | `/forums/private-messages/{id}` |
+`SourcesApi.get_messaging_services_messages_stream` | `/messaging-services/messages/stream` | `Channel` (server/room) + `Media-Content` joined by `publishes`; author handle as an individual `Identity`; attachments as `File`
+`SourcesApi.get_messaging_services_messages_message_id` | `/messaging-services/messages/{id}` |
+`SourcesApi.get_data_leak_sites_posts_stream` | `/data-leak-sites/posts/stream` | `Channel` (site) + `Media-Content` (the post) joined by `publishes`; attachments as `File`
+`CredentialsApi.get_credentials_stream` | `/credentials/stream` | `UserAccount` (password in `credential`) + `EmailAddress` (`belongs_to_ref`), `DomainName` and stealer `Malware` linked via `Relationship`
+`CredentialsApi.get_credentials_id` | `/credentials/{id}` |
+`CredentialsApi.get_credentials_occurrences_stream` | `/credentials/occurrences/stream` |
+`CredentialsApi.get_credentials_occurrences_id` | `/credentials/occurrences/{id}` |
+`CredentialsApi.get_credential_sets_stream` | `/credential-sets/stream` | victim organization `Identity` objects (breach metadata is carried by the alert `Incident`)
+`CredentialsApi.get_credential_sets_id` | `/credential-sets/{id}` |
+`EventsApi.get_events_stream` | `/events/stream` | `Malware` (`is_family`) + C2 `Infrastructure` + `URL`/`IPv4Address`/`File` observables joined via `uses`/`consists-of`
+`EventsApi.get_event_by_id` | `/events/{id}` |
+`MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
+`MalwareApi.get_malware_family_by_id` | `/malware/{id}` |
+`AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`
 
 *Empty cells inherit the value from the previous row.*
 
