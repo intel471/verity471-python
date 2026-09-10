@@ -8,12 +8,63 @@ from collections.abc import Callable
 from typing import Union, List, Optional, Any
 from enum import Enum
 
-from stix2 import Bundle
+import pycti
+from stix2 import Bundle, ExternalReference, Relationship
 
-from .. import INTEL_471, STIXMapperSettings
+from .. import INTEL_471, STIXMapperSettings, author_identity
+from ..constants import MARKING, PLATFORM_VERITY471
 from ..exceptions import EmptyBundle, StixMapperNotFound
 
 log = logging.getLogger(__name__)
+
+
+def defang(value) -> str:
+    """Neutralise URLs/emails/domains so they aren't clickable or dangerous:
+    http(s) -> hxxp(s) and a[.]b between word characters."""
+    text = str(value).replace("http://", "hxxp://").replace("https://", "hxxps://")
+    return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
+
+
+def quote(value) -> str:
+    """Defang + single-quote a data-derived token for a generated description.
+
+    Convention for all generated descriptions: every value taken from the source
+    data is wrapped in single quotes (so a reader can tell data from template
+    text) and defanged (so any URL/email/domain it contains is not clickable).
+    """
+    return f"'{defang(value)}'"
+
+
+def quote_plain(value) -> str:
+    """Single-quote a data token WITHOUT defanging - for values a naive defang
+    would mangle, e.g. timestamps with fractional seconds (``19.994``)."""
+    return f"'{value}'"
+
+
+# Keyword (matched against a GIR name, case-insensitive) -> STIX malware-type-ov value.
+# Ordered; longer/more-specific phrases first. Heuristic - tweak as GIR names evolve.
+_GIR_MALWARE_TYPES = [
+    ("ransomware", "ransomware"),
+    ("information stealer", "spyware"),
+    ("stealer", "spyware"),
+    ("loader", "dropper"),
+    ("downloader", "downloader"),
+    ("dropper", "dropper"),
+    ("banking", "trojan"),
+    ("banker", "trojan"),
+    ("remote access", "remote-access-trojan"),
+    ("backdoor", "backdoor"),
+    ("keylogger", "keylogger"),
+    ("rootkit", "rootkit"),
+    ("bootkit", "bootkit"),
+    ("wiper", "wiper"),
+    ("botnet", "bot"),
+    ("worm", "worm"),
+    ("webshell", "webshell"),
+    ("exploit kit", "exploit-kit"),
+    ("adware", "adware"),
+    ("trojan", "trojan"),
+]
 
 
 @dataclass
@@ -173,3 +224,36 @@ class BaseMapper(ABC):
 
     def get_girs_labels(self, gir_paths: List[dict]):
         return [f'{INTEL_471} - GIR {i["path"]} - {i["name"]}' for i in gir_paths]
+
+    def malware_types_from_girs(self, gir_paths: List[dict]) -> list:
+        """Derive STIX ``malware_types`` (open vocab) from GIR names, best-effort."""
+        types = []
+        for gir in gir_paths or []:
+            name = (gir.get("name") or "").lower()
+            for keyword, malware_type in _GIR_MALWARE_TYPES:
+                if keyword in name and malware_type not in types:
+                    types.append(malware_type)
+        return types
+
+    def external_references(self, links_sources: Union[dict, list[dict]]) -> list[ExternalReference]:
+        """Build STIX ExternalReference objects from a Verity ``links`` structure."""
+        return [ExternalReference(source_name=link.name, url=link.url)
+                for link in self.map_links(links_sources) if link.url]
+
+    def relate(self, source_ref: str, target_ref: str, relationship_type: str = "related-to",
+               description: str = None) -> Relationship:
+        """Build a STIX Relationship with the standard author/marking/label wiring.
+
+        ``description`` annotates the role the edge represents (e.g. "sender" /
+        "recipient" / "author") when the relationship_type alone is ambiguous.
+        """
+        return Relationship(
+            id=pycti.StixCoreRelationship.generate_id(relationship_type, source_ref, target_ref),
+            relationship_type=relationship_type,
+            source_ref=source_ref,
+            target_ref=target_ref,
+            description=description,
+            created_by_ref=author_identity,
+            labels=[PLATFORM_VERITY471],
+            object_marking_refs=[MARKING],
+        )

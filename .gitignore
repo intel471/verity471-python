@@ -69,3 +69,7 @@ target/
 .vscode/
 .spec/
 .openapi-generator/
+dump_alert_stix_samples.py
+dump_stream_stix_samples.py
+stream_stix_samples/
+
