@@ -424,3 +424,15 @@ def test_alerts_require_api_client():
     source = _api_fixture("AlertsStreamResponse")
     with pytest.raises(StixMapperNotFound):
         StixMapper(STIXMapperSettings(api_client=None)).map(source)
+
+
+@pytest.mark.parametrize("report_full_content", [True, False])
+def test_report_targets_are_fetched_with_inline_images(report_full_content):
+    # A report reached through an alert must be fetched the same way as one
+    # mapped directly from the reports API, i.e. with its images inlined.
+    source = _api_fixture("AlertsStreamResponse")
+    at = AlertTarget(alert=_alert("post--1"), target=_post_target())
+    with patch("verity471.verity_stix.mappers.alerts.fetch_alert_targets",
+               return_value=[at]) as fetch_mock:
+        StixMapper(_settings(report_full_content=report_full_content)).map(source)
+    assert fetch_mock.call_args.kwargs["include_inline_images"] is report_full_content

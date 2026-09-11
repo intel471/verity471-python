@@ -1,6 +1,6 @@
 [project]
 name = "verity471"
-version = "1.2.0"
+version = "1.2.1"
 description = "Official Python SDK for the Verity471 API. Features query validation, instantiated object models, and native STIX mapping"
 authors = [
   { name = "Intel 471 Inc.", email = "integrations@intel471.com" }
@@ -55,6 +55,13 @@ test = [
 
 [project.urls]
 Repository = "https://github.com/intel471/verity471-python"
+
+
+# Pin discovery to the package itself: without this, setuptools' flat-layout
+# auto-discovery also picks up local output dirs (stream_stix_samples/,
+# alert_stix_samples/) and refuses to build.
+[tool.setuptools.packages.find]
+include = ["verity471*"]
 
 
 [build-system]

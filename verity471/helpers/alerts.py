@@ -39,6 +39,8 @@ from verity471.helpers.url_router import UnresolvableURL, call_url
 log = logging.getLogger(__name__)
 
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
+_SNIPPET_OVERRUN = 32  # max extra chars that word-boundary expansion may add
+_HTML_TAG_REGEX = re.compile(r"<[^>]*>")
 
 # ---------------------------------------------------------------------------
 # TEMPORARY WORKAROUND — remove this block (and its call site in _fetch)
@@ -109,12 +111,26 @@ def _defang(text: Optional[str]) -> str:
     return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
 
 
+def _plain_text(text: str) -> str:
+    """Flatten HTML-ish source text into a single line of readable text.
+
+    Report bodies are HTML, and with ``include_inline_images`` their ``<img>``
+    tags carry base64 data URIs that can run to megabytes. Dropping the tags
+    keeps summaries readable and, just as importantly, identical whether or not
+    the images were inlined.
+    """
+    return re.sub(r"\s+", " ", _HTML_TAG_REGEX.sub(" ", text)).strip()
+
+
 def _snippet(text: str, limit: int = _SUMMARY_SNIPPET_LEN) -> str:
     """Truncate *text* to roughly *limit* chars, ending on a word boundary."""
+    text = _plain_text(text)
     if len(text) <= limit:
         return text
     end = text.find(" ", limit)
-    return text[:end] + "\u2026" if end != -1 else text[:limit] + "\u2026"
+    if end == -1 or end > limit + _SNIPPET_OVERRUN:
+        end = limit  # an unbroken run (base64 blob, long URL): cut it hard
+    return text[:end] + "\u2026"
 
 
 def _join(parts: list) -> str | None:
@@ -314,6 +330,7 @@ def fetch_alert_targets(
     api_client: ApiClient,
     raise_on_error: bool = False,
     skip_missing_targets: bool = False,
+    include_inline_images: bool = True,
 ) -> list[AlertTarget]:
     """Fetch the full target object for every alert in *alerts_response*.
 
@@ -343,6 +360,12 @@ def fetch_alert_targets(
             fetched are omitted from the result. When ``False`` (default) they
             are returned with ``target=None`` and a failure ``status``.
             Defaults to ``False``.
+        include_inline_images: When ``True`` (default), report targets are
+            fetched with their images embedded in the body as base64 data URIs,
+            matching what the report-by-id endpoints return with
+            ``include_inline_images=true``. Set to ``False`` for smaller
+            responses, leaving the images as bare attachment URLs. Ignored by
+            target types that have no such option.
 
     Returns:
         A list of :class:`AlertTarget` objects in the same order as
@@ -365,7 +388,7 @@ def fetch_alert_targets(
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.NO_LINK,
                                status_reason="Alert has no verity_api link")
         try:
-            target = call_url(api_client, url)
+            target = call_url(api_client, url, include_inline_images=include_inline_images)
         except UnresolvableURL:
             log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
             if skip_missing_targets:

@@ -229,7 +229,7 @@ Client's class/method | API endpoint | Produced outcome
 `EventsApi.get_event_by_id` | `/events/{id}` |
 `MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
 `MalwareApi.get_malware_family_by_id` | `/malware/{id}` |
-`AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`
+`AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`. Report targets are fetched with inline images (as when mapping a report directly) unless `report_full_content=False`
 
 *Empty cells inherit the value from the previous row.*
 
@@ -258,6 +258,7 @@ from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatu
 | `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
 | `raise_on_error` | `bool` | `False` | When `True`, re-raise unexpected errors (and the missing-link error) instead of recording them on the result. |
 | `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. Marketplace hits (no SDK route yet) are treated like any other unresolvable target. |
+| `include_inline_images` | `bool` | `True` | When `True` (default), report targets are fetched with their images embedded in the body as base64 data URIs. Set to `False` for smaller responses, leaving the images as bare attachment URLs. Ignored by target types that have no such option. |
 
 ### Returns
 
