@@ -38,6 +38,12 @@ from verity471.helpers.url_router import UnresolvableURL, call_url
 
 log = logging.getLogger(__name__)
 
+# Target types an alert can reference that the SDK deliberately has no route for
+# yet. A missing route for one of these is expected, so it is logged at DEBUG; a URL
+# outside this set is unexpected and stays a WARNING, as it may mean the SDK needs a
+# new route.
+KNOWN_UNSUPPORTED_TARGET_PATHS = ("/integrations/marketplaces/",)
+
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
 _SNIPPET_OVERRUN = 32  # max extra chars that word-boundary expansion may add
 _HTML_TAG_REGEX = re.compile(r"<[^>]*>")
@@ -390,7 +396,11 @@ def fetch_alert_targets(
         try:
             target = call_url(api_client, url, include_inline_images=include_inline_images)
         except UnresolvableURL:
-            log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
+            if any(path in url for path in KNOWN_UNSUPPORTED_TARGET_PATHS):
+                log.debug("No SDK route for alert %s URL: %s (known unsupported target type)",
+                          alert.source_id, url)
+            else:
+                log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
             if skip_missing_targets:
                 return None
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.UNRESOLVABLE,
