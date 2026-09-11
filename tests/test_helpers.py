@@ -10,7 +10,11 @@ from types import SimpleNamespace
 from verity471.helpers import fetch_alert_targets, AlertTargetStatus
 from verity471.exceptions import ForbiddenException
 from verity471.helpers.alerts import (
-    _SUMMARY_SNIPPET_LEN, _patch_portal_url, _snippet, _summarize_alert)
+    _SUMMARY_SNIPPET_LEN, _patch_portal_url, _plain_text, _snippet,
+    _summarize_alert, _summarize_target, _text_snippet)
+from verity471.models.info_report_response import InfoReportResponse
+from verity471.models.post_details1 import PostDetails1
+from verity471.models.spot_report_response import SpotReportResponse
 from verity471.helpers.url_router import UnresolvableURL, call_url
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
@@ -504,14 +508,121 @@ class TestFetchAlertTargetsInlineImages:
 
 class TestSnippet:
 
-    def test_html_tags_are_stripped(self):
-        assert _snippet("<p>Hello <b>world</b></p>") == "Hello world"
-
-    def test_inline_image_does_not_reach_the_snippet(self):
-        body = '<p><img src="data:image/png;base64,%s"/>Report text</p>' % ("A" * 100_000)
-        summary = _snippet(body)
-        assert summary == "Report text"
-
     def test_unbroken_run_is_cut_at_the_limit(self):
         summary = _snippet("x" * 10_000)
         assert len(summary) == _SUMMARY_SNIPPET_LEN + 1  # + the ellipsis
+
+
+# ---------------------------------------------------------------------------
+# Tests for _plain_text: HTML-bearing fields must reach the caller as text.
+# ---------------------------------------------------------------------------
+
+class TestPlainText:
+
+    def test_nested_tags_and_anchor(self):
+        post = ('<div class="post-body"><p>Hello <b>everyone</b>, I am selling '
+                'fresh <a href="https://example.com/offer?id=1">database dumps</a>.'
+                '</p></div>')
+        assert _plain_text(post) == ("Hello everyone, I am selling fresh "
+                                     "database dumps.")
+
+    def test_entities_are_unescaped(self):
+        assert _plain_text("Tom &amp; Jerry&#39;s&nbsp;dump &lt;v2&gt;") == \
+            "Tom & Jerry's dump <v2>"
+
+    def test_script_and_style_content_is_dropped(self):
+        source = ("<style>.post { color: red; }</style>"
+                  "<p>Visible</p>"
+                  "<script>var x = 1; alert('boom');</script>")
+        assert _plain_text(source) == "Visible"
+
+    @pytest.mark.parametrize("source, expected", [
+        ("<p>foo</p><p>bar</p>", "foo bar"),
+        ("foo<br>bar", "foo bar"),
+        ("<ul><li>foo</li><li>bar</li></ul>", "foo bar"),
+        ("<div>foo</div><div>bar</div>", "foo bar"),
+        ("<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>", "foo bar"),
+        ("<h1>foo</h1>bar", "foo bar"),
+        # Inline elements must not push a space into the middle of a word.
+        ("f<b>o</b>o", "foo"),
+    ])
+    def test_block_boundaries_separate_words(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source, expected", [
+        ("<p>unclosed", "unclosed"),
+        ("<p>unclosed<b>bold", "unclosedbold"),
+        ('<p>Read more <a href="https://exa', "Read more"),
+        ("<p>cut mid-attribute <img src=", "cut mid-attribute"),
+        ("price < 100 and qty > 2", "price < 100 and qty > 2"),
+        ("<", None),
+    ])
+    def test_malformed_html_is_tolerated(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source, expected", [
+        ("just plain text", "just plain text"),
+        ("  spaced \n out\ttext  ", "spaced out text"),
+        ("user@example.com", "user@example.com"),
+    ])
+    def test_plain_text_passes_through(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source", [None, "", "   ", "\n\t ", "<p></p>",
+                                        "<p> </p><br/>", "<script>x=1</script>"])
+    def test_empty_input_returns_none(self, source):
+        assert _plain_text(source) is None
+
+    def test_inline_image_does_not_reach_the_text(self):
+        body = '<p><img src="data:image/png;base64,%s"/>Report text</p>' % ("A" * 100_000)
+        assert _plain_text(body) == "Report text"
+
+
+class TestTextSnippet:
+
+    def test_budget_counts_visible_characters_not_markup(self):
+        # 300 visible chars, each word wrapped in markup that would otherwise
+        # eat the budget.
+        words = ["word%03d" % i for i in range(40)]
+        marked_up = "".join('<p><span class="w">%s</span> </p>' % w for w in words)
+        plain = " ".join(words)
+
+        snippet = _text_snippet(marked_up)
+        # Same visible text as snippetting the markup-free version...
+        assert snippet == _snippet(plain)
+        # ...and far more of it than stripping after truncation would have left.
+        assert len(_plain_text(_snippet(marked_up))) < len(snippet)
+        assert snippet.startswith("word000 word001 ")
+
+    @pytest.mark.parametrize("source", [None, "", "<p> </p>"])
+    def test_empty_input_returns_none(self, source):
+        assert _text_snippet(source) is None
+
+
+class TestSummarizeTargetHtml:
+
+    def test_forum_post_message_is_plain_text(self):
+        target = PostDetails1.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/PostDetails1.json'))
+        target.post.message = ('<div><p>Hello <b>everyone</b>, I am selling fresh '
+                               '<a href="https://example.com/o?id=1&amp;x=2">dumps</a>'
+                               '</p></div>')
+        summary = _summarize_target(target)
+        assert "Hello everyone, I am selling fresh dumps" in summary
+        assert "<" not in summary and "&amp;" not in summary
+
+    def test_report_title_and_body_are_plain_text(self):
+        target = SpotReportResponse.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/SpotReportResponse.json'))
+        target.title = "Actor <b>AD0</b> &amp; friends"
+        target.body = "<h2>Summary</h2><p>First line</p><p>Second line</p>"
+        summary = _summarize_target(target)
+        assert "Actor AD0 & friends" in summary
+        assert "Summary First line Second line" in summary
+
+    def test_info_report_falls_back_to_body_when_summary_has_no_text(self):
+        target = InfoReportResponse.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/InfoReportResponse.json'))
+        target.executive_summary = "<p>&nbsp;</p>"
+        target.body = "<p>The real content</p>"
+        assert "The real content" in _summarize_target(target)

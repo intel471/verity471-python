@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import enum
+import html
 import logging
 import re
 import concurrent.futures
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from typing import Any, Optional
 from urllib.parse import quote
 
@@ -46,7 +48,19 @@ KNOWN_UNSUPPORTED_TARGET_PATHS = ("/integrations/marketplaces/",)
 
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
 _SNIPPET_OVERRUN = 32  # max extra chars that word-boundary expansion may add
-_HTML_TAG_REGEX = re.compile(r"<[^>]*>")
+
+# Elements whose *content* is markup machinery, not text, and is dropped with them.
+_SKIPPED_ELEMENTS = frozenset({"script", "style"})
+
+# Elements that imply a word boundary, so that "<p>foo</p><p>bar</p>" reads as
+# "foo bar" and not "foobar". Inline elements (<b>, <a>, <em>, ...) are absent
+# on purpose: they must not push a space into the middle of a sentence.
+_BLOCK_ELEMENTS = frozenset({
+    "address", "article", "aside", "blockquote", "br", "caption", "dd", "div",
+    "dl", "dt", "figcaption", "figure", "footer", "form", "h1", "h2", "h3",
+    "h4", "h5", "h6", "header", "hr", "img", "li", "main", "nav", "ol", "p",
+    "pre", "section", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul",
+})
 
 # ---------------------------------------------------------------------------
 # TEMPORARY WORKAROUND — remove this block (and its call site in _fetch)
@@ -117,26 +131,85 @@ def _defang(text: Optional[str]) -> str:
     return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
 
 
-def _plain_text(text: str) -> str:
-    """Flatten HTML-ish source text into a single line of readable text.
+class _PlainTextParser(HTMLParser):
+    """Collect the visible text of an HTML fragment.
 
-    Report bodies are HTML, and with ``include_inline_images`` their ``<img>``
-    tags carry base64 data URIs that can run to megabytes. Dropping the tags
-    keeps summaries readable and, just as importantly, identical whether or not
-    the images were inlined.
+    One instance per call: :class:`HTMLParser` is stateful, and summaries are
+    built from a thread pool.
     """
-    return re.sub(r"\s+", " ", _HTML_TAG_REGEX.sub(" ", text)).strip()
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)  # entities arrive already unescaped
+        self.parts: list[str] = []
+        self._skipping = 0
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        if tag in _SKIPPED_ELEMENTS:
+            self._skipping += 1
+        elif tag in _BLOCK_ELEMENTS:
+            self.parts.append(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in _SKIPPED_ELEMENTS:
+            self._skipping = max(self._skipping - 1, 0)  # stray close tag
+        elif tag in _BLOCK_ELEMENTS:
+            self.parts.append(" ")
+
+    def handle_data(self, data: str) -> None:
+        if not self._skipping:
+            self.parts.append(data)
+
+
+def _plain_text(value: Optional[str]) -> Optional[str]:
+    """Flatten an HTML-bearing field into a single line of visible text.
+
+    Report bodies, forum posts and chat messages are HTML. Consumers that
+    render a summary as plain text (chat bots, SIEM connectors) would otherwise
+    show literal markup, and the tags would eat into the snippet budget.
+
+    Tags go, with the content of ``<script>``/``<style>``; entities are
+    unescaped; block boundaries become whitespace; whitespace runs collapse.
+    Plain text passes through unchanged apart from that collapsing. Returns
+    ``None`` when nothing visible is left, so ``x if x else None`` call sites
+    keep working, and never raises - a summary must not break a fetch.
+    """
+    if not value:
+        return None
+    try:
+        parser = _PlainTextParser()
+        parser.feed(value)
+        parser.close()
+        text = "".join(parser.parts)
+    except Exception:  # noqa: BLE001 - malformed markup must not lose the text
+        log.debug("Could not parse HTML for summary, using raw text", exc_info=True)
+        text = html.unescape(value)
+    else:
+        # A fragment cut mid-tag ('...<a href="htt') is flushed as data by
+        # close(); drop it rather than surface markup as text.
+        cut = text.rfind("<")
+        if cut != -1 and ">" not in text[cut:]:
+            text = text[:cut] + " "
+    return " ".join(text.split()) or None
 
 
 def _snippet(text: str, limit: int = _SUMMARY_SNIPPET_LEN) -> str:
     """Truncate *text* to roughly *limit* chars, ending on a word boundary."""
-    text = _plain_text(text)
     if len(text) <= limit:
         return text
     end = text.find(" ", limit)
     if end == -1 or end > limit + _SNIPPET_OVERRUN:
-        end = limit  # an unbroken run (base64 blob, long URL): cut it hard
+        end = limit  # an unbroken run (long URL, base64 blob): cut it hard
     return text[:end] + "\u2026"
+
+
+def _text_snippet(value: Optional[str], limit: int = _SUMMARY_SNIPPET_LEN) -> Optional[str]:
+    """Snippet of an HTML-bearing field: strip first, then truncate.
+
+    In that order *limit* counts visible characters, instead of a budget spent
+    on markup that is about to be thrown away (and a cut landing mid-tag).
+    """
+    text = _plain_text(value)
+    return _snippet(text, limit) if text else None
 
 
 def _join(parts: list) -> str | None:
@@ -160,30 +233,30 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, PostDetails1):
         p = target.post
         return _prefixed("Forum Post", _join([
-            _snippet(p.message) if p.message else None, p.creation_ts]))
+            _text_snippet(p.message), p.creation_ts]))
 
     if isinstance(target, PrivateMessageDetails1):
         pm = target.private_message
         return _prefixed("Forum PM", _join([
-            pm.subject, _snippet(pm.message) if pm.message else None, pm.creation_ts]))
+            _plain_text(pm.subject), _text_snippet(pm.message), pm.creation_ts]))
 
     if isinstance(target, ChatRoomMessageStream):
         m = target.message
         return _prefixed("Message", _join([
-            _snippet(m.text) if m.text else None, m.creation_ts]))
+            _text_snippet(m.text), m.creation_ts]))
 
     if isinstance(target, (BreachAlertByIdResponse, FintelResponse,
                            GeopolReportDetailsResponse, MalwareReportResponse,
                            SpotReportResponse)):
         return _prefixed(_type_label(target.type), _join([
-            target.title, target.released_ts,
-            _snippet(target.body) if target.body else None]))
+            _plain_text(target.title), target.released_ts,
+            _text_snippet(target.body)]))
 
     if isinstance(target, InfoReportResponse):
-        summary = target.executive_summary or target.body
+        # Fall back to the body when the summary holds no visible text.
+        summary = _text_snippet(target.executive_summary) or _text_snippet(target.body)
         return _prefixed(_type_label(target.type), _join([
-            target.title, target.released_ts,
-            _snippet(summary) if summary else None]))
+            _plain_text(target.title), target.released_ts, summary]))
 
     if isinstance(target, VulnerabilitiesReportDetailsResponse):
         return _prefixed(_type_label(target.type), _join([
@@ -253,8 +326,7 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, SimplifiedMalwareProfile):
         aliases = ", ".join(target.aliases[:3]) if target.aliases else None
         return _prefixed("Malware", _join([
-            target.name, aliases,
-            _snippet(target.description) if target.description else None]))
+            target.name, aliases, _text_snippet(target.description)]))
 
     return None
 

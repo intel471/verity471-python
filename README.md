@@ -272,7 +272,7 @@ Each `AlertTarget` exposes:
 | `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
 | `.status` | `AlertTargetStatus` | Outcome of the target fetch: `OK`, `NO_LINK`, `UNRESOLVABLE`, `FORBIDDEN`, or `ERROR`. Anything other than `OK` means `.target` is `None`. |
 | `.status_reason` | `str \| None` | Human-readable detail for a non-`OK` status (the unresolvable URL, the underlying error message, …). `None` when `.status` is `OK`. |
-| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. Falls back to a summary built from the alert envelope when the target is missing or not summarizable. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. HTML-bearing fields (report bodies and titles, forum posts, chat messages) are reduced to plain text, so the summary is safe to render as-is. Falls back to a summary built from the alert envelope when the target is missing or not summarizable. |
 | `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
 | `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
 
