@@ -8,7 +8,7 @@ from tests.conftest import PREFIX, read_fixture
 from types import SimpleNamespace
 
 from verity471.helpers import fetch_alert_targets, AlertTargetStatus
-from verity471.exceptions import ForbiddenException
+from verity471.exceptions import ForbiddenException, NotFoundException
 from verity471.helpers.alerts import (
     _SUMMARY_SNIPPET_LEN, _patch_portal_url, _plain_text, _snippet,
     _summarize_alert, _summarize_target, _text_snippet)
@@ -314,6 +314,12 @@ class TestFetchAlertTargets:
             result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
         assert result == []
 
+    def test_not_found_is_skipped(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
+        assert result == []
+
     def test_api_error_skipped_when_requested(self, call_url_mock, _watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
         with verity471.ApiClient(configuration) as api_client:
@@ -341,6 +347,16 @@ class TestFetchAlertTargets:
         assert len(result) == 1
         assert result[0].target is None
         assert result[0].status == AlertTargetStatus.FORBIDDEN
+
+    def test_not_found_kept_with_status_by_default(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert len(result) == 1
+        assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.NOT_FOUND
+        assert "404" in result[0].status_reason
 
     def test_api_error_kept_with_status_by_default(self, call_url_mock, watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
@@ -389,6 +405,12 @@ class TestFetchAlertTargets:
         call_url_mock.side_effect = RuntimeError("boom")
         with verity471.ApiClient(configuration) as api_client:
             with pytest.raises(RuntimeError):
+                fetch_alert_targets(_alerts_response(_mock_alert()), api_client, raise_on_error=True)
+
+    def test_not_found_raises_when_requested(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        with verity471.ApiClient(configuration) as api_client:
+            with pytest.raises(NotFoundException):
                 fetch_alert_targets(_alerts_response(_mock_alert()), api_client, raise_on_error=True)
 
     def test_watcher_enrichment_failure_still_returns_results(self, call_url_mock, watchers_mock):

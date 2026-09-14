@@ -12,7 +12,7 @@ from urllib.parse import quote
 
 from verity471.api_client import ApiClient
 from verity471.api.watchers_api import WatchersApi
-from verity471.exceptions import ForbiddenException
+from verity471.exceptions import ForbiddenException, NotFoundException
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
 from verity471.models.data_leak_site_post_item import DataLeakSitePostItem
@@ -363,6 +363,7 @@ class AlertTargetStatus(str, enum.Enum):
     NO_LINK = "no_link"            # alert had no links.verity_api.href
     UNRESOLVABLE = "unresolvable"  # URL matched no known SDK route (404-ish)
     FORBIDDEN = "forbidden"        # API returned 403
+    NOT_FOUND = "not_found"        # target no longer exists (404)
     ERROR = "error"                # unexpected fetch error (5xx-ish)
 
 
@@ -377,9 +378,10 @@ class AlertTarget:
 
     ``status`` is the :class:`AlertTargetStatus` for the fetch — ``OK`` when the
     target was fetched, otherwise the reason it could not be (``NO_LINK``,
-    ``UNRESOLVABLE``, ``FORBIDDEN``, ``ERROR``).  ``target is None`` together
-    with ``status != OK`` means the fetch failed; ``status_reason`` carries the
-    human-readable detail (e.g. the URL or the underlying error message).
+    ``UNRESOLVABLE``, ``FORBIDDEN``, ``NOT_FOUND``, ``ERROR``).  ``target is
+    None`` together with ``status != OK`` means the fetch failed;
+    ``status_reason`` carries the human-readable detail (e.g. the URL or the
+    underlying error message).
 
     ``target_summary`` provides a compact, human-readable one-liner for the
     target (e.g. report title + date, indicator type + value, credential
@@ -417,12 +419,12 @@ def fetch_alert_targets(
     URL and returns :class:`AlertTarget` pairs so you can work with the actual
     content (report body, forum post text, etc.) alongside the alert metadata.
 
-    When a target cannot be fetched (no link, no known SDK route, forbidden, or
-    an unexpected error), the behaviour depends on *skip_missing_targets*: by
-    default (``False``) the alert is still returned with ``target=None`` and a
-    non-``OK`` :class:`AlertTargetStatus` (plus a ``status_reason``) so callers
-    can see it failed and why; when ``True`` such alerts are omitted from the
-    result entirely.  Marketplace alerts have no SDK route yet, so they are
+    When a target cannot be fetched (no link, no known SDK route, forbidden,
+    gone, or an unexpected error), the behaviour depends on
+    *skip_missing_targets*: by default (``False``) the alert is still returned
+    with ``target=None`` and a non-``OK`` :class:`AlertTargetStatus` (plus a
+    ``status_reason``) so callers can see it failed and why; when ``True`` such
+    alerts are omitted from the result entirely.  Marketplace alerts have no SDK route yet, so they are
     treated like any other unresolvable target: returned as bare alerts with
     ``status=UNRESOLVABLE`` by default, or omitted when *skip_missing_targets*
     is ``True``.
@@ -483,6 +485,16 @@ def fetch_alert_targets(
                 return None
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.FORBIDDEN,
                                status_reason="Forbidden (403) fetching target")
+        except NotFoundException:
+            # Routine: source content ages out or is removed, and there can be a
+            # brief consistency lag. One line, no traceback or header dump.
+            if raise_on_error:
+                raise
+            log.warning("Alert %s target not found (404): %s", alert.source_id, url)
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.NOT_FOUND,
+                               status_reason=f"Target not found (404): {url}")
         except Exception as exc:
             if raise_on_error:
                 raise
