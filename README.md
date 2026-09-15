@@ -21,7 +21,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.1
   - girs: 1.0.1
 
-- Package version: 1.1.12
+- Package version: 1.2.1
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -229,7 +229,7 @@ Client's class/method | API endpoint | Produced outcome
 `EventsApi.get_event_by_id` | `/events/{id}` |
 `MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
 `MalwareApi.get_malware_family_by_id` | `/malware/{id}` |
-`AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`
+`AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`. Report targets are fetched with inline images (as when mapping a report directly) unless `report_full_content=False`
 
 *Empty cells inherit the value from the previous row.*
 
@@ -258,6 +258,7 @@ from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatu
 | `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
 | `raise_on_error` | `bool` | `False` | When `True`, re-raise unexpected errors (and the missing-link error) instead of recording them on the result. |
 | `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. Marketplace hits (no SDK route yet) are treated like any other unresolvable target. |
+| `include_inline_images` | `bool` | `True` | When `True` (default), report targets are fetched with their images embedded in the body as base64 data URIs. Set to `False` for smaller responses, leaving the images as bare attachment URLs. Ignored by target types that have no such option. |
 
 ### Returns
 
@@ -271,7 +272,7 @@ Each `AlertTarget` exposes:
 | `.target` | model instance or `None` | The resolved API object (report, post, credential, …). `None` when the URL could not be mapped to a known SDK route. |
 | `.status` | `AlertTargetStatus` | Outcome of the target fetch: `OK`, `NO_LINK`, `UNRESOLVABLE`, `FORBIDDEN`, or `ERROR`. Anything other than `OK` means `.target` is `None`. |
 | `.status_reason` | `str \| None` | Human-readable detail for a non-`OK` status (the unresolvable URL, the underlying error message, …). `None` when `.status` is `OK`. |
-| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. Falls back to a summary built from the alert envelope when the target is missing or not summarizable. |
+| `.target_summary` | `str \| None` | A compact, human-readable one-liner describing the target. HTML-bearing fields (report bodies and titles, forum posts, chat messages) are reduced to plain text, so the summary is safe to render as-is. Falls back to a summary built from the alert envelope when the target is missing or not summarizable. |
 | `.watcher` | `GetWatcherResponse \| None` | The full watcher object that triggered this alert (name, DSL query, mute status, etc.). `None` if the watcher ID was not found in the user's watcher list. |
 | `.watcher_group` | `GetWatcherGroupResponse \| None` | The full watcher group object the watcher belongs to (name, description, etc.). `None` if not found. |
 

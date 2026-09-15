@@ -40,6 +40,10 @@ class AlertsMapper(BaseMapper):
 
     Alerts firing multiple watchers on the same target are collapsed into one
     Incident with the union of watcher labels.
+
+    Report targets are fetched with inline images unless
+    ``STIXMapperSettings.report_full_content`` is False, so a report reached
+    through an alert carries the same embedded images as one mapped directly.
     """
 
     def map(self, source: dict):
@@ -49,7 +53,14 @@ class AlertsMapper(BaseMapper):
                 "Alerts mapping requires STIXMapperSettings.api_client to resolve targets."
             )
         response = StreamingAlertsResponse.from_dict(source)
-        targets = fetch_alert_targets(response, api_client, skip_missing_targets=True)
+        targets = fetch_alert_targets(
+            response, api_client, skip_missing_targets=True,
+            # Report targets are fetched by ID, and only the by-ID endpoints with
+            # include_inline_images=true embed the images in the body. Without it
+            # an alert-derived report carries bare attachment URLs, unlike the
+            # same report mapped straight from the reports API.
+            include_inline_images=self.settings.report_full_content,
+        )
         if not targets:
             return None
 

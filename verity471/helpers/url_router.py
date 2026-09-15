@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import re
 from typing import Any
 from urllib.parse import urlparse
@@ -82,10 +83,16 @@ def resolve_url(url: str) -> tuple[type, str, dict[str, str]] | None:
     return None
 
 
-def call_url(api_client: ApiClient, url: str) -> Any:
+def call_url(api_client: ApiClient, url: str, **query_params: Any) -> Any:
     """Resolve a Verity API URL and call the corresponding API method.
 
-    Raises ValueError if the URL does not match any known route.
+    Raises :class:`UnresolvableURL` if the URL does not match any known route.
+
+    Extra keyword arguments are forwarded to the resolved method, but only when
+    that method accepts them — routes differ in which query parameters they
+    support (``include_inline_images`` for instance exists on every
+    report-by-id endpoint except the vulnerability one), so a caller can ask
+    for an option without knowing which routes have it.
 
     Example::
 
@@ -99,4 +106,8 @@ def call_url(api_client: ApiClient, url: str) -> Any:
         raise UnresolvableURL(f"No API route found for URL: {url}")
     api_class, method_name, path_params = resolved
     instance = api_class(api_client)
-    return getattr(instance, method_name)(**path_params)
+    method = getattr(instance, method_name)
+    if query_params:
+        accepted = inspect.signature(method).parameters
+        query_params = {k: v for k, v in query_params.items() if k in accepted}
+    return method(**path_params, **query_params)

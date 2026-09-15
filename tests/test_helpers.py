@@ -8,9 +8,14 @@ from tests.conftest import PREFIX, read_fixture
 from types import SimpleNamespace
 
 from verity471.helpers import fetch_alert_targets, AlertTargetStatus
-from verity471.exceptions import ForbiddenException
-from verity471.helpers.alerts import _patch_portal_url, _summarize_alert
-from verity471.helpers.url_router import UnresolvableURL
+from verity471.exceptions import ForbiddenException, NotFoundException
+from verity471.helpers.alerts import (
+    _SUMMARY_SNIPPET_LEN, _patch_portal_url, _plain_text, _snippet,
+    _summarize_alert, _summarize_target, _text_snippet)
+from verity471.models.info_report_response import InfoReportResponse
+from verity471.models.post_details1 import PostDetails1
+from verity471.models.spot_report_response import SpotReportResponse
+from verity471.helpers.url_router import UnresolvableURL, call_url
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
 from verity471.models.href import Href
@@ -30,10 +35,10 @@ test_params = {
     'CredentialsApi:get_credentials_id': ('GetCredResponse', 'https://api.intel471.cloud/integrations/creds/v1/credentials/cred--3f2abe55-8469-59db-b25a-f8268eb31f34', '[Credential] user@example.com | dummy | 2023-01-18T08:08:19.994Z'),
     'CredentialsApi:get_credentials_occurrences_id': ('GetCredOccurrenceResponse', 'https://api.intel471.cloud/integrations/creds/v1/credentials/occurrences/cred-occurrence--1edd10b4-e75d-5aa2-9b43-5e08c6a682cb', '[Credential Occurrence] dummy | 2023-01-18T08:08:19.994Z'),
     'ReportsApi:get_reports_breach_alert_id': ('BreachAlertByIdResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/breach-alert/report--fbbb23d6-713f-5f41-9ee4-45b3ff027017', '[Breach Alert] dummy | 2021-07-01T09:17:33Z'),
-    'ReportsApi:get_reports_fintel_id': ('FintelResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/fintel/report--e71d387f-325e-5bfc-a43d-143876c6cfc0', '[Fintel] dummy | 2020-01-03T20:41:55Z | <p>Actor summaryThe actor AD0 is a long-standing member of the Russian-speaking ...</p>'),
-    'ReportsApi:get_reports_geopol_id': ('GeopolReportDetailsResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/geopol/report--464ad694-6e92-5983-93f2-f0a7f4d84d7e', '[Geopol Report] dummy | 2024-04-16T16:41:10Z | <p>Event backgroundFollowing the Oct</p>'),
-    'ReportsApi:get_reports_info_id': ('InfoReportResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/info/report--1d4f77cb-ee3b-5ec2-9291-8cf9356bdfb8', '[Info Report] dummy | 2014-06-25T23:49:04Z | <p>Within the last few days the online service Indexeus http://indexeus</p>'),
-    'ReportsApi:get_reports_malware_id': ('MalwareReportResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/malware/report--8d11b63b-f7d6-5061-bb17-290ee5af9464', '[Malware Report] dummy | 2019-01-31T14:16:22Z | <p>Malware Analysis Report # Summary # Pony loader, aka Fareit, is a credential ...</p>'),
+    'ReportsApi:get_reports_fintel_id': ('FintelResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/fintel/report--e71d387f-325e-5bfc-a43d-143876c6cfc0', '[Fintel] dummy | 2020-01-03T20:41:55Z | Actor summaryThe actor AD0 is a long-standing member of the Russian-speaking ...'),
+    'ReportsApi:get_reports_geopol_id': ('GeopolReportDetailsResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/geopol/report--464ad694-6e92-5983-93f2-f0a7f4d84d7e', '[Geopol Report] dummy | 2024-04-16T16:41:10Z | Event backgroundFollowing the Oct'),
+    'ReportsApi:get_reports_info_id': ('InfoReportResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/info/report--1d4f77cb-ee3b-5ec2-9291-8cf9356bdfb8', '[Info Report] dummy | 2014-06-25T23:49:04Z | Within the last few days the online service Indexeus http://indexeus'),
+    'ReportsApi:get_reports_malware_id': ('MalwareReportResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/malware/report--8d11b63b-f7d6-5061-bb17-290ee5af9464', '[Malware Report] dummy | 2019-01-31T14:16:22Z | Malware Analysis Report # Summary # Pony loader, aka Fareit, is a credential ...'),
     'ReportsApi:get_reports_spot_id': ('SpotReportResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/spot/report--cb89fbf0-4a56-5f0c-8bd4-166b2115362f', '[Spot Report] dummy | 2019-01-17T16:59:57Z | dummy'),
     'ReportsApi:get_reports_vulnerability_id': ('VulnerabilitiesReportDetailsResponse', 'https://api.intel471.cloud/integrations/intel-report/v1/reports/vulnerability/vulnerability--451a1d7b-e555-5c25-bb21-f544d2ce6997', '[Vulnerability Report] dummy | dummy | dummy | RiskLevel.HIGH | VulnerabilityStatus.HISTORICAL'),
     'SourcesApi:get_forums_posts_post_id': ('PostDetails1', 'https://api.intel471.cloud/integrations/sources/v1/forums/posts/post--44a97352-e0bf-537a-8b51-13e16992586b', '[Forum Post] 2022-10-13T16:05:37Z'),
@@ -309,6 +314,12 @@ class TestFetchAlertTargets:
             result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
         assert result == []
 
+    def test_not_found_is_skipped(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client, skip_missing_targets=True)
+        assert result == []
+
     def test_api_error_skipped_when_requested(self, call_url_mock, _watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
         with verity471.ApiClient(configuration) as api_client:
@@ -336,6 +347,16 @@ class TestFetchAlertTargets:
         assert len(result) == 1
         assert result[0].target is None
         assert result[0].status == AlertTargetStatus.FORBIDDEN
+
+    def test_not_found_kept_with_status_by_default(self, call_url_mock, watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            result = fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert len(result) == 1
+        assert result[0].target is None
+        assert result[0].status == AlertTargetStatus.NOT_FOUND
+        assert "404" in result[0].status_reason
 
     def test_api_error_kept_with_status_by_default(self, call_url_mock, watchers_mock):
         call_url_mock.side_effect = RuntimeError("boom")
@@ -386,6 +407,12 @@ class TestFetchAlertTargets:
             with pytest.raises(RuntimeError):
                 fetch_alert_targets(_alerts_response(_mock_alert()), api_client, raise_on_error=True)
 
+    def test_not_found_raises_when_requested(self, call_url_mock, _watchers_mock):
+        call_url_mock.side_effect = NotFoundException()
+        with verity471.ApiClient(configuration) as api_client:
+            with pytest.raises(NotFoundException):
+                fetch_alert_targets(_alerts_response(_mock_alert()), api_client, raise_on_error=True)
+
     def test_watcher_enrichment_failure_still_returns_results(self, call_url_mock, watchers_mock):
         target = MagicMock()
         call_url_mock.return_value = target
@@ -402,7 +429,7 @@ class TestFetchAlertTargets:
         _no_watchers(watchers_mock)
         targets = {i: MagicMock(name=f"target_{i}") for i in range(5)}
         urls = {f"{_SPOT_URL}--{i}": targets[i] for i in range(5)}
-        call_url_mock.side_effect = lambda _client, url: urls[url]
+        call_url_mock.side_effect = lambda _client, url, **_kwargs: urls[url]
         alerts = [_mock_alert(url=f"{_SPOT_URL}--{i}", source_id=f"src--{i}") for i in range(5)]
         with verity471.ApiClient(configuration) as api_client:
             result = fetch_alert_targets(_alerts_response(*alerts), api_client)
@@ -447,3 +474,177 @@ class TestSummarizeAlert:
     def test_without_highlights_has_no_snippet(self):
         summary = _summarize_alert(_alert_like(api=_SPOT_URL, snippets=None))
         assert summary == f"Forums Post: {_SPOT_URL}"
+
+# ---------------------------------------------------------------------------
+# Tests for inline-image handling: report targets must be fetched with their
+# images embedded, the way a report mapped straight from the reports API is.
+# ---------------------------------------------------------------------------
+
+_VULN_URL = ("https://api.intel471.cloud/integrations/intel-report/v1/reports/"
+             "vulnerability/vulnerability--test")
+_POST_URL = "https://api.intel471.cloud/integrations/sources/v1/forums/posts/post--test"
+
+
+class TestCallUrlQueryParams:
+    # autospec keeps the real signature on the mock, which is what call_url
+    # inspects to decide whether a route accepts the parameter.
+
+    @patch('verity471.api.reports_api.ReportsApi.get_reports_spot_id', autospec=True)
+    def test_supported_param_is_forwarded(self, method_mock):
+        with verity471.ApiClient(configuration) as api_client:
+            call_url(api_client, _SPOT_URL, include_inline_images=True)
+        assert method_mock.call_args.kwargs == {"id": "report--test",
+                                                "include_inline_images": True}
+
+    @patch('verity471.api.reports_api.ReportsApi.get_reports_vulnerability_id', autospec=True)
+    def test_unsupported_param_is_dropped(self, method_mock):
+        # Vulnerability reports are the one report route without the option.
+        with verity471.ApiClient(configuration) as api_client:
+            call_url(api_client, _VULN_URL, include_inline_images=True)
+        assert method_mock.call_args.kwargs == {"id": "vulnerability--test"}
+
+    @patch('verity471.api.sources_api.SourcesApi.get_forums_posts_post_id', autospec=True)
+    def test_non_report_route_is_unaffected(self, method_mock):
+        with verity471.ApiClient(configuration) as api_client:
+            call_url(api_client, _POST_URL, include_inline_images=True)
+        assert method_mock.call_args.kwargs == {"post_id": "post--test"}
+
+
+@patch('verity471.helpers.alerts.WatchersApi')
+@patch('verity471.helpers.alerts.call_url')
+class TestFetchAlertTargetsInlineImages:
+
+    def test_inline_images_requested_by_default(self, call_url_mock, watchers_mock):
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            fetch_alert_targets(_alerts_response(_mock_alert()), api_client)
+        assert call_url_mock.call_args.kwargs["include_inline_images"] is True
+
+    def test_inline_images_can_be_disabled(self, call_url_mock, watchers_mock):
+        _no_watchers(watchers_mock)
+        with verity471.ApiClient(configuration) as api_client:
+            fetch_alert_targets(_alerts_response(_mock_alert()), api_client,
+                                include_inline_images=False)
+        assert call_url_mock.call_args.kwargs["include_inline_images"] is False
+
+
+class TestSnippet:
+
+    def test_unbroken_run_is_cut_at_the_limit(self):
+        summary = _snippet("x" * 10_000)
+        assert len(summary) == _SUMMARY_SNIPPET_LEN + 1  # + the ellipsis
+
+
+# ---------------------------------------------------------------------------
+# Tests for _plain_text: HTML-bearing fields must reach the caller as text.
+# ---------------------------------------------------------------------------
+
+class TestPlainText:
+
+    def test_nested_tags_and_anchor(self):
+        post = ('<div class="post-body"><p>Hello <b>everyone</b>, I am selling '
+                'fresh <a href="https://example.com/offer?id=1">database dumps</a>.'
+                '</p></div>')
+        assert _plain_text(post) == ("Hello everyone, I am selling fresh "
+                                     "database dumps.")
+
+    def test_entities_are_unescaped(self):
+        assert _plain_text("Tom &amp; Jerry&#39;s&nbsp;dump &lt;v2&gt;") == \
+            "Tom & Jerry's dump <v2>"
+
+    def test_script_and_style_content_is_dropped(self):
+        source = ("<style>.post { color: red; }</style>"
+                  "<p>Visible</p>"
+                  "<script>var x = 1; alert('boom');</script>")
+        assert _plain_text(source) == "Visible"
+
+    @pytest.mark.parametrize("source, expected", [
+        ("<p>foo</p><p>bar</p>", "foo bar"),
+        ("foo<br>bar", "foo bar"),
+        ("<ul><li>foo</li><li>bar</li></ul>", "foo bar"),
+        ("<div>foo</div><div>bar</div>", "foo bar"),
+        ("<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>", "foo bar"),
+        ("<h1>foo</h1>bar", "foo bar"),
+        # Inline elements must not push a space into the middle of a word.
+        ("f<b>o</b>o", "foo"),
+    ])
+    def test_block_boundaries_separate_words(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source, expected", [
+        ("<p>unclosed", "unclosed"),
+        ("<p>unclosed<b>bold", "unclosedbold"),
+        ('<p>Read more <a href="https://exa', "Read more"),
+        ("<p>cut mid-attribute <img src=", "cut mid-attribute"),
+        ("price < 100 and qty > 2", "price < 100 and qty > 2"),
+        ("<", None),
+    ])
+    def test_malformed_html_is_tolerated(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source, expected", [
+        ("just plain text", "just plain text"),
+        ("  spaced \n out\ttext  ", "spaced out text"),
+        ("user@example.com", "user@example.com"),
+    ])
+    def test_plain_text_passes_through(self, source, expected):
+        assert _plain_text(source) == expected
+
+    @pytest.mark.parametrize("source", [None, "", "   ", "\n\t ", "<p></p>",
+                                        "<p> </p><br/>", "<script>x=1</script>"])
+    def test_empty_input_returns_none(self, source):
+        assert _plain_text(source) is None
+
+    def test_inline_image_does_not_reach_the_text(self):
+        body = '<p><img src="data:image/png;base64,%s"/>Report text</p>' % ("A" * 100_000)
+        assert _plain_text(body) == "Report text"
+
+
+class TestTextSnippet:
+
+    def test_budget_counts_visible_characters_not_markup(self):
+        # 300 visible chars, each word wrapped in markup that would otherwise
+        # eat the budget.
+        words = ["word%03d" % i for i in range(40)]
+        marked_up = "".join('<p><span class="w">%s</span> </p>' % w for w in words)
+        plain = " ".join(words)
+
+        snippet = _text_snippet(marked_up)
+        # Same visible text as snippetting the markup-free version...
+        assert snippet == _snippet(plain)
+        # ...and far more of it than stripping after truncation would have left.
+        assert len(_plain_text(_snippet(marked_up))) < len(snippet)
+        assert snippet.startswith("word000 word001 ")
+
+    @pytest.mark.parametrize("source", [None, "", "<p> </p>"])
+    def test_empty_input_returns_none(self, source):
+        assert _text_snippet(source) is None
+
+
+class TestSummarizeTargetHtml:
+
+    def test_forum_post_message_is_plain_text(self):
+        target = PostDetails1.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/PostDetails1.json'))
+        target.post.message = ('<div><p>Hello <b>everyone</b>, I am selling fresh '
+                               '<a href="https://example.com/o?id=1&amp;x=2">dumps</a>'
+                               '</p></div>')
+        summary = _summarize_target(target)
+        assert "Hello everyone, I am selling fresh dumps" in summary
+        assert "<" not in summary and "&amp;" not in summary
+
+    def test_report_title_and_body_are_plain_text(self):
+        target = SpotReportResponse.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/SpotReportResponse.json'))
+        target.title = "Actor <b>AD0</b> &amp; friends"
+        target.body = "<h2>Summary</h2><p>First line</p><p>Second line</p>"
+        summary = _summarize_target(target)
+        assert "Actor AD0 & friends" in summary
+        assert "Summary First line Second line" in summary
+
+    def test_info_report_falls_back_to_body_when_summary_has_no_text(self):
+        target = InfoReportResponse.from_dict(read_fixture(
+            f'{PREFIX}/fixtures/api_responses/InfoReportResponse.json'))
+        target.executive_summary = "<p>&nbsp;</p>"
+        target.body = "<p>The real content</p>"
+        assert "The real content" in _summarize_target(target)

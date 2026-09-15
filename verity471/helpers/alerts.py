@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import enum
+import html
 import logging
 import re
 import concurrent.futures
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from typing import Any, Optional
 from urllib.parse import quote
 
 from verity471.api_client import ApiClient
 from verity471.api.watchers_api import WatchersApi
-from verity471.exceptions import ForbiddenException
+from verity471.exceptions import ForbiddenException, NotFoundException
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
 from verity471.models.data_leak_site_post_item import DataLeakSitePostItem
@@ -38,7 +40,27 @@ from verity471.helpers.url_router import UnresolvableURL, call_url
 
 log = logging.getLogger(__name__)
 
+# Target types an alert can reference that the SDK deliberately has no route for
+# yet. A missing route for one of these is expected, so it is logged at DEBUG; a URL
+# outside this set is unexpected and stays a WARNING, as it may mean the SDK needs a
+# new route.
+KNOWN_UNSUPPORTED_TARGET_PATHS = ("/integrations/marketplaces/",)
+
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
+_SNIPPET_OVERRUN = 32  # max extra chars that word-boundary expansion may add
+
+# Elements whose *content* is markup machinery, not text, and is dropped with them.
+_SKIPPED_ELEMENTS = frozenset({"script", "style"})
+
+# Elements that imply a word boundary, so that "<p>foo</p><p>bar</p>" reads as
+# "foo bar" and not "foobar". Inline elements (<b>, <a>, <em>, ...) are absent
+# on purpose: they must not push a space into the middle of a sentence.
+_BLOCK_ELEMENTS = frozenset({
+    "address", "article", "aside", "blockquote", "br", "caption", "dd", "div",
+    "dl", "dt", "figcaption", "figure", "footer", "form", "h1", "h2", "h3",
+    "h4", "h5", "h6", "header", "hr", "img", "li", "main", "nav", "ol", "p",
+    "pre", "section", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul",
+})
 
 # ---------------------------------------------------------------------------
 # TEMPORARY WORKAROUND — remove this block (and its call site in _fetch)
@@ -109,12 +131,85 @@ def _defang(text: Optional[str]) -> str:
     return re.sub(r"(\w)\.(\w)", r"\1[.]\2", text)
 
 
+class _PlainTextParser(HTMLParser):
+    """Collect the visible text of an HTML fragment.
+
+    One instance per call: :class:`HTMLParser` is stateful, and summaries are
+    built from a thread pool.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)  # entities arrive already unescaped
+        self.parts: list[str] = []
+        self._skipping = 0
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        if tag in _SKIPPED_ELEMENTS:
+            self._skipping += 1
+        elif tag in _BLOCK_ELEMENTS:
+            self.parts.append(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in _SKIPPED_ELEMENTS:
+            self._skipping = max(self._skipping - 1, 0)  # stray close tag
+        elif tag in _BLOCK_ELEMENTS:
+            self.parts.append(" ")
+
+    def handle_data(self, data: str) -> None:
+        if not self._skipping:
+            self.parts.append(data)
+
+
+def _plain_text(value: Optional[str]) -> Optional[str]:
+    """Flatten an HTML-bearing field into a single line of visible text.
+
+    Report bodies, forum posts and chat messages are HTML. Consumers that
+    render a summary as plain text (chat bots, SIEM connectors) would otherwise
+    show literal markup, and the tags would eat into the snippet budget.
+
+    Tags go, with the content of ``<script>``/``<style>``; entities are
+    unescaped; block boundaries become whitespace; whitespace runs collapse.
+    Plain text passes through unchanged apart from that collapsing. Returns
+    ``None`` when nothing visible is left, so ``x if x else None`` call sites
+    keep working, and never raises - a summary must not break a fetch.
+    """
+    if not value:
+        return None
+    try:
+        parser = _PlainTextParser()
+        parser.feed(value)
+        parser.close()
+        text = "".join(parser.parts)
+    except Exception:  # noqa: BLE001 - malformed markup must not lose the text
+        log.debug("Could not parse HTML for summary, using raw text", exc_info=True)
+        text = html.unescape(value)
+    else:
+        # A fragment cut mid-tag ('...<a href="htt') is flushed as data by
+        # close(); drop it rather than surface markup as text.
+        cut = text.rfind("<")
+        if cut != -1 and ">" not in text[cut:]:
+            text = text[:cut] + " "
+    return " ".join(text.split()) or None
+
+
 def _snippet(text: str, limit: int = _SUMMARY_SNIPPET_LEN) -> str:
     """Truncate *text* to roughly *limit* chars, ending on a word boundary."""
     if len(text) <= limit:
         return text
     end = text.find(" ", limit)
-    return text[:end] + "\u2026" if end != -1 else text[:limit] + "\u2026"
+    if end == -1 or end > limit + _SNIPPET_OVERRUN:
+        end = limit  # an unbroken run (long URL, base64 blob): cut it hard
+    return text[:end] + "\u2026"
+
+
+def _text_snippet(value: Optional[str], limit: int = _SUMMARY_SNIPPET_LEN) -> Optional[str]:
+    """Snippet of an HTML-bearing field: strip first, then truncate.
+
+    In that order *limit* counts visible characters, instead of a budget spent
+    on markup that is about to be thrown away (and a cut landing mid-tag).
+    """
+    text = _plain_text(value)
+    return _snippet(text, limit) if text else None
 
 
 def _join(parts: list) -> str | None:
@@ -138,30 +233,30 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, PostDetails1):
         p = target.post
         return _prefixed("Forum Post", _join([
-            _snippet(p.message) if p.message else None, p.creation_ts]))
+            _text_snippet(p.message), p.creation_ts]))
 
     if isinstance(target, PrivateMessageDetails1):
         pm = target.private_message
         return _prefixed("Forum PM", _join([
-            pm.subject, _snippet(pm.message) if pm.message else None, pm.creation_ts]))
+            _plain_text(pm.subject), _text_snippet(pm.message), pm.creation_ts]))
 
     if isinstance(target, ChatRoomMessageStream):
         m = target.message
         return _prefixed("Message", _join([
-            _snippet(m.text) if m.text else None, m.creation_ts]))
+            _text_snippet(m.text), m.creation_ts]))
 
     if isinstance(target, (BreachAlertByIdResponse, FintelResponse,
                            GeopolReportDetailsResponse, MalwareReportResponse,
                            SpotReportResponse)):
         return _prefixed(_type_label(target.type), _join([
-            target.title, target.released_ts,
-            _snippet(target.body) if target.body else None]))
+            _plain_text(target.title), target.released_ts,
+            _text_snippet(target.body)]))
 
     if isinstance(target, InfoReportResponse):
-        summary = target.executive_summary or target.body
+        # Fall back to the body when the summary holds no visible text.
+        summary = _text_snippet(target.executive_summary) or _text_snippet(target.body)
         return _prefixed(_type_label(target.type), _join([
-            target.title, target.released_ts,
-            _snippet(summary) if summary else None]))
+            _plain_text(target.title), target.released_ts, summary]))
 
     if isinstance(target, VulnerabilitiesReportDetailsResponse):
         return _prefixed(_type_label(target.type), _join([
@@ -231,8 +326,7 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, SimplifiedMalwareProfile):
         aliases = ", ".join(target.aliases[:3]) if target.aliases else None
         return _prefixed("Malware", _join([
-            target.name, aliases,
-            _snippet(target.description) if target.description else None]))
+            target.name, aliases, _text_snippet(target.description)]))
 
     return None
 
@@ -269,6 +363,7 @@ class AlertTargetStatus(str, enum.Enum):
     NO_LINK = "no_link"            # alert had no links.verity_api.href
     UNRESOLVABLE = "unresolvable"  # URL matched no known SDK route (404-ish)
     FORBIDDEN = "forbidden"        # API returned 403
+    NOT_FOUND = "not_found"        # target no longer exists (404)
     ERROR = "error"                # unexpected fetch error (5xx-ish)
 
 
@@ -283,9 +378,10 @@ class AlertTarget:
 
     ``status`` is the :class:`AlertTargetStatus` for the fetch — ``OK`` when the
     target was fetched, otherwise the reason it could not be (``NO_LINK``,
-    ``UNRESOLVABLE``, ``FORBIDDEN``, ``ERROR``).  ``target is None`` together
-    with ``status != OK`` means the fetch failed; ``status_reason`` carries the
-    human-readable detail (e.g. the URL or the underlying error message).
+    ``UNRESOLVABLE``, ``FORBIDDEN``, ``NOT_FOUND``, ``ERROR``).  ``target is
+    None`` together with ``status != OK`` means the fetch failed;
+    ``status_reason`` carries the human-readable detail (e.g. the URL or the
+    underlying error message).
 
     ``target_summary`` provides a compact, human-readable one-liner for the
     target (e.g. report title + date, indicator type + value, credential
@@ -314,6 +410,7 @@ def fetch_alert_targets(
     api_client: ApiClient,
     raise_on_error: bool = False,
     skip_missing_targets: bool = False,
+    include_inline_images: bool = True,
 ) -> list[AlertTarget]:
     """Fetch the full target object for every alert in *alerts_response*.
 
@@ -322,12 +419,12 @@ def fetch_alert_targets(
     URL and returns :class:`AlertTarget` pairs so you can work with the actual
     content (report body, forum post text, etc.) alongside the alert metadata.
 
-    When a target cannot be fetched (no link, no known SDK route, forbidden, or
-    an unexpected error), the behaviour depends on *skip_missing_targets*: by
-    default (``False``) the alert is still returned with ``target=None`` and a
-    non-``OK`` :class:`AlertTargetStatus` (plus a ``status_reason``) so callers
-    can see it failed and why; when ``True`` such alerts are omitted from the
-    result entirely.  Marketplace alerts have no SDK route yet, so they are
+    When a target cannot be fetched (no link, no known SDK route, forbidden,
+    gone, or an unexpected error), the behaviour depends on
+    *skip_missing_targets*: by default (``False``) the alert is still returned
+    with ``target=None`` and a non-``OK`` :class:`AlertTargetStatus` (plus a
+    ``status_reason``) so callers can see it failed and why; when ``True`` such
+    alerts are omitted from the result entirely.  Marketplace alerts have no SDK route yet, so they are
     treated like any other unresolvable target: returned as bare alerts with
     ``status=UNRESOLVABLE`` by default, or omitted when *skip_missing_targets*
     is ``True``.
@@ -343,6 +440,12 @@ def fetch_alert_targets(
             fetched are omitted from the result. When ``False`` (default) they
             are returned with ``target=None`` and a failure ``status``.
             Defaults to ``False``.
+        include_inline_images: When ``True`` (default), report targets are
+            fetched with their images embedded in the body as base64 data URIs,
+            matching what the report-by-id endpoints return with
+            ``include_inline_images=true``. Set to ``False`` for smaller
+            responses, leaving the images as bare attachment URLs. Ignored by
+            target types that have no such option.
 
     Returns:
         A list of :class:`AlertTarget` objects in the same order as
@@ -365,9 +468,13 @@ def fetch_alert_targets(
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.NO_LINK,
                                status_reason="Alert has no verity_api link")
         try:
-            target = call_url(api_client, url)
+            target = call_url(api_client, url, include_inline_images=include_inline_images)
         except UnresolvableURL:
-            log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
+            if any(path in url for path in KNOWN_UNSUPPORTED_TARGET_PATHS):
+                log.debug("No SDK route for alert %s URL: %s (known unsupported target type)",
+                          alert.source_id, url)
+            else:
+                log.warning("No SDK route for alert %s URL: %s", alert.source_id, url)
             if skip_missing_targets:
                 return None
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.UNRESOLVABLE,
@@ -378,6 +485,16 @@ def fetch_alert_targets(
                 return None
             return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.FORBIDDEN,
                                status_reason="Forbidden (403) fetching target")
+        except NotFoundException:
+            # Routine: source content ages out or is removed, and there can be a
+            # brief consistency lag. One line, no traceback or header dump.
+            if raise_on_error:
+                raise
+            log.warning("Alert %s target not found (404): %s", alert.source_id, url)
+            if skip_missing_targets:
+                return None
+            return AlertTarget(alert=alert, target=None, status=AlertTargetStatus.NOT_FOUND,
+                               status_reason=f"Target not found (404): {url}")
         except Exception as exc:
             if raise_on_error:
                 raise
