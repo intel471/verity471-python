@@ -17,6 +17,10 @@ def _is_email(value) -> bool:
 
 
 @StixMapper.register(
+    "credentials",
+    lambda x: isinstance(x, dict) and isinstance(x.get("credentials"), list),
+)
+@StixMapper.register(
     "credential",
     lambda x: isinstance(x, dict) and (x.get("id") or "").startswith("cred--"),
 )
@@ -31,9 +35,33 @@ class CredentialMapper(BaseMapper):
     email login is also emitted as an EmailAddress with ``belongs_to_ref`` back
     to the account. Affected domains and the harvesting malware family are
     attached via ``related-to`` relationships.
+
+    Also maps a whole ``/credentials/stream`` page (``{"credentials": [...]}``)
+    into a single deduplicated Bundle; an item that fails to map is logged and
+    skipped rather than aborting the page.
+
+    The cleartext password is written to ``credential`` only when
+    ``STIXMapperSettings.credentials_include_plain_password`` is True (default).
     """
 
     def map(self, source: dict):
+        if isinstance(source.get("credentials"), list):
+            container = StixObjects()
+            for item in source["credentials"]:
+                try:
+                    container.extend(self._map_one(item).get())
+                except Exception as exc:  # noqa: BLE001 - one bad item must not abort the page
+                    item_id = item.get("id") if isinstance(item, dict) else None
+                    log.warning("Failed to map credential %s: %s", item_id, exc)
+        else:
+            container = self._map_one(source)
+        if container:
+            container.add(author_identity)
+            container.add(MARKING)
+            return Bundle(*container.get(), allow_custom=True)
+
+    def _map_one(self, source: dict) -> StixObjects:
+        """Map one credential / credential occurrence (no author, marking or Bundle)."""
         container = StixObjects()
         data = source.get("data") or {}
         # A credential occurrence nests the credential under data.credential.
@@ -45,7 +73,9 @@ class CredentialMapper(BaseMapper):
             type_labels.append(f"verity471:credential_{credential_type}")
 
         login = cred.get("credential_login")
-        password = (cred.get("password") or {}).get("password_plain")
+        password = None
+        if getattr(self.settings, "credentials_include_plain_password", True):
+            password = (cred.get("password") or {}).get("password_plain")
         account = None
         if login or password:
             account = map_credential_account(
@@ -70,10 +100,7 @@ class CredentialMapper(BaseMapper):
             if account:
                 container.add(self.relate(account.id, malware.id, "related-to"))
 
-        if container:
-            container.add(author_identity)
-            container.add(MARKING)
-            return Bundle(*container.get(), allow_custom=True)
+        return container
 
     def _gir_labels(self, source: dict) -> list:
         try:

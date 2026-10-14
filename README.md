@@ -21,7 +21,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - entities: 1.0.1
   - girs: 1.0.1
 
-- Package version: 1.2.1
+- Package version: 1.2.2
 - Generator version: 7.21.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -219,12 +219,10 @@ Client's class/method | API endpoint | Produced outcome
 `SourcesApi.get_messaging_services_messages_stream` | `/messaging-services/messages/stream` | `Channel` (server/room) + `Media-Content` joined by `publishes`; author handle as an individual `Identity`; attachments as `File`
 `SourcesApi.get_messaging_services_messages_message_id` | `/messaging-services/messages/{id}` |
 `SourcesApi.get_data_leak_sites_posts_stream` | `/data-leak-sites/posts/stream` | `Channel` (site) + `Media-Content` (the post) joined by `publishes`; attachments as `File`
-`CredentialsApi.get_credentials_stream` | `/credentials/stream` | `UserAccount` (password in `credential`) + `EmailAddress` (`belongs_to_ref`), `DomainName` and stealer `Malware` linked via `Relationship`
+`CredentialsApi.get_credentials_stream` | `/credentials/stream` | `UserAccount` (cleartext password in `credential` unless `credentials_include_plain_password=False`) + `EmailAddress` (`belongs_to_ref`), `DomainName` and stealer `Malware` linked via `Relationship`. A whole page maps to one deduplicated `Bundle`; items that fail to map are logged and skipped
 `CredentialsApi.get_credentials_id` | `/credentials/{id}` |
-`CredentialsApi.get_credentials_occurrences_stream` | `/credentials/occurrences/stream` |
-`CredentialsApi.get_credentials_occurrences_id` | `/credentials/occurrences/{id}` |
-`CredentialsApi.get_credential_sets_stream` | `/credential-sets/stream` | victim organization `Identity` objects (breach metadata is carried by the alert `Incident`)
-`CredentialsApi.get_credential_sets_id` | `/credential-sets/{id}` |
+`CredentialsApi.get_credentials_occurrences_id` | `/credentials/occurrences/{id}` | As above (single item only; the occurrences stream page wrapper is not mapped)
+`CredentialsApi.get_credential_sets_id` | `/credential-sets/{id}` | victim organization `Identity` objects (breach metadata is carried by the alert `Incident`); single item only, the stream page wrapper is not mapped
 `EventsApi.get_events_stream` | `/events/stream` | `Malware` (`is_family`) + C2 `Infrastructure` + `URL`/`IPv4Address`/`File` observables joined via `uses`/`consists-of`
 `EventsApi.get_event_by_id` | `/events/{id}` |
 `MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
