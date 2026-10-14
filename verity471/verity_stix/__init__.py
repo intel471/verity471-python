@@ -18,6 +18,10 @@ class STIXMapperSettings(NamedTuple):
     # (incident_type "alert"/"data-breach") linked to the content graph. When
     # False, only the target content is emitted, tagged with watcher labels.
     alerts_create_incident: bool = True
+    # Write the cleartext password (as returned by the API) to the UserAccount
+    # ``credential`` field. Set False to emit the account without it; the
+    # password strength is still noted in the description.
+    credentials_include_plain_password: bool = True
 
 
 class StixObjects:

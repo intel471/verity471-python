@@ -256,6 +256,79 @@ def test_credential_password_stored_in_credential_field():
     assert account.credential == "hunter2"
 
 
+@pytest.mark.parametrize("include, expected", [(True, "hunter2"), (False, None)])
+def test_credential_plain_password_gate(include, expected):
+    source = _api_fixture("GetCredResponse")
+    source["data"]["password"]["password_plain"] = "hunter2"
+    source["data"]["password"]["strength"] = "weak"
+    bundle = StixMapper(_settings(credentials_include_plain_password=include)).map(source)
+    account = _by_type(bundle, "user-account")[0]
+    assert account.get("credential") == expected
+    # the account is still emitted from the login, and strength stays in the description
+    assert account.account_login == "user@example.com"
+    assert "Password strength: 'weak'." in account["x_opencti_description"]
+    assert ("hunter2" in bundle.serialize()) is include
+
+
+def _cred_item(n, password=None):
+    item = _api_fixture("GetCredResponse")
+    item["id"] = f"cred--00000000-0000-0000-0000-00000000000{n}"
+    item["data"]["credential_login"] = f"user{n}@example.com"
+    item["data"]["credential_domain"] = item["data"]["detection_domain"] = "example.com"
+    item["data"]["info_stealer"]["malware_family"] = ["redline"]
+    if password:
+        item["data"]["password"]["password_plain"] = password
+    return item
+
+
+def test_credentials_stream_dispatches_to_credentials_mapper():
+    source = _api_fixture("GetCredResponseStream")
+    matched = [name for name, (condition, _) in StixMapper.mappers.items() if condition(source)]
+    assert matched == ["credentials"]
+
+
+def test_credentials_stream_page_maps_to_one_deduped_bundle():
+    bad = _cred_item(9)
+    bad["data"] = "not-a-dict"  # unmappable item: must be skipped, not abort the page
+    source = {"count": 4, "cursor_next": "abc",
+              "credentials": [_cred_item(1, "pw1"), bad, _cred_item(2, "pw2"), _cred_item(1, "pw1")]}
+    bundle = StixMapper(_settings()).map(source)
+    accounts = _by_type(bundle, "user-account")
+    assert sorted(a.account_login for a in accounts) == ["user1@example.com", "user2@example.com"]
+    assert sorted(a.credential for a in accounts) == ["pw1", "pw2"]
+    assert len(_by_type(bundle, "email-addr")) == 2
+    # shared domain + malware family deduplicated across items
+    assert [d.value for d in _by_type(bundle, "domain-name")] == ["example.com"]
+    assert [m.name for m in _by_type(bundle, "malware")] == ["redline"]
+    # author identity and marking appear exactly once
+    assert len(_by_type(bundle, "identity")) == 1
+    assert len(_by_type(bundle, "marking-definition")) == 1
+    ids = [o.id for o in bundle.objects]
+    assert len(ids) == len(set(ids))
+
+
+def test_credentials_stream_page_honours_password_gate():
+    source = {"count": 1, "cursor_next": "abc", "credentials": [_cred_item(1, "pw1")]}
+    bundle = StixMapper(_settings(credentials_include_plain_password=False)).map(source)
+    account = _by_type(bundle, "user-account")[0]
+    assert "credential" not in account
+    assert "pw1" not in bundle.serialize()
+
+
+def test_credentials_stream_empty_page_raises_empty_bundle():
+    from verity471.verity_stix.exceptions import EmptyBundle
+    with pytest.raises(EmptyBundle):
+        StixMapper(_settings()).map({"count": 0, "credentials": [], "cursor_next": None})
+
+
+def test_credentials_stream_model_to_stix():
+    from verity471.models.get_cred_response_stream import GetCredResponseStream
+    page = GetCredResponseStream.from_dict(
+        {"count": 2, "cursor_next": "abc", "credentials": [_cred_item(1, "pw1"), _cred_item(2)]})
+    bundle = page.to_stix(_settings())
+    assert len(_by_type(bundle, "user-account")) == 2
+
+
 def test_credential_set_maps_victim_organizations():
     source = _api_fixture("GetCredSetResponse")
     source["data"]["victims"] = [{"name": "ACME", "links": [{"external": {"href": "https://acme.example"}}]}]
@@ -389,6 +462,19 @@ def test_credential_set_alert_is_data_breach_incident():
     bundle = _map_alerts([at])
     inc = _by_type(bundle, "incident")[0]
     assert inc.incident_type == "data-breach"
+
+
+@pytest.mark.parametrize("include", [True, False])
+def test_credential_alert_honours_plain_password_gate(include):
+    cred = _api_fixture("GetCredResponse")
+    cred["data"]["password"]["password_plain"] = "hunter2"
+    at = AlertTarget(alert=_alert("cred--1"), target=GetCredResponse.from_dict(cred),
+                     watcher=_watcher("w1"), watcher_group=_watcher("g1"))
+    bundle = _map_alerts([at], credentials_include_plain_password=include)
+    assert _by_type(bundle, "incident")[0].incident_type == "data-breach"
+    account = _by_type(bundle, "user-account")[0]
+    assert account.get("credential") == ("hunter2" if include else None)
+    assert ("hunter2" in bundle.serialize()) is include
 
 
 def test_multiple_watchers_same_target_collapse_to_one_incident():
