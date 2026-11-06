@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **notification_settings** | [**List[NotificationSettingsResponse]**](NotificationSettingsResponse.md) |  | [optional] 
 **query_fields** | **List[str]** |  | [optional] 
 **updated_by** | **str** |  | [optional] 
+**watcher_group** | [**EmbeddedWatcherGroupResponse**](EmbeddedWatcherGroupResponse.md) |  | [optional] 
 **watcher_group_id** | **int** |  | 
 
 ## Example

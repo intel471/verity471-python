@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_actors_stream**
-> ActorStreamPage get_actors_stream(actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
+> ActorStreamPage get_actors_stream(actor=actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
 
 Retrieve a stream of actors
 
@@ -46,7 +46,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.ActorsApi(api_client)
-    actor = 'example_actor' # str | Search by actor handle.
+    actor = 'example_actor' # str | Search by actor handle. When omitted or empty, all actors are returned. (optional)
     forum = 'forum_example' # str | Apply filtering by forum display name. (optional)
     var_from = 1627776000000 # int | Apply filtering by from timestamp - UNIX timestamp(in milliseconds) (optional)
     until = 1627776000000 # int | Apply filtering by until timestamp - UNIX timestamp(in milliseconds) (optional)
@@ -56,7 +56,7 @@ with verity471.ApiClient(configuration) as api_client:
 
     try:
         # Retrieve a stream of actors
-        api_response = api_instance.get_actors_stream(actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
+        api_response = api_instance.get_actors_stream(actor=actor, forum=forum, var_from=var_from, until=until, server_type=server_type, size=size, cursor=cursor)
         print("The response of ActorsApi->get_actors_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -70,7 +70,7 @@ with verity471.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **actor** | **str**| Search by actor handle. | 
+ **actor** | **str**| Search by actor handle. When omitted or empty, all actors are returned. | [optional] 
  **forum** | **str**| Apply filtering by forum display name. | [optional] 
  **var_from** | **int**| Apply filtering by from timestamp - UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| Apply filtering by until timestamp - UNIX timestamp(in milliseconds) | [optional] 

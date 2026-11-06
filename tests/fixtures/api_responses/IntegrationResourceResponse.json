@@ -1,0 +1,22 @@
+{
+    "id": "marketplace-resource--00000000-0000-0000-0000-000000000000",
+    "marketplace_id": "marketplace-website--00000000-0000-0000-0000-000000000000",
+    "product_id": "marketplace-product--00000000-0000-0000-0000-000000000000",
+    "name": "example.com",
+    "link": "https://example.com/login",
+    "login_available": true,
+    "password_available": true,
+    "cookies_available": false,
+    "activity": {
+        "first_seen_ts": "2026-01-01T00:00:00Z",
+        "last_seen_ts": "2026-01-02T00:00:00Z"
+    },
+    "links": {
+        "verity_api": {
+            "href": "https://api.example.com/integrations/marketplaces/v1/resources/marketplace-resource--00000000-0000-0000-0000-000000000000"
+        },
+        "verity_portal": {
+            "href": "https://portal.example.com/sources/marketplaces/resources/marketplace-resource--00000000-0000-0000-0000-000000000000"
+        }
+    }
+}

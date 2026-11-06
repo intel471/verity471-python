@@ -21,7 +21,7 @@ Credential set accessed domains stream
 
 Returns list of Credential set accessed domains matching filter criteria. Stream pagination is based on a cursor.
         The response is the same as for the credentialsets/accesseddomains endpoint but with the additional “cursorNext”
-        field. Results are sorted by ascending order of the lastUpdated field.\nTwo indications of the end of the stream
+        field. Results are sorted in ascending order by the time the record was processed.\nTwo indications of the end of the stream
         are possible: the result list is empty or its size is less than the requested items count.
 
 ### Example
@@ -590,7 +590,7 @@ Name | Type | Description  | Notes
 
 Credential occurrence stream
 
-Returns list of Credential occurrences matching filter criteria. Stream pagination is based on a cursor. The response is the same as for the /credentials/occurrences endpoint but with the additional “cursorNext” field. Results are sorted by ascending order of the lastUpdated field.
+Returns list of Credential occurrences matching filter criteria. Stream pagination is based on a cursor. The response is the same as for the /credentials/occurrences endpoint but with the additional “cursorNext” field. Results are sorted in ascending order by the time the record was processed.
 Two indications of the end of the stream are possible: the result list is empty or its size is less than the requested items count.
 
 ### Example

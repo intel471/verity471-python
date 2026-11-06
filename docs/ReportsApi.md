@@ -825,7 +825,7 @@ Name | Type | Description  | Notes
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** |  |  * Content-Type -  <br>  |
+**200** |  |  -  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
@@ -1817,7 +1817,7 @@ Name | Type | Description  | Notes
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** |  |  * Content-Type -  <br>  |
+**200** |  |  -  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
@@ -1828,7 +1828,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_reports_vulnerability_stream**
-> VulnerabilitiesReportsResponseStream get_reports_vulnerability_stream(status=status, text_filter=text_filter, girs=girs, risk_level=risk_level, patch_status=patch_status, interest_level=interest_level, activity_location=activity_location, exploit_status=exploit_status, cve_type=cve_type, cve_name=cve_name, vendor_name=vendor_name, product_name=product_name, var_from=var_from, until=until, size=size, cursor=cursor)
+> VulnerabilitiesReportsResponseStream get_reports_vulnerability_stream(status=status, text_filter=text_filter, girs=girs, risk_level=risk_level, patch_status=patch_status, interest_level=interest_level, activity_location=activity_location, exploit_status=exploit_status, cve_type=cve_type, cve_name=cve_name, vendor_name=vendor_name, product_name=product_name, cvss_min=cvss_min, var_from=var_from, until=until, size=size, cursor=cursor)
 
 Get all vulnerabilities reports (stream)
 
@@ -1883,6 +1883,7 @@ with verity471.ApiClient(configuration) as api_client:
     cve_name = 'cve_name_example' # str | Search reports with given cve name. (optional)
     vendor_name = 'vendor_name_example' # str | Search reports with given vendor name. (optional)
     product_name = 'product_name_example' # str | Search reports with given product name. (optional)
+    cvss_min = 3.4 # float | Return reports where any CVSS version scores at least this value (0-10). Unscored CVEs are excluded. (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
     size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
@@ -1890,7 +1891,7 @@ with verity471.ApiClient(configuration) as api_client:
 
     try:
         # Get all vulnerabilities reports (stream)
-        api_response = api_instance.get_reports_vulnerability_stream(status=status, text_filter=text_filter, girs=girs, risk_level=risk_level, patch_status=patch_status, interest_level=interest_level, activity_location=activity_location, exploit_status=exploit_status, cve_type=cve_type, cve_name=cve_name, vendor_name=vendor_name, product_name=product_name, var_from=var_from, until=until, size=size, cursor=cursor)
+        api_response = api_instance.get_reports_vulnerability_stream(status=status, text_filter=text_filter, girs=girs, risk_level=risk_level, patch_status=patch_status, interest_level=interest_level, activity_location=activity_location, exploit_status=exploit_status, cve_type=cve_type, cve_name=cve_name, vendor_name=vendor_name, product_name=product_name, cvss_min=cvss_min, var_from=var_from, until=until, size=size, cursor=cursor)
         print("The response of ReportsApi->get_reports_vulnerability_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -1916,6 +1917,7 @@ Name | Type | Description  | Notes
  **cve_name** | **str**| Search reports with given cve name. | [optional] 
  **vendor_name** | **str**| Search reports with given vendor name. | [optional] 
  **product_name** | **str**| Search reports with given product name. | [optional] 
+ **cvss_min** | **float**| Return reports where any CVSS version scores at least this value (0-10). Unscored CVEs are excluded. | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **size** | **int**| Range is: [1, 1000] | [optional] [default to 1000]

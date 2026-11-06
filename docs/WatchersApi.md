@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **get_watcher_groups**
-> GetWatcherGroupResponseWrapper get_watcher_groups(watcher_group_id=watcher_group_id, watcher_group_type=watcher_group_type, name=name)
+> GetWatcherGroupResponseWrapper get_watcher_groups(watcher_group_id=watcher_group_id, watcher_group_type=watcher_group_type, watcher_group_types=watcher_group_types, name=name)
 
 Get list of watcher groups for user
 
@@ -46,12 +46,13 @@ with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.WatchersApi(api_client)
     watcher_group_id = 56 # int | Enables returning only watchers for specific group (optional)
-    watcher_group_type = verity471.WatcherGroupType() # WatcherGroupType | Enables filtering by group type (optional)
+    watcher_group_type = verity471.WatcherGroupType() # WatcherGroupType | Filters by a single group type. Use watcher_group_types instead. (optional)
+    watcher_group_types = [verity471.WatcherGroupType()] # List[WatcherGroupType] | Filters by one or more group types. Results are the deduplicated union of the selected types: a group matching several of them is returned once, and adding a type can only add groups. Omit to get every group visible to the caller. (optional)
     name = 'name_example' # str | Filter results based on watcher group name (optional)
 
     try:
         # Get list of watcher groups for user
-        api_response = api_instance.get_watcher_groups(watcher_group_id=watcher_group_id, watcher_group_type=watcher_group_type, name=name)
+        api_response = api_instance.get_watcher_groups(watcher_group_id=watcher_group_id, watcher_group_type=watcher_group_type, watcher_group_types=watcher_group_types, name=name)
         print("The response of WatchersApi->get_watcher_groups:\n")
         pprint(api_response)
     except Exception as e:
@@ -66,7 +67,8 @@ with verity471.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **watcher_group_id** | **int**| Enables returning only watchers for specific group | [optional] 
- **watcher_group_type** | [**WatcherGroupType**](.md)| Enables filtering by group type | [optional] 
+ **watcher_group_type** | [**WatcherGroupType**](.md)| Filters by a single group type. Use watcher_group_types instead. | [optional] 
+ **watcher_group_types** | [**List[WatcherGroupType]**](WatcherGroupType.md)| Filters by one or more group types. Results are the deduplicated union of the selected types: a group matching several of them is returned once, and adding a type can only add groups. Omit to get every group visible to the caller. | [optional] 
  **name** | **str**| Filter results based on watcher group name | [optional] 
 
 ### Return type
@@ -97,7 +99,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_watchers**
-> GetWatcherResponseWrapper get_watchers(watcher_id=watcher_id, watcher_group_id=watcher_group_id, dsl_query=dsl_query, watcher_group_type=watcher_group_type, name=name)
+> GetWatcherResponseWrapper get_watchers(watcher_id=watcher_id, watcher_group_id=watcher_group_id, dsl_query=dsl_query, watcher_group_type=watcher_group_type, watcher_group_types=watcher_group_types, name=name)
 
 Get list of watchers for the current user
 
@@ -136,12 +138,13 @@ with verity471.ApiClient(configuration) as api_client:
     watcher_id = 56 # int | Enables returning only specific watcher (optional)
     watcher_group_id = 56 # int | Enables returning only watchers for specific group (optional)
     dsl_query = 'dsl_query_example' # str | Enables returning watchers with specific DSL query (optional)
-    watcher_group_type = verity471.WatcherGroupType() # WatcherGroupType | Enables filtering by group type (optional)
+    watcher_group_type = verity471.WatcherGroupType() # WatcherGroupType | Filters by a single group type. Use watcher_group_types instead. (optional)
+    watcher_group_types = [verity471.WatcherGroupType()] # List[WatcherGroupType] | Filters by one or more group types. Results are the deduplicated union of the selected types: a group matching several of them is returned once, and adding a type can only add groups. Omit to get every group visible to the caller. (optional)
     name = 'name_example' # str | Filter results based on watcher name (optional)
 
     try:
         # Get list of watchers for the current user
-        api_response = api_instance.get_watchers(watcher_id=watcher_id, watcher_group_id=watcher_group_id, dsl_query=dsl_query, watcher_group_type=watcher_group_type, name=name)
+        api_response = api_instance.get_watchers(watcher_id=watcher_id, watcher_group_id=watcher_group_id, dsl_query=dsl_query, watcher_group_type=watcher_group_type, watcher_group_types=watcher_group_types, name=name)
         print("The response of WatchersApi->get_watchers:\n")
         pprint(api_response)
     except Exception as e:
@@ -158,7 +161,8 @@ Name | Type | Description  | Notes
  **watcher_id** | **int**| Enables returning only specific watcher | [optional] 
  **watcher_group_id** | **int**| Enables returning only watchers for specific group | [optional] 
  **dsl_query** | **str**| Enables returning watchers with specific DSL query | [optional] 
- **watcher_group_type** | [**WatcherGroupType**](.md)| Enables filtering by group type | [optional] 
+ **watcher_group_type** | [**WatcherGroupType**](.md)| Filters by a single group type. Use watcher_group_types instead. | [optional] 
+ **watcher_group_types** | [**List[WatcherGroupType]**](WatcherGroupType.md)| Filters by one or more group types. Results are the deduplicated union of the selected types: a group matching several of them is returned once, and adding a type can only add groups. Omit to get every group visible to the caller. | [optional] 
  **name** | **str**| Filter results based on watcher name | [optional] 
 
 ### Return type

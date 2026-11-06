@@ -23,6 +23,10 @@ from verity471.models.get_cred_response import GetCredResponse
 from verity471.models.get_cred_set_response import GetCredSetResponse
 from verity471.models.href import Href
 from verity471.models.info_report_response import InfoReportResponse
+from verity471.models.integration_marketplace_response import IntegrationMarketplaceResponse
+from verity471.models.integration_product_response import IntegrationProductResponse
+from verity471.models.integration_resource_response import IntegrationResourceResponse
+from verity471.models.integration_vendor_response import IntegrationVendorResponse
 from verity471.models.integrations_event import IntegrationsEvent
 from verity471.models.integrations_indicator import IntegrationsIndicator
 from verity471.models.malware_report_response import MalwareReportResponse
@@ -43,8 +47,8 @@ log = logging.getLogger(__name__)
 # Target types an alert can reference that the SDK deliberately has no route for
 # yet. A missing route for one of these is expected, so it is logged at DEBUG; a URL
 # outside this set is unexpected and stays a WARNING, as it may mean the SDK needs a
-# new route.
-KNOWN_UNSUPPORTED_TARGET_PATHS = ("/integrations/marketplaces/",)
+# new route. Currently every known target type has a route.
+KNOWN_UNSUPPORTED_TARGET_PATHS: tuple[str, ...] = ()
 
 _SUMMARY_SNIPPET_LEN = 256  # soft char limit for text snippets; expands to end of current word
 _SNIPPET_OVERRUN = 32  # max extra chars that word-boundary expansion may add
@@ -328,7 +332,51 @@ def _summarize_target(target: Any) -> str | None:
         return _prefixed("Malware", _join([
             target.name, aliases, _text_snippet(target.description)]))
 
+    if isinstance(target, IntegrationProductResponse):
+        price = target.price[0] if target.price else None
+        return _prefixed("Marketplace Product", _join([
+            _plain_text(target.title),
+            _type_label(target.kind) if target.kind else None,
+            f"vendor: {target.vendor_name}" if target.vendor_name else None,
+            f"{price.value:g} {price.currency}" if price else None,
+            _last_seen(target)]))
+
+    if isinstance(target, IntegrationResourceResponse):
+        includes = [label for label, flag in (("login", target.login_available),
+                                              ("password", target.password_available),
+                                              ("cookies", target.cookies_available)) if flag]
+        link = target.link if target.link and target.link != target.name else None
+        return _prefixed("Marketplace Resource", _join([
+            _defang(target.name) if target.name else None,
+            _defang(link) if link else None,
+            f"includes: {', '.join(includes)}" if includes else None,
+            _last_seen(target)]))
+
+    if isinstance(target, IntegrationVendorResponse):
+        rating = target.rating
+        rating_str = None
+        if rating and rating.value is not None:
+            rating_str = (f"rating: {rating.value:g}/{rating.max:g}" if rating.max
+                          else f"rating: {rating.value:g}")
+        return _prefixed("Marketplace Vendor", _join([
+            target.name,
+            f"on {target.marketplace_name}" if target.marketplace_name else None,
+            rating_str, _last_seen(target)]))
+
+    if isinstance(target, IntegrationMarketplaceResponse):
+        return _prefixed("Marketplace", _join([
+            target.name,
+            f"tier {target.tier}" if target.tier is not None else None,
+            "inactive" if target.is_active is False else None,
+            _text_snippet(target.description), _last_seen(target)]))
+
     return None
+
+
+def _last_seen(target: Any) -> Any:
+    """``activity.last_seen_ts`` of a marketplace object, or None."""
+    activity = getattr(target, "activity", None)
+    return activity.last_seen_ts if activity else None
 
 
 def _summarize_alert(alert: StreamingWatcherAlert) -> str | None:
@@ -424,10 +472,8 @@ def fetch_alert_targets(
     *skip_missing_targets*: by default (``False``) the alert is still returned
     with ``target=None`` and a non-``OK`` :class:`AlertTargetStatus` (plus a
     ``status_reason``) so callers can see it failed and why; when ``True`` such
-    alerts are omitted from the result entirely.  Marketplace alerts have no SDK route yet, so they are
-    treated like any other unresolvable target: returned as bare alerts with
-    ``status=UNRESOLVABLE`` by default, or omitted when *skip_missing_targets*
-    is ``True``.
+    alerts are omitted from the result entirely.  Marketplace alerts resolve to
+    marketplace, product, resource or vendor objects from :class:`MarketplacesApi`.
 
     Args:
         alerts_response: The page returned by :meth:`AlertsApi.get_alerts_stream`.

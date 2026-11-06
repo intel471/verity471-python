@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_entities_stream**
-> EntityStreamPage get_entities_stream(entity, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
+> EntityStreamPage get_entities_stream(entity=entity, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
 
 Retrieve a stream of entities
 
@@ -46,7 +46,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.EntitiesApi(api_client)
-    entity = 'intel.com' # str | The entity value to search for. Supports partial match
+    entity = 'intel.com' # str | The entity value to search for. Supports partial match. If empty/not set - all values matched according to other parameters. (optional)
     type = verity471.EntityType() # EntityType | Filter entity type (optional)
     var_from = 1627776000000 # int | Apply filtering by from timestamp - UNIX timestamp(in milliseconds) (optional)
     until = 1627776000000 # int | Apply filtering by until timestamp - UNIX timestamp(in milliseconds) (optional)
@@ -55,7 +55,7 @@ with verity471.ApiClient(configuration) as api_client:
 
     try:
         # Retrieve a stream of entities
-        api_response = api_instance.get_entities_stream(entity, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
+        api_response = api_instance.get_entities_stream(entity=entity, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
         print("The response of EntitiesApi->get_entities_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -69,7 +69,7 @@ with verity471.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **entity** | **str**| The entity value to search for. Supports partial match | 
+ **entity** | **str**| The entity value to search for. Supports partial match. If empty/not set - all values matched according to other parameters. | [optional] 
  **type** | [**EntityType**](.md)| Filter entity type | [optional] 
  **var_from** | **int**| Apply filtering by from timestamp - UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| Apply filtering by until timestamp - UNIX timestamp(in milliseconds) | [optional] 

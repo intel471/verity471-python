@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_observables_stream**
-> ObservableStreamPage get_observables_stream(observable, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
+> ObservableStreamPage get_observables_stream(observable=observable, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
 
 Retrieve a stream of observables
 
@@ -46,7 +46,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.ObservablesApi(api_client)
-    observable = 'example.com' # str | Search by observable value.
+    observable = 'example.com' # str | Search by observable value. When omitted or empty, all observables are returned. (optional)
     type = verity471.ObservableType() # ObservableType | Search by observable type. (optional)
     var_from = 1627776000000 # int | UNIX timestamp(in milliseconds) (optional)
     until = 1627776000000 # int | UNIX timestamp(in milliseconds) (optional)
@@ -55,7 +55,7 @@ with verity471.ApiClient(configuration) as api_client:
 
     try:
         # Retrieve a stream of observables
-        api_response = api_instance.get_observables_stream(observable, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
+        api_response = api_instance.get_observables_stream(observable=observable, type=type, var_from=var_from, until=until, size=size, cursor=cursor)
         print("The response of ObservablesApi->get_observables_stream:\n")
         pprint(api_response)
     except Exception as e:
@@ -69,7 +69,7 @@ with verity471.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **observable** | **str**| Search by observable value. | 
+ **observable** | **str**| Search by observable value. When omitted or empty, all observables are returned. | [optional] 
  **type** | [**ObservableType**](.md)| Search by observable type. | [optional] 
  **var_from** | **int**| UNIX timestamp(in milliseconds) | [optional] 
  **until** | **int**| UNIX timestamp(in milliseconds) | [optional] 
