@@ -338,7 +338,7 @@ class ReportMapper(BaseMapper):
             "geopol_report": ReportType.GEOPOL
         }.get(source.get("type"))
         if not type_:
-            raise VerityStixException("Unkown report type")
+            raise VerityStixException("Unknown report type")
         return type_
 
     def _get_portal_url(self, source: dict) -> str:

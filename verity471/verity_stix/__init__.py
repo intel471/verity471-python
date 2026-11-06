@@ -10,8 +10,8 @@ from verity471.verity_stix.constants import INTEL_471
 class STIXMapperSettings(NamedTuple):
     client: Union['verity471', None] = None
     api_client: Union['ApiClient', None] = None
-    # Get full report's content, including inline images, using additional API call.
-    # Only if given report from search endpoint is truncated or has inline images.
+    # Get the full report content, including inline images, using an additional API call.
+    # Only applies if the report returned by the search endpoint is truncated or has inline images.
     report_full_content: bool = True
     ioc_opencti_score: Optional[int] = None
     # When mapping alerts, wrap each alert's resolved target in an Incident

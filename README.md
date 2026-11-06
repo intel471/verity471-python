@@ -146,7 +146,7 @@ serialized = api_response.to_dict()
 > ```
 
 To convert the response into the [STIX format (v2.1)](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html), call the `to_stix()` method on the response object.
-This method converts the API response into the corresponding STIX objects and returns them wrapped in a `Bundle` object (from [stix2](https://pypi.org/project/stix2/) package).
+This method converts the API response into the corresponding STIX objects and returns them wrapped in a `Bundle` object (from the [stix2](https://pypi.org/project/stix2/) package).
 The `Bundle` object can be serialized into a JSON string using its `serialize()` method.
 
 ```
@@ -164,8 +164,8 @@ full report content.
 
 If an instance of `verity471.verity_stix.STIXMapperSettings` is passed to the `to_stix()` method 
 with the `report_full_content` flag set to `True`, the mapper will issue additional API calls to 
-retrieve the full representation of each truncated report referenced in the stream results. This allows 
-to execute a stream (search) endpoint and serialize it into STIX while still obtaining complete 
+retrieve the full representation of each truncated report referenced in the stream results. This makes it possible
+to call a stream (search) endpoint and serialize the results into STIX while still obtaining complete 
 report data.
 
 The `STIXMapperSettings` instance must be initialized with the `verity471` package and an 
@@ -191,13 +191,13 @@ with verity471.ApiClient(configuration) as api_client:
     bundle = api_response.to_stix(mapper_settings)
 ```
 
-If the objects returned by the endpoint for some reason can't be mapped into STIX format, `EmptyBundle` exception will be raised.
+If the objects returned by the endpoint for some reason can't be mapped into STIX format, an `EmptyBundle` exception will be raised.
 
-At the moment following API methods provide the response in STIX format:
+At the moment, the following API methods provide the response in STIX format:
 
 Client's class/method | API endpoint | Produced outcome
 ------------------------|-------------|-----------------
-`IndicatorsApi.get_indicators_stream` | `/indicators/stream` | `Indicator` and `Malware` SDOs related using `Relationship` object; `URL`, `IPv4Address`, `File`, `DomainName` or `EmailAddress`  Observable related with the `Indicator` SDO using `Relationship` object
+`IndicatorsApi.get_indicators_stream` | `/indicators/stream` | `Indicator` and `Malware` SDOs related using `Relationship` object; `URL`, `IPv4Address`, `File`, `DomainName` or `EmailAddress` Observable related to the `Indicator` SDO using `Relationship` object
 `IndicatorsApi.get_indicator_by_id` | `/indicators/{id}` |
 `ReportsApi.get_reports_breach_alert_stream` | `/reports/breach-alert/stream` | `Report` SDOs with related entities/victims via `object_refs` (`Identity`/Org, `Malware`, `ThreatActor`, `Vulnerability` and observables like `URL`, `DomainName`, `IPv4Address`, `IPv6Address`, `EmailAddress`, `AutonomousSystem`, `File`, `UserAccount`, `CryptocurrencyWallet`)
 `ReportsApi.get_reports_breach_alert_id` | `/reports/breach-alert/{id}` |
@@ -331,7 +331,7 @@ from verity471.helpers import get_latest
 ### Returns
 
 A list of at most `n` items in ascending order (oldest first), so the last element is always the
-single most-recent item. When fewer than `n` items exist in the full history the function returns
+single most-recent item. When fewer than `n` items exist in the full history, the function returns
 however many are available.
 
 ### How probing works
