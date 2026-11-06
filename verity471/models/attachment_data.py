@@ -37,6 +37,7 @@ from verity471.models.processing_status import ProcessingStatus
 from verity471.models.reporting_status import ReportingStatus
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -74,7 +75,8 @@ class AttachmentData(BaseModel):
     __properties: ClassVar[List[str]] = ["attachment_highlights", "attachment_original_url", "classification", "dimensions", "file_available", "file_hash", "file_name", "file_size", "file_url", "highlights", "id", "is_not_image", "mime_type", "original_height", "original_width", "processing_status", "recognized_logos", "recognized_text", "reporting_status", "source_entity_id", "thumbnail_available", "thumbnail_height", "thumbnail_width", "webp_available"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -97,8 +99,7 @@ class AttachmentData(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -127,8 +128,7 @@ class AttachmentData(BaseModel):
         _items = []
         if self.highlights:
             for _item_highlights in self.highlights:
-                if _item_highlights:
-                    _items.append(_item_highlights.to_dict())
+                _items.append(_item_highlights.to_dict() if _item_highlights is not None else None)
             _dict['highlights'] = _items
         return _dict
 

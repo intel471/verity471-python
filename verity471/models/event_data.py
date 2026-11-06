@@ -45,6 +45,7 @@ from verity471.models.template import Template
 from verity471.models.trigger import Trigger
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -86,7 +87,8 @@ class EventData(BaseModel):
     __properties: ClassVar[List[str]] = ["apk_meta", "arguments", "attack_targets", "attack_type", "bot_settings", "command", "component_type", "config_file", "controller", "controllers", "encryption", "exfil_location", "file", "function", "inject_type", "location", "parameters", "plugin_name", "plugin_type", "recipient_domains", "recipient_file", "redirects", "senders", "service_type", "settings", "target_type", "template", "triggers"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -109,8 +111,7 @@ class EventData(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -151,15 +152,13 @@ class EventData(BaseModel):
         _items = []
         if self.controllers:
             for _item_controllers in self.controllers:
-                if _item_controllers:
-                    _items.append(_item_controllers.to_dict())
+                _items.append(_item_controllers.to_dict() if _item_controllers is not None else None)
             _dict['controllers'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in encryption (list)
         _items = []
         if self.encryption:
             for _item_encryption in self.encryption:
-                if _item_encryption:
-                    _items.append(_item_encryption.to_dict())
+                _items.append(_item_encryption.to_dict() if _item_encryption is not None else None)
             _dict['encryption'] = _items
         # override the default output from pydantic by calling `to_dict()` of file
         if self.file:
@@ -171,8 +170,7 @@ class EventData(BaseModel):
         _items = []
         if self.recipient_domains:
             for _item_recipient_domains in self.recipient_domains:
-                if _item_recipient_domains:
-                    _items.append(_item_recipient_domains.to_dict())
+                _items.append(_item_recipient_domains.to_dict() if _item_recipient_domains is not None else None)
             _dict['recipient_domains'] = _items
         # override the default output from pydantic by calling `to_dict()` of recipient_file
         if self.recipient_file:
@@ -181,8 +179,7 @@ class EventData(BaseModel):
         _items = []
         if self.redirects:
             for _item_redirects in self.redirects:
-                if _item_redirects:
-                    _items.append(_item_redirects.to_dict())
+                _items.append(_item_redirects.to_dict() if _item_redirects is not None else None)
             _dict['redirects'] = _items
         # override the default output from pydantic by calling `to_dict()` of settings
         if self.settings:
@@ -194,8 +191,7 @@ class EventData(BaseModel):
         _items = []
         if self.triggers:
             for _item_triggers in self.triggers:
-                if _item_triggers:
-                    _items.append(_item_triggers.to_dict())
+                _items.append(_item_triggers.to_dict() if _item_triggers is not None else None)
             _dict['triggers'] = _items
         return _dict
 

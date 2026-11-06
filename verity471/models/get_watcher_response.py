@@ -36,6 +36,7 @@ from verity471.models.embedded_watcher_group_response import EmbeddedWatcherGrou
 from verity471.models.notification_settings_response import NotificationSettingsResponse
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -63,7 +64,8 @@ class GetWatcherResponse(BaseModel):
     __properties: ClassVar[List[str]] = ["created_by", "creation_ts", "data_sets", "description", "dsl_query", "id", "is_muted", "last_updated_ts", "name", "notification_settings", "query_fields", "updated_by", "watcher_group", "watcher_group_id"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -86,8 +88,7 @@ class GetWatcherResponse(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -116,8 +117,7 @@ class GetWatcherResponse(BaseModel):
         _items = []
         if self.notification_settings:
             for _item_notification_settings in self.notification_settings:
-                if _item_notification_settings:
-                    _items.append(_item_notification_settings.to_dict())
+                _items.append(_item_notification_settings.to_dict() if _item_notification_settings is not None else None)
             _dict['notification_settings'] = _items
         # override the default output from pydantic by calling `to_dict()` of watcher_group
         if self.watcher_group:

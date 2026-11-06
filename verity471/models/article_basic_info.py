@@ -34,6 +34,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Union
 from verity471.models.in_game_items import InGameItems
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -123,7 +124,8 @@ class ArticleBasicInfo(BaseModel):
     __properties: ClassVar[List[str]] = ["access", "account_balance", "account_type", "activation_region", "additional_info", "address", "admin_type", "alexa_reach_rank", "bulk_buying_options", "city", "connection_type", "country", "cpr_score", "cpu", "denomination", "domain", "domain_authority", "driving_license_available", "driving_license_expire_date", "edu_backlinks", "emails_number", "escrow_available", "escrow_info", "external_backlinks", "free_insurance_time", "gender", "global_rank", "google_directory_listed", "gov_backlinks", "host_info", "hosting", "in_game_items", "indexed_urls", "ip_blacklist", "niche", "operating_system", "origin_country", "page_authority", "page_rank", "password", "payment_method", "phone_number", "ping", "platform", "port", "pr_quality", "product_types", "provider", "proxy_score", "proxy_type", "ram", "referring_domains", "region", "secure_sockets_layer", "seo_rank", "server", "service", "size", "source", "spam_score", "speed", "state", "statement_date", "stock_available", "topic", "topic_value", "total_stock_price", "trust_metric", "url_to_market", "username", "verified_attributes", "visitors", "web_host_manager_available", "website", "works_on", "zip"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -146,8 +148,7 @@ class ArticleBasicInfo(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:

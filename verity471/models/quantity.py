@@ -33,6 +33,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -52,7 +53,8 @@ class Quantity(BaseModel):
     __properties: ClassVar[List[str]] = ["available_from_vendor", "available_on_market", "maximum_order", "minimum_order", "sold_from_vendor", "stock"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -75,8 +77,7 @@ class Quantity(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:

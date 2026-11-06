@@ -36,6 +36,7 @@ from verity471.models.rating_overall import RatingOverall
 from verity471.models.source_links import SourceLinks
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -63,7 +64,8 @@ class IntegrationVendorResponse(BaseModel):
     __properties: ClassVar[List[str]] = ["activity", "additional_links_forum", "additional_links_reviews", "average_response_time", "id", "link", "links", "marketplace_id", "marketplace_name", "name", "rating", "valid_rate_10_days", "valid_rate_30_days", "valid_rate_overall"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -86,8 +88,7 @@ class IntegrationVendorResponse(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:

@@ -42,6 +42,7 @@ from verity471.models.source_links import SourceLinks
 from verity471.models.sources_response import SourcesResponse
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -77,7 +78,8 @@ class FintelResponse(BaseModel):
     __properties: ClassVar[List[str]] = ["attachments", "body", "classification", "creation_ts", "derived_entities", "entities", "id", "information_ts", "is_sensitive_source", "is_truncated", "last_updated_ts", "links", "locations", "related_reports", "released_ts", "sources", "sub_type", "title", "type", "version_id", "version_number", "victims"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -100,8 +102,7 @@ class FintelResponse(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -130,8 +131,7 @@ class FintelResponse(BaseModel):
         _items = []
         if self.attachments:
             for _item_attachments in self.attachments:
-                if _item_attachments:
-                    _items.append(_item_attachments.to_dict())
+                _items.append(_item_attachments.to_dict() if _item_attachments is not None else None)
             _dict['attachments'] = _items
         # override the default output from pydantic by calling `to_dict()` of classification
         if self.classification:
@@ -140,15 +140,13 @@ class FintelResponse(BaseModel):
         _items = []
         if self.derived_entities:
             for _item_derived_entities in self.derived_entities:
-                if _item_derived_entities:
-                    _items.append(_item_derived_entities.to_dict())
+                _items.append(_item_derived_entities.to_dict() if _item_derived_entities is not None else None)
             _dict['derived_entities'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in entities (list)
         _items = []
         if self.entities:
             for _item_entities in self.entities:
-                if _item_entities:
-                    _items.append(_item_entities.to_dict())
+                _items.append(_item_entities.to_dict() if _item_entities is not None else None)
             _dict['entities'] = _items
         # override the default output from pydantic by calling `to_dict()` of links
         if self.links:
@@ -157,29 +155,25 @@ class FintelResponse(BaseModel):
         _items = []
         if self.locations:
             for _item_locations in self.locations:
-                if _item_locations:
-                    _items.append(_item_locations.to_dict())
+                _items.append(_item_locations.to_dict() if _item_locations is not None else None)
             _dict['locations'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in related_reports (list)
         _items = []
         if self.related_reports:
             for _item_related_reports in self.related_reports:
-                if _item_related_reports:
-                    _items.append(_item_related_reports.to_dict())
+                _items.append(_item_related_reports.to_dict() if _item_related_reports is not None else None)
             _dict['related_reports'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in sources (list)
         _items = []
         if self.sources:
             for _item_sources in self.sources:
-                if _item_sources:
-                    _items.append(_item_sources.to_dict())
+                _items.append(_item_sources.to_dict() if _item_sources is not None else None)
             _dict['sources'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in victims (list)
         _items = []
         if self.victims:
             for _item_victims in self.victims:
-                if _item_victims:
-                    _items.append(_item_victims.to_dict())
+                _items.append(_item_victims.to_dict() if _item_victims is not None else None)
             _dict['victims'] = _items
         return _dict
 

@@ -34,6 +34,7 @@ from typing import Any, ClassVar, Dict, List
 from verity471.models.gir_tree import GirTree
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -44,12 +45,13 @@ class GirsTreeResponse(BaseModel):
     """
     GirsTreeResponse
     """ # noqa: E501
-    count: StrictInt = Field(description="The total count of all GIRs returned.")
+    count: StrictInt = Field(description="The total count of all GIRs returned.", json_schema_extra={"examples": [42]})
     girs: List[GirTree] = Field(description="A list of GIRs organized in a hierarchical tree structure.")
     __properties: ClassVar[List[str]] = ["count", "girs"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -72,8 +74,7 @@ class GirsTreeResponse(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -102,8 +103,7 @@ class GirsTreeResponse(BaseModel):
         _items = []
         if self.girs:
             for _item_girs in self.girs:
-                if _item_girs:
-                    _items.append(_item_girs.to_dict())
+                _items.append(_item_girs.to_dict() if _item_girs is not None else None)
             _dict['girs'] = _items
         return _dict
 

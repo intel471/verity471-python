@@ -34,6 +34,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, Strict
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -94,7 +95,8 @@ class PersonalInfoBasicInfo(BaseModel):
     __properties: ClassVar[List[str]] = ["account_balance", "account_number_available", "additional_info", "address", "address_available", "age", "background_check_available", "background_report_available", "bank_name", "checked_ts", "city", "company_name", "company_type", "country", "credit_cards", "credit_record_available", "credit_score", "credit_score_available", "date_of_birth", "date_of_birth_available", "date_of_birth_year", "domain", "driving_license_available", "driving_license_photo_available", "driving_license_state", "email_access_available", "employer_name", "employment_type", "escrow_available", "escrow_info", "first_name", "full_name", "gender", "last_order", "link", "mother_maiden_name_available", "phone_available", "points", "principal_office_street", "product_types", "routing_number_available", "short_description", "social_insurance_number", "social_security_number", "social_security_number_available", "state", "zip"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -117,8 +119,7 @@ class PersonalInfoBasicInfo(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:

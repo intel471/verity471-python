@@ -36,6 +36,7 @@ from verity471.models.author_actor1 import AuthorActor1
 from verity471.models.sources_links import SourcesLinks
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -57,7 +58,8 @@ class ChatMessageStream(BaseModel):
     __properties: ClassVar[List[str]] = ["attachments", "author", "creation_ts", "html", "id", "links", "reply_to_message_id", "text"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -80,8 +82,7 @@ class ChatMessageStream(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -110,8 +111,7 @@ class ChatMessageStream(BaseModel):
         _items = []
         if self.attachments:
             for _item_attachments in self.attachments:
-                if _item_attachments:
-                    _items.append(_item_attachments.to_dict())
+                _items.append(_item_attachments.to_dict() if _item_attachments is not None else None)
             _dict['attachments'] = _items
         # override the default output from pydantic by calling `to_dict()` of author
         if self.author:

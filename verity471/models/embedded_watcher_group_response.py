@@ -35,6 +35,7 @@ from verity471.models.share_settings_response import ShareSettingsResponse
 from verity471.models.subscription_type import SubscriptionType
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -56,7 +57,8 @@ class EmbeddedWatcherGroupResponse(BaseModel):
     __properties: ClassVar[List[str]] = ["can_edit", "is_global", "is_subscribed", "name", "organisation_id", "owner_user_id", "sharing_settings", "subscription_type"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -79,8 +81,7 @@ class EmbeddedWatcherGroupResponse(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
@@ -109,8 +110,7 @@ class EmbeddedWatcherGroupResponse(BaseModel):
         _items = []
         if self.sharing_settings:
             for _item_sharing_settings in self.sharing_settings:
-                if _item_sharing_settings:
-                    _items.append(_item_sharing_settings.to_dict())
+                _items.append(_item_sharing_settings.to_dict() if _item_sharing_settings is not None else None)
             _dict['sharing_settings'] = _items
         return _dict
 

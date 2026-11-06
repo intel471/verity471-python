@@ -35,6 +35,7 @@ from typing import Any, ClassVar, Dict, List, Optional
 from verity471.models.in_game_items import InGameItems
 from typing import Optional, Set, TYPE_CHECKING
 from typing_extensions import Self
+from pydantic_core import to_jsonable_python
 
 if TYPE_CHECKING:
     # Only for type checkers; does not run at runtime.
@@ -76,7 +77,8 @@ class AccountBasicInfo(BaseModel):
     __properties: ClassVar[List[str]] = ["account_balance", "activation_region", "additional_info", "available_games", "bank_name", "country", "email_domain", "free_insurance_time", "game_statistics", "in_game_items", "last_activity_ts", "last_order", "link", "negative_points", "origin_country", "platform", "points", "positive_points", "product_types", "region", "registered_ts", "server", "shop_name", "shop_type", "short_description", "times_sold", "works_on", "zip"]
 
     model_config = ConfigDict(
-        populate_by_name=True,
+        validate_by_name=True,
+        validate_by_alias=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
@@ -99,8 +101,7 @@ class AccountBasicInfo(BaseModel):
 
     def to_json(self) -> str:
         """Returns the JSON representation of the model using alias"""
-        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
-        return json.dumps(self.to_dict())
+        return json.dumps(to_jsonable_python(self.to_dict()))
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
