@@ -228,6 +228,14 @@ Client's class/method | API endpoint | Produced outcome
 `EventsApi.get_event_by_id` | `/events/{id}` |
 `MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
 `MalwareApi.get_malware_family_by_id` | `/malware/{id}` |
+`MarketplacesApi.get_marketplaces_stream` | `/marketplaces/stream` | `Channel` (`channel_type` `marketplace`); tier and active status in the description
+`MarketplacesApi.get_marketplaces_marketplace_id` | `/marketplaces/{marketplace_id}` |
+`MarketplacesApi.get_vendors_stream` | `/vendors/stream` | vendor handle as an individual `Identity` (rating and valid-goods rates in the description) `related-to` its marketplace `Channel`
+`MarketplacesApi.get_vendors_vendor_id` | `/vendors/{vendor_id}` |
+`MarketplacesApi.get_products_stream` | `/products/stream` | listing as `Media-Content` published by the marketplace `Channel` and related to the vendor `Identity`; bot listings add the infected machine's `IPv4Address` and the stealer `Malware`, proxy listings the proxy `IPv4Address` / `DomainName`. Personal data sold in listings is never mapped, and full card numbers in listing text are truncated to the first 6 and last 4 digits. The marketplace is fetched with an extra API call when `api_client` is set on `STIXMapperSettings` (cached per mapping run); without it the `Channel` is omitted
+`MarketplacesApi.get_products_product_id` | `/products/{product_id}` |
+`MarketplacesApi.get_resources_stream` | `/resources/stream` | `DomainName` / `URL` of the site whose data is in a bot's stealer log (labels show whether login, password or cookies are included), `related-to` the bot listing, which is fetched and mapped as above when `api_client` is set
+`MarketplacesApi.get_resources_resource_id` | `/resources/{resource_id}` |
 `AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`. Report targets are fetched with inline images (as when mapping a report directly) unless `report_full_content=False`
 
 *Empty cells inherit the value from the previous row.*

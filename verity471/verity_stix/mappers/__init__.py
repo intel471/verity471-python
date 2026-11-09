@@ -6,6 +6,7 @@ from verity471.verity_stix.mappers.credentials import CredentialMapper, Credenti
 from verity471.verity_stix.mappers.events import EventMapper
 from verity471.verity_stix.mappers.malware_families import MalwareFamilyMapper
 from verity471.verity_stix.mappers.dls import DataLeakSiteMapper
+from verity471.verity_stix.mappers.marketplaces import MarketplacesMapper
 from verity471.verity_stix.mappers.alerts import AlertsMapper
 
 
@@ -19,5 +20,6 @@ __all__ = [
     "EventMapper",
     "MalwareFamilyMapper",
     "DataLeakSiteMapper",
+    "MarketplacesMapper",
     "AlertsMapper",
 ]

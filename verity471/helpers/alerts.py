@@ -40,6 +40,7 @@ from verity471.models.streaming_alerts_response import StreamingAlertsResponse
 from verity471.models.streaming_watcher_alert import StreamingWatcherAlert
 from verity471.models.vulnerabilities_report_details_response import VulnerabilitiesReportDetailsResponse
 
+from verity471.helpers.redaction import mask_card_numbers
 from verity471.helpers.url_router import UnresolvableURL, call_url
 
 log = logging.getLogger(__name__)
@@ -335,7 +336,7 @@ def _summarize_target(target: Any) -> str | None:
     if isinstance(target, IntegrationProductResponse):
         price = target.price[0] if target.price else None
         return _prefixed("Marketplace Product", _join([
-            _plain_text(target.title),
+            mask_card_numbers(_plain_text(target.title)),
             _type_label(target.kind) if target.kind else None,
             f"vendor: {target.vendor_name}" if target.vendor_name else None,
             f"{price.value:g} {price.currency}" if price else None,

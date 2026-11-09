@@ -8,25 +8,31 @@ from verity471.verity_stix import author_identity
 from verity471.verity_stix.constants import MARKING, X_OPENCTI_CREATED_BY, X_OPENCTI_LABELS, PLATFORM_VERITY471
 
 
-def map_url(value: str, *args, **kwargs) -> URL:
+def _sco_properties(extra_labels: list = None, description: str = None) -> dict:
+    """OpenCTI custom properties shared by the SCO builders: author, labels and an
+    optional description (SCOs have no native ``labels``/``description``)."""
+    properties = {
+        X_OPENCTI_CREATED_BY: author_identity.id,
+        X_OPENCTI_LABELS: [PLATFORM_VERITY471] + list(extra_labels or []),
+    }
+    if description:
+        properties["x_opencti_description"] = description
+    return properties
+
+
+def map_url(value: str, *args, extra_labels: list = None, description: str = None, **kwargs) -> URL:
     return URL(
         value=value,
         object_marking_refs=[MARKING],
-        custom_properties={
-            X_OPENCTI_CREATED_BY: author_identity.id,
-            X_OPENCTI_LABELS: [PLATFORM_VERITY471]
-            }
+        custom_properties=_sco_properties(extra_labels, description),
     )
 
 
-def map_ipv4(value: str, *args, **kwargs) -> IPv4Address:
+def map_ipv4(value: str, *args, extra_labels: list = None, description: str = None, **kwargs) -> IPv4Address:
     return IPv4Address(
         value=value,
         object_marking_refs=[MARKING],
-        custom_properties={
-            X_OPENCTI_CREATED_BY: author_identity.id,
-            X_OPENCTI_LABELS: [PLATFORM_VERITY471]
-            }
+        custom_properties=_sco_properties(extra_labels, description),
     )
 
 
@@ -41,16 +47,13 @@ def map_ipv6(value: str, *args, **kwargs) -> IPv6Address:
     )
 
 
-def map_domain(value: str, *args, **kwargs) -> DomainName:
+def map_domain(value: str, *args, extra_labels: list = None, description: str = None, **kwargs) -> DomainName:
     if value.startswith(("http://", "https://")):
         raise InvalidValueError(DomainName, "value", f"'{value}' is not a valid domain name")
     return DomainName(
         value=value,
         object_marking_refs=[MARKING],
-        custom_properties={
-            X_OPENCTI_CREATED_BY: author_identity.id,
-            X_OPENCTI_LABELS: [PLATFORM_VERITY471]
-            }
+        custom_properties=_sco_properties(extra_labels, description),
     )
 
 

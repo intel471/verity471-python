@@ -22,6 +22,11 @@ class STIXMapperSettings(NamedTuple):
     # ``credential`` field. Set False to emit the account without it; the
     # password strength is still noted in the description.
     credentials_include_plain_password: bool = True
+    # Cache for parent objects fetched while mapping (e.g. a product's marketplace,
+    # a resource's bot product), keyed internally by mapper. Leave as None: mappers
+    # that fetch create one per run, and AlertsMapper shares one across all targets
+    # of a page so each parent is fetched only once.
+    lookup_cache: Optional[dict] = None
 
 
 class StixObjects:

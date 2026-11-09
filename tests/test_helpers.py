@@ -690,6 +690,12 @@ class TestSummarizeMarketplaceTargets:
                             title="<b>Fresh</b> cards")
         assert _summarize_target(target) == "[Marketplace Product] Fresh cards | Card | 2026-01-02 00:00:00+00:00"
 
+    def test_product_title_card_number_is_truncated(self):
+        from verity471.models.integration_product_response import IntegrationProductResponse
+        target = self._load(IntegrationProductResponse, price=None, vendor_name=None, kind="card",
+                            title="4111111111111111")
+        assert _summarize_target(target).startswith("[Marketplace Product] 411111XXXXXX1111 | Card")
+
     def test_resource_link_equal_to_name_is_not_repeated(self):
         from verity471.models.integration_resource_response import IntegrationResourceResponse
         target = self._load(IntegrationResourceResponse, link="example.com", login_available=False,
