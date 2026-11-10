@@ -589,7 +589,7 @@ conf = verity471.Configuration(
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 1.1.15\n"\
-               "SDK Package Version: 1.3.0".\
+               "SDK Package Version: 1.3.1".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self) -> List[HostSetting]:

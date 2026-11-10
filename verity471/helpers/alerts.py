@@ -15,6 +15,7 @@ from verity471.api.watchers_api import WatchersApi
 from verity471.exceptions import ForbiddenException, NotFoundException
 from verity471.models.breach_alert_by_id_response import BreachAlertByIdResponse
 from verity471.models.chat_room_message_stream import ChatRoomMessageStream
+from verity471.models.data_leak_site_file_listing_details_response import DataLeakSiteFileListingDetailsResponse
 from verity471.models.data_leak_site_post_item import DataLeakSitePostItem
 from verity471.models.fintel_response import FintelResponse
 from verity471.models.geopol_report_details_response import GeopolReportDetailsResponse
@@ -67,6 +68,14 @@ _BLOCK_ELEMENTS = frozenset({
     "pre", "section", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul",
 })
 
+
+def dls_thread_portal_url(website_id: str, thread_id: str) -> str:
+    """Portal page of a data-leak-site thread, where its posts and file listings show.
+
+    Matches the ``verity_portal`` link the API gives data-leak-site posts.
+    """
+    return f"https://verity.intel471.com/sources/data-leak-sites/{website_id}/threads/{thread_id}"
+
 # ---------------------------------------------------------------------------
 # TEMPORARY WORKAROUND — remove this block (and its call site in _fetch)
 # once the API populates links.verity_portal on all alert types.
@@ -106,6 +115,12 @@ def _patch_portal_url(alert: StreamingWatcherAlert, target: Any) -> None:
         if (post and post.links and post.links.verity_portal
                 and post.links.verity_portal.href):
             url = post.links.verity_portal.href
+
+    elif isinstance(target, DataLeakSiteFileListingDetailsResponse):
+        # The details response carries no portal link; the portal shows the
+        # listing on its post's thread page (same URL a DLS post links to).
+        if target.website:
+            url = dls_thread_portal_url(target.website.id, target.thread.id)
 
     elif isinstance(target, ChatRoomMessageStream):
         msg = target.message
@@ -245,6 +260,15 @@ def _summarize_target(target: Any) -> str | None:
         return _prefixed("Forum PM", _join([
             _plain_text(pm.subject), _text_snippet(pm.message), pm.creation_ts]))
 
+    if isinstance(target, DataLeakSiteFileListingDetailsResponse):
+        website = target.website
+        return _prefixed("Data Leak Site File Listing", _join([
+            _plain_text(target.post.title or target.thread.name),
+            f"on {_plain_text(website.title)}" if website and website.title else None,
+            f"file: {target.file.name}" if target.file.name else None,
+            f"chunk {target.chunk_number}",
+            _last_seen(target)]))
+
     if isinstance(target, ChatRoomMessageStream):
         m = target.message
         return _prefixed("Message", _join([
@@ -375,7 +399,7 @@ def _summarize_target(target: Any) -> str | None:
 
 
 def _last_seen(target: Any) -> Any:
-    """``activity.last_seen_ts`` of a marketplace object, or None."""
+    """``activity.last_seen_ts`` of a marketplace object or DLS file listing, or None."""
     activity = getattr(target, "activity", None)
     return activity.last_seen_ts if activity else None
 

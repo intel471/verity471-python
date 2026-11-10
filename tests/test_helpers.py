@@ -45,6 +45,7 @@ test_params = {
     'SourcesApi:get_forums_posts_post_id': ('PostDetails1', 'https://api.intel471.cloud/integrations/sources/v1/forums/posts/post--44a97352-e0bf-537a-8b51-13e16992586b', '[Forum Post] 2022-10-13T16:05:37Z'),
     'SourcesApi:get_forums_private_messages_private_message_id': ('PrivateMessageDetails1', 'https://api.intel471.cloud/integrations/sources/v1/forums/private-messages/private-message--d2c24f11-ed5a-5d6c-b4cc-83a5ff96c0b4', '[Forum PM] dummy | dummy | 2010-08-24T23:25:34Z'),
     'SourcesApi:get_messaging_services_messages_message_id': ('ChatRoomMessageStream', 'https://api.intel471.cloud/integrations/sources/v1/messaging-services/messages/message--da2a22d1-4d3e-5b79-b557-c275453f31f9', '[Message] dummy | 2017-02-27T02:37:48Z'),
+    'SourcesApi:get_data_leak_sites_file_listings_id_details': ('DataLeakSiteFileListingDetailsResponse', 'https://api.intel471.cloud/integrations/sources/v1/data-leak-sites/file-listings/file-listing--00000000-0000-0000-0000-000000000000-4/details', '[Data Leak Site File Listing] Example Victim, Inc. | on Example ransomware operator(s) | chunk 4 | 2026-10-26 04:29:30+00:00'),
     'MarketplacesApi:get_marketplaces_marketplace_id': ('IntegrationMarketplaceResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/marketplaces/marketplace-website--00000000-0000-0000-0000-000000000000', '[Marketplace] dummy | tier 1 | dummy | 2026-01-02 00:00:00+00:00'),
     'MarketplacesApi:get_products_product_id': ('IntegrationProductResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/products/marketplace-product--00000000-0000-0000-0000-000000000000', '[Marketplace Product] dummy | Digital Good | vendor: dummy | 10 USD | 2026-01-02 00:00:00+00:00'),
     'MarketplacesApi:get_resources_resource_id': ('IntegrationResourceResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/resources/marketplace-resource--00000000-0000-0000-0000-000000000000', '[Marketplace Resource] example[.]com | hxxps://example[.]com/login | includes: login, password | 2026-01-02 00:00:00+00:00'),
@@ -174,6 +175,18 @@ class TestPatchPortalUrl:
         alert = _make_alert()
         data = read_fixture(f"{PREFIX}/fixtures/api_responses/DataLeakSitePostsStreamingPage.json")
         target = verity471.DataLeakSitePostItem.from_dict(data["posts"][0])
+        _patch_portal_url(alert, target)
+        assert alert.links.verity_portal.href == (
+            "https://verity.intel471.com/sources/data-leak-sites/"
+            "website--00000000-0000-0000-0000-000000000000"
+            "/threads/thread--00000000-0000-0000-0000-000000000000"
+        )
+
+    def test_data_leak_site_file_listing_patches_url(self):
+        alert = _make_alert()
+        target = verity471.DataLeakSiteFileListingDetailsResponse.from_dict(
+            read_fixture(f"{PREFIX}/fixtures/api_responses/DataLeakSiteFileListingDetailsResponse.json")
+        )
         _patch_portal_url(alert, target)
         assert alert.links.verity_portal.href == (
             "https://verity.intel471.com/sources/data-leak-sites/"
@@ -706,3 +719,41 @@ class TestSummarizeMarketplaceTargets:
         from verity471.models.integration_vendor_response import IntegrationVendorResponse
         target = self._load(IntegrationVendorResponse, rating={"value": 87}, marketplace_name=None)
         assert _summarize_target(target) == "[Marketplace Vendor] dummy | rating: 87 | 2026-01-02 00:00:00+00:00"
+
+
+class TestDataLeakSiteFileListing:
+
+    URL = ("https://api.intel471.cloud/integrations/sources/v1/data-leak-sites/file-listings/"
+           "file-listing--00000000-0000-0000-0000-000000000000-4/details")
+
+    @staticmethod
+    def _load(**overrides):
+        data = read_fixture(f"{PREFIX}/fixtures/api_responses/DataLeakSiteFileListingDetailsResponse.json")
+        data.update(overrides)
+        return verity471.DataLeakSiteFileListingDetailsResponse.from_dict(data)
+
+    def test_details_url_resolves_to_details_endpoint(self):
+        api_class, method, params = resolve_url(self.URL)
+        assert (api_class.__name__, method) == ("SourcesApi", "get_data_leak_sites_file_listings_id_details")
+        assert params == {"id": "file-listing--00000000-0000-0000-0000-000000000000-4"}
+
+    def test_plain_file_listing_url_still_resolves_to_download(self):
+        _, method, _ = resolve_url(self.URL.removesuffix("/details"))
+        assert method == "get_data_leak_sites_file_listings_id"
+
+    def test_summary_includes_file_name_when_given(self):
+        target = self._load(file={"id": "file--0", "name": "hr.zip"})
+        assert _summarize_target(target) == (
+            "[Data Leak Site File Listing] Example Victim, Inc. | on Example ransomware operator(s)"
+            " | file: hr.zip | chunk 4 | 2026-10-26 04:29:30+00:00")
+
+    def test_summary_without_website_falls_back_to_thread_name(self):
+        target = self._load(website=None, post={"href": "x", "id": "post--0"})
+        assert _summarize_target(target) == (
+            "[Data Leak Site File Listing] Example Victim, Inc. | chunk 4 | 2026-10-26 04:29:30+00:00")
+
+    def test_portal_url_not_patched_without_website(self):
+        alert = _make_alert()
+        _patch_portal_url(alert, self._load(website=None))
+        assert alert.links.verity_portal is None
+

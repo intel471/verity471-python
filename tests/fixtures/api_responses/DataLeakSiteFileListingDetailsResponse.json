@@ -1,0 +1,32 @@
+{
+  "activity": {
+    "first_seen_ts": "2026-10-24T09:30:29Z",
+    "last_seen_ts": "2026-10-26T04:29:30Z"
+  },
+  "chunk_number": 4,
+  "download": {
+    "href": "https://api.intel471.cloud/integrations/sources/v1/data-leak-sites/file-listings/file-listing--00000000-0000-0000-0000-000000000000-4"
+  },
+  "file": {
+    "id": "file--00000000-0000-0000-0000-000000000000"
+  },
+  "id": "file-listing--00000000-0000-0000-0000-000000000000-4",
+  "links": {
+    "external": {
+      "href": "http://example.onion/"
+    }
+  },
+  "post": {
+    "href": "https://api.intel471.cloud/integrations/sources/v1/data-leak-sites/posts/post--00000000-0000-0000-0000-000000000000",
+    "id": "post--00000000-0000-0000-0000-000000000000",
+    "title": "Example Victim, Inc."
+  },
+  "thread": {
+    "id": "thread--00000000-0000-0000-0000-000000000000",
+    "name": "Example Victim, Inc."
+  },
+  "website": {
+    "id": "website--00000000-0000-0000-0000-000000000000",
+    "title": "Example ransomware operator(s)"
+  }
+}

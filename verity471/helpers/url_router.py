@@ -25,6 +25,7 @@ _RAW_ROUTES: list[tuple[str, type, str]] = [
     # Sources
     ("/integrations/sources/v1/forums/posts/{post_id}", SourcesApi, "get_forums_posts_post_id"),
     ("/integrations/sources/v1/forums/private-messages/{private_message_id}", SourcesApi, "get_forums_private_messages_private_message_id"),
+    ("/integrations/sources/v1/data-leak-sites/file-listings/{id}/details", SourcesApi, "get_data_leak_sites_file_listings_id_details"),
     ("/integrations/sources/v1/data-leak-sites/file-listings/{id}", SourcesApi, "get_data_leak_sites_file_listings_id"),
     ("/integrations/sources/v1/messaging-services/messages/{message_id}", SourcesApi, "get_messaging_services_messages_message_id"),
     # Reports

@@ -22,7 +22,7 @@ API bindings are generated via [OpenAPI Generator](https://openapi-generator.tec
   - girs: 1.0.1
   - marketplaces: 1.0.0
 
-- Package version: 1.3.0
+- Package version: 1.3.1
 - Generator version: 7.27.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
