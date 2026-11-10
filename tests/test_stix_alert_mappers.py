@@ -62,6 +62,45 @@ def test_dls_post_item_dispatches_to_data_leak_site():
     assert matched == ["data_leak_site_post"]
 
 
+def test_dls_file_listing_dispatches_to_file_listing_mapper():
+    source = _api_fixture("DataLeakSiteFileListingDetailsResponse")
+    matched = [name for name, (condition, _) in StixMapper.mappers.items() if condition(source)]
+    assert matched == ["data_leak_site_file_listing"]
+
+
+def test_dls_file_listing_merges_with_its_post():
+    """The listing maps onto the same Channel and Media-Content ids as its post."""
+    listing = StixMapper(_settings()).map(_api_fixture("DataLeakSiteFileListingDetailsResponse"))
+    post = _api_fixture("DataLeakSitePostsStreamingPage")["posts"][0]
+    post["website"]["title"] = "Example ransomware operator(s)"
+    post_bundle = StixMapper(_settings()).map(post)
+
+    def ids(bundle, stix_type):
+        return {o.id for o in _by_type(bundle, stix_type)}
+
+    assert ids(listing, "channel") == ids(post_bundle, "channel")
+    assert ids(listing, "media-content") == ids(post_bundle, "media-content")
+    media = _by_type(listing, "media-content")[0]
+    assert media.title == "Example Victim, Inc."
+    assert media.x_opencti_description == (
+        "Data leak site post 'Example Victim, Inc.' on 'Example ransomware operator(s)'.")
+    rels = {(r.relationship_type, r.get("description")) for r in _by_type(listing, "relationship")}
+    assert ("publishes", None) in rels and ("related-to", "source") in rels
+    assert [u.value for u in _by_type(listing, "url")] == ["http://example.onion/"]
+    assert not _by_type(listing, "file")  # fixture's file has no name
+
+
+def test_dls_file_listing_named_file_and_missing_website():
+    source = _api_fixture("DataLeakSiteFileListingDetailsResponse")
+    source["file"]["name"] = "hr.zip"
+    source["website"] = None
+    bundle = StixMapper(_settings()).map(source)
+    assert not _by_type(bundle, "channel")
+    assert [f.name for f in _by_type(bundle, "file")] == ["hr.zip"]
+    media = _by_type(bundle, "media-content")[0]
+    assert media.url.endswith("/sources/data-leak-sites/posts/post--00000000-0000-0000-0000-000000000000")
+
+
 # ---------------------------------------------------------------------------
 # Forum post / PM / chat -> Channel + Media-Content + publishes.
 # ---------------------------------------------------------------------------
