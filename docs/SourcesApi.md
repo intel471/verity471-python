@@ -5,6 +5,7 @@ All URIs are relative to *https://api.intel471.cloud*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_data_leak_sites_file_listings_id**](SourcesApi.md#get_data_leak_sites_file_listings_id) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id} | Get a data leak site file listing content
+[**get_data_leak_sites_file_listings_id_details**](SourcesApi.md#get_data_leak_sites_file_listings_id_details) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id}/details | Get data leak site file listing details by id
 [**get_data_leak_sites_posts_id**](SourcesApi.md#get_data_leak_sites_posts_id) | **GET** /integrations/sources/v1/data-leak-sites/posts/{id} | Get a data leak site post by id
 [**get_data_leak_sites_posts_stream**](SourcesApi.md#get_data_leak_sites_posts_stream) | **GET** /integrations/sources/v1/data-leak-sites/posts/stream | Get data leak sites posts (stream)
 [**get_forums_posts_post_id**](SourcesApi.md#get_forums_posts_post_id) | **GET** /integrations/sources/v1/forums/posts/{post_id} | Get a forum post by id
@@ -91,6 +92,91 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** |  |  * Content-Disposition -  <br>  * Content-Type -  <br>  |
+**400** |  |  -  |
+**401** |  |  -  |
+**403** |  |  -  |
+**404** |  |  -  |
+**409** |  |  -  |
+**500** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_data_leak_sites_file_listings_id_details**
+> DataLeakSiteFileListingDetailsResponse get_data_leak_sites_file_listings_id_details(id)
+
+Get data leak site file listing details by id
+
+Returns metadata of a data leak site file listing chunk: its file, post, thread and website, and a link to download the listing content
+
+### Example
+
+* Basic Authentication (basicAuth):
+
+```python
+import verity471
+from verity471.models.data_leak_site_file_listing_details_response import DataLeakSiteFileListingDetailsResponse
+from verity471.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to https://api.intel471.cloud
+# See configuration.py for a list of all supported configuration parameters.
+configuration = verity471.Configuration(
+    host = "https://api.intel471.cloud"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure HTTP basic authorization: basicAuth
+configuration = verity471.Configuration(
+    username = os.environ["USERNAME"],
+    password = os.environ["PASSWORD"]
+)
+
+# Enter a context with an instance of the API client
+with verity471.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = verity471.SourcesApi(api_client)
+    id = 'file-listing--c670864e-b2ae-50d6-9875-56fcbd779c67' # str | 
+
+    try:
+        # Get data leak site file listing details by id
+        api_response = api_instance.get_data_leak_sites_file_listings_id_details(id)
+        print("The response of SourcesApi->get_data_leak_sites_file_listings_id_details:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling SourcesApi->get_data_leak_sites_file_listings_id_details: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**|  | 
+
+### Return type
+
+[**DataLeakSiteFileListingDetailsResponse**](DataLeakSiteFileListingDetailsResponse.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** |  |  -  |
 **400** |  |  -  |
 **401** |  |  -  |
 **403** |  |  -  |
@@ -223,7 +309,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.SourcesApi(api_client)
-    website_id = 'website_id_example' # str | Search data leak posts in a given data leak blog (optional)
+    website_id = 'website--e9f46d09-80cf-5af2-be55-05cfa14fd778' # str | Search data leak posts in a given data leak blog (optional)
     text_filter = 'text_filter_example' # str | Apply text filter to search posts based on a keyword (optional)
     var_from = 56 # int | UNIX timestamp in milliseconds (optional)
     until = 56 # int | UNIX timestamp in milliseconds (optional)
@@ -403,7 +489,7 @@ configuration = verity471.Configuration(
 with verity471.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = verity471.SourcesApi(api_client)
-    thread_id = 'thread--d5e745de-a27a-5329-ab9c-1cd4632b2ed6' # str | Search forum posts in a given forum. (optional)
+    thread_id = 'thread--d4d64035-effc-59fa-bc3e-e7b3f4540d1a' # str | Search forum posts in a given forum. (optional)
     author = 'author_example' # str | Search for posts authored by given actor user name. (optional)
     author_id = 'author_id_example' # str | Search for posts authored by given actor id. (optional)
     forum_title = 'forum_title_example' # str | Search for posts in a given forum. (optional)
@@ -596,7 +682,7 @@ with verity471.ApiClient(configuration) as api_client:
     subject = 'subject_example' # str | Search text in subjects of Private Messages. (optional)
     recipient = 'recipient_example' # str | Search messages received by given actor user name. (optional)
     recipient_id = 'recipient_id_example' # str | Search messages received by given actor id. (optional)
-    forum_id = 'forum--fafde818-43d5-5dbf-b5a9-83253bf13432' # str | Search for messages in a given forum by `forum_id`. `forum_id` will take precedence if used together with the `forum_title` filter (optional)
+    forum_id = 'forum--ec7ec770-33b0-5bf4-b5a1-295b50643dee' # str | Search for messages in a given forum by `forum_id`. `forum_id` will take precedence if used together with the `forum_title` filter (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
     size = 1000 # int | Range is: [1, 1000] (optional) (default to 1000)
@@ -871,10 +957,10 @@ with verity471.ApiClient(configuration) as api_client:
     api_instance = verity471.SourcesApi(api_client)
     text_filter = 'hacker' # str | Apply text filter to search messages based on a keyword (optional)
     author = 'author_example' # str | Search for messages authored by given actor user name handle. (optional)
-    author_id = 'actor--d9a4cda0-8d30-5e50-b730-2ee1145d4edd' # str | Search for messages authored by given actor id handle. (optional)
+    author_id = 'actor--8e474c77-df02-523c-9732-62956325deb5' # str | Search for messages authored by given actor id handle. (optional)
     server_type = verity471.ChatServerTypeStream() # ChatServerTypeStream | Filter results based on server type (optional)
     server_id = 'server_id_example' # str | Search for chat messages by chat server id. (optional)
-    room_id = 'room--92ac69ca-9d08-5cb5-a8e4-4d26c5e50311roo' # str | Search for chat messages by chat room id. (optional)
+    room_id = 'room--6b7d3e33-5a65-52f1-9b70-0968706542ef' # str | Search for chat messages by chat room id. (optional)
     var_from = 56 # int | UNIX timestamp(in milliseconds) (optional)
     until = 56 # int | UNIX timestamp(in milliseconds) (optional)
     size = 250 # int | Range is: [1, 1000] Best-effort: a response may return fewer items than requested when the result payload is large; keep paging via the cursor until you receive an empty page. (optional) (default to 250)

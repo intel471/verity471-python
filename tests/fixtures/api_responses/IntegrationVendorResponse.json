@@ -1,0 +1,23 @@
+{
+    "id": "marketplace-seller--00000000-0000-0000-0000-000000000000",
+    "name": "dummy",
+    "marketplace_id": "marketplace-website--00000000-0000-0000-0000-000000000000",
+    "marketplace_name": "dummy",
+    "rating": {
+        "value": 4.5,
+        "max": 5.0
+    },
+    "valid_rate_overall": 99.0,
+    "activity": {
+        "first_seen_ts": "2026-01-01T00:00:00Z",
+        "last_seen_ts": "2026-01-02T00:00:00Z"
+    },
+    "links": {
+        "verity_api": {
+            "href": "https://api.example.com/integrations/marketplaces/v1/vendors/marketplace-seller--00000000-0000-0000-0000-000000000000"
+        },
+        "verity_portal": {
+            "href": "https://portal.example.com/sources/marketplaces/vendors/marketplace-seller--00000000-0000-0000-0000-000000000000"
+        }
+    }
+}

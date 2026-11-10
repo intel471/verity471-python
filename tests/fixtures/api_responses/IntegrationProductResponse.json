@@ -1,0 +1,31 @@
+{
+    "id": "marketplace-product--00000000-0000-0000-0000-000000000000",
+    "marketplace_id": "marketplace-website--00000000-0000-0000-0000-000000000000",
+    "title": "dummy",
+    "name": "dummy",
+    "description": "dummy",
+    "kind": "digital_good",
+    "vendor_id": "marketplace-seller--00000000-0000-0000-0000-000000000000",
+    "vendor_name": "dummy",
+    "price": [
+        {
+            "currency": "USD",
+            "value": 10.0
+        }
+    ],
+    "product": {
+        "created_ts": "2026-01-01T00:00:00Z"
+    },
+    "activity": {
+        "first_seen_ts": "2026-01-01T00:00:00Z",
+        "last_seen_ts": "2026-01-02T00:00:00Z"
+    },
+    "links": {
+        "verity_api": {
+            "href": "https://api.example.com/integrations/marketplaces/v1/products/marketplace-product--00000000-0000-0000-0000-000000000000"
+        },
+        "verity_portal": {
+            "href": "https://portal.example.com/sources/marketplaces/products/marketplace-product--00000000-0000-0000-0000-000000000000"
+        }
+    }
+}

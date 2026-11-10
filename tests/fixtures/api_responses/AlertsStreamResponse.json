@@ -7,7 +7,7 @@
             "is_trashed": false,
             "links": {
                 "verity_api": {
-                    "href": "https://api.example.com/integrations/marketplaces/v1/product/marketplace-product--00000000-0000-0000-0000-000000000000"
+                    "href": "https://api.example.com/integrations/marketplaces/v1/products/marketplace-product--00000000-0000-0000-0000-000000000000"
                 },
                 "verity_portal": {
                     "href": "https://portal.example.com/sources/marketplaces/products/marketplace-product--00000000-0000-0000-0000-000000000000"

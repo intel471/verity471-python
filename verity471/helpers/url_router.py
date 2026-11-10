@@ -14,6 +14,7 @@ class UnresolvableURL(Exception):
 from verity471.api.events_api import EventsApi
 from verity471.api.indicators_api import IndicatorsApi
 from verity471.api.malware_api import MalwareApi
+from verity471.api.marketplaces_api import MarketplacesApi
 from verity471.api.reports_api import ReportsApi
 from verity471.api.sources_api import SourcesApi
 
@@ -43,6 +44,11 @@ _RAW_ROUTES: list[tuple[str, type, str]] = [
     # Events and Malware
     ("/integrations/malware-intel/v1/events/{id}", EventsApi, "get_event_by_id"),
     ("/integrations/malware-intel/v1/malware/{id}", MalwareApi, "get_malware_family_by_id"),
+    # Marketplaces
+    ("/integrations/marketplaces/v1/marketplaces/{marketplace_id}", MarketplacesApi, "get_marketplaces_marketplace_id"),
+    ("/integrations/marketplaces/v1/products/{product_id}", MarketplacesApi, "get_products_product_id"),
+    ("/integrations/marketplaces/v1/resources/{resource_id}", MarketplacesApi, "get_resources_resource_id"),
+    ("/integrations/marketplaces/v1/vendors/{vendor_id}", MarketplacesApi, "get_vendors_vendor_id"),
 ]
 
 

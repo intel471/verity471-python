@@ -15,7 +15,8 @@ from verity471.helpers.alerts import (
 from verity471.models.info_report_response import InfoReportResponse
 from verity471.models.post_details1 import PostDetails1
 from verity471.models.spot_report_response import SpotReportResponse
-from verity471.helpers.url_router import UnresolvableURL, call_url
+from verity471.api.marketplaces_api import MarketplacesApi
+from verity471.helpers.url_router import UnresolvableURL, call_url, resolve_url
 from verity471.models.get_watcher_response import GetWatcherResponse
 from verity471.models.get_watcher_group_response import GetWatcherGroupResponse
 from verity471.models.href import Href
@@ -44,6 +45,10 @@ test_params = {
     'SourcesApi:get_forums_posts_post_id': ('PostDetails1', 'https://api.intel471.cloud/integrations/sources/v1/forums/posts/post--44a97352-e0bf-537a-8b51-13e16992586b', '[Forum Post] 2022-10-13T16:05:37Z'),
     'SourcesApi:get_forums_private_messages_private_message_id': ('PrivateMessageDetails1', 'https://api.intel471.cloud/integrations/sources/v1/forums/private-messages/private-message--d2c24f11-ed5a-5d6c-b4cc-83a5ff96c0b4', '[Forum PM] dummy | dummy | 2010-08-24T23:25:34Z'),
     'SourcesApi:get_messaging_services_messages_message_id': ('ChatRoomMessageStream', 'https://api.intel471.cloud/integrations/sources/v1/messaging-services/messages/message--da2a22d1-4d3e-5b79-b557-c275453f31f9', '[Message] dummy | 2017-02-27T02:37:48Z'),
+    'MarketplacesApi:get_marketplaces_marketplace_id': ('IntegrationMarketplaceResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/marketplaces/marketplace-website--00000000-0000-0000-0000-000000000000', '[Marketplace] dummy | tier 1 | dummy | 2026-01-02 00:00:00+00:00'),
+    'MarketplacesApi:get_products_product_id': ('IntegrationProductResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/products/marketplace-product--00000000-0000-0000-0000-000000000000', '[Marketplace Product] dummy | Digital Good | vendor: dummy | 10 USD | 2026-01-02 00:00:00+00:00'),
+    'MarketplacesApi:get_resources_resource_id': ('IntegrationResourceResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/resources/marketplace-resource--00000000-0000-0000-0000-000000000000', '[Marketplace Resource] example[.]com | hxxps://example[.]com/login | includes: login, password | 2026-01-02 00:00:00+00:00'),
+    'MarketplacesApi:get_vendors_vendor_id': ('IntegrationVendorResponse', 'https://api.intel471.cloud/integrations/marketplaces/v1/vendors/marketplace-seller--00000000-0000-0000-0000-000000000000', '[Marketplace Vendor] dummy | on dummy | rating: 4.5/5 | 2026-01-02 00:00:00+00:00'),
 }
 
 @patch('verity471.helpers.alerts.WatchersApi')
@@ -216,7 +221,7 @@ class TestPatchPortalUrl:
 # ---------------------------------------------------------------------------
 
 _SPOT_URL = "https://api.intel471.cloud/integrations/intel-report/v1/reports/spot/report--test"
-_MARKETPLACE_URL = "https://api.intel471.cloud/integrations/marketplaces/v1/product/marketplace-product--test"
+_MARKETPLACE_URL = "https://api.intel471.cloud/integrations/marketplaces/v1/products/marketplace-product--test"
 
 
 def _mock_alert(url=_SPOT_URL, source_id="src--test", watcher_id=1, watcher_group_id=1):
@@ -262,25 +267,18 @@ class TestFetchAlertTargets:
         assert result == []
         call_url_mock.assert_not_called()
 
-    def test_marketplace_url_returns_bare_alert(self, call_url_mock, watchers_mock):
-        # Marketplace hits have no SDK route, so they resolve as UnresolvableURL
-        # and come back as bare alerts (target=None) rather than being dropped.
-        call_url_mock.side_effect = UnresolvableURL("no route")
+    def test_marketplace_url_returns_target(self, call_url_mock, watchers_mock):
+        # Marketplace hits now have an SDK route, so the target is fetched like any other.
+        target = MagicMock()
+        call_url_mock.return_value = target
         _no_watchers(watchers_mock)
         alert = _mock_alert(url=_MARKETPLACE_URL)
         with verity471.ApiClient(configuration) as api_client:
             result = fetch_alert_targets(_alerts_response(alert), api_client)
         assert len(result) == 1
-        assert result[0].alert is alert
-        assert result[0].target is None
-        assert result[0].status == AlertTargetStatus.UNRESOLVABLE
-
-    def test_marketplace_url_omitted_when_skipping(self, call_url_mock, _watchers_mock):
-        call_url_mock.side_effect = UnresolvableURL("no route")
-        alert = _mock_alert(url=_MARKETPLACE_URL)
-        with verity471.ApiClient(configuration) as api_client:
-            result = fetch_alert_targets(_alerts_response(alert), api_client, skip_missing_targets=True)
-        assert result == []
+        assert result[0].target is target
+        assert result[0].status == AlertTargetStatus.OK
+        assert call_url_mock.call_args.args[1] == _MARKETPLACE_URL
 
     def test_missing_link_is_skipped(self, _call_url_mock, _watchers_mock):
         alert = _mock_alert()
@@ -648,3 +646,63 @@ class TestSummarizeTargetHtml:
         target.executive_summary = "<p>&nbsp;</p>"
         target.body = "<p>The real content</p>"
         assert "The real content" in _summarize_target(target)
+
+
+class TestMarketplaceRoutes:
+
+    @pytest.mark.parametrize("path, method, params", [
+        ("/integrations/marketplaces/v1/marketplaces/marketplace-website--x",
+         "get_marketplaces_marketplace_id", {"marketplace_id": "marketplace-website--x"}),
+        ("/integrations/marketplaces/v1/products/marketplace-product--x",
+         "get_products_product_id", {"product_id": "marketplace-product--x"}),
+        ("/integrations/marketplaces/v1/resources/marketplace-resource--x",
+         "get_resources_resource_id", {"resource_id": "marketplace-resource--x"}),
+        ("/integrations/marketplaces/v1/vendors/marketplace-seller--x",
+         "get_vendors_vendor_id", {"vendor_id": "marketplace-seller--x"}),
+    ])
+    def test_resolves(self, path, method, params):
+        assert resolve_url("https://api.intel471.cloud" + path) == (MarketplacesApi, method, params)
+
+    @patch('verity471.api.marketplaces_api.MarketplacesApi.get_products_product_id', autospec=True)
+    def test_alert_link_calls_product_endpoint(self, method_mock):
+        with verity471.ApiClient(configuration) as api_client:
+            call_url(api_client, _MARKETPLACE_URL, include_inline_images=True)
+        # include_inline_images is not accepted by marketplace endpoints, so it is dropped.
+        assert method_mock.call_args.kwargs == {"product_id": "marketplace-product--test"}
+
+
+class TestSummarizeMarketplaceTargets:
+
+    @staticmethod
+    def _load(model, **overrides):
+        data = read_fixture(f'{PREFIX}/fixtures/api_responses/{model.__name__}.json')
+        data.update(overrides)
+        return model.from_dict(data)
+
+    def test_inactive_marketplace_is_flagged(self):
+        from verity471.models.integration_marketplace_response import IntegrationMarketplaceResponse
+        target = self._load(IntegrationMarketplaceResponse, is_active=False, tier=None, description=None)
+        assert _summarize_target(target) == "[Marketplace] dummy | inactive | 2026-01-02 00:00:00+00:00"
+
+    def test_product_without_price_or_vendor(self):
+        from verity471.models.integration_product_response import IntegrationProductResponse
+        target = self._load(IntegrationProductResponse, price=None, vendor_name=None, kind="card",
+                            title="<b>Fresh</b> cards")
+        assert _summarize_target(target) == "[Marketplace Product] Fresh cards | Card | 2026-01-02 00:00:00+00:00"
+
+    def test_product_title_card_number_is_truncated(self):
+        from verity471.models.integration_product_response import IntegrationProductResponse
+        target = self._load(IntegrationProductResponse, price=None, vendor_name=None, kind="card",
+                            title="4111111111111111")
+        assert _summarize_target(target).startswith("[Marketplace Product] 411111XXXXXX1111 | Card")
+
+    def test_resource_link_equal_to_name_is_not_repeated(self):
+        from verity471.models.integration_resource_response import IntegrationResourceResponse
+        target = self._load(IntegrationResourceResponse, link="example.com", login_available=False,
+                            password_available=False)
+        assert _summarize_target(target) == "[Marketplace Resource] example[.]com | 2026-01-02 00:00:00+00:00"
+
+    def test_vendor_rating_without_scale(self):
+        from verity471.models.integration_vendor_response import IntegrationVendorResponse
+        target = self._load(IntegrationVendorResponse, rating={"value": 87}, marketplace_name=None)
+        assert _summarize_target(target) == "[Marketplace Vendor] dummy | rating: 87 | 2026-01-02 00:00:00+00:00"

@@ -6,6 +6,7 @@ Malware event data.
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**apk_meta** | [**ApkMeta**](ApkMeta.md) | Metadata of an Android APK, including its signing &#x60;certificate&#x60;. | [optional] 
 **arguments** | **List[str]** | Arguments. | [optional] 
 **attack_targets** | **List[Dict[str, str]]** | Attack targets. | [optional] 
 **attack_type** | **str** | Attack type. | [optional] 

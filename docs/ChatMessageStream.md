@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **html** | **str** | Message text in html format | 
 **id** | **str** | Unique id of message | 
 **links** | [**SourcesLinks**](SourcesLinks.md) |  | [optional] 
+**reply_to_message_id** | **str** | Id of the message this message replies to; absent when the message is not a reply | [optional] 
 **text** | **str** | Message text | 
 
 ## Example

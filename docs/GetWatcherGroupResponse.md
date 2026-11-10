@@ -5,6 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**can_edit** | **bool** |  | 
 **created_by** | **str** |  | 
 **creation_ts** | **datetime** |  | 
 **description** | **str** |  | 

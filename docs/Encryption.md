@@ -8,7 +8,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **algorithm** | **str** | Type of &#x60;algorithm&#x60; used in the encryption. | [optional] 
 **context** | **str** | The &#x60;context&#39; of the event. | [optional] 
+**iv** | **str** | The initialization vector (&#x60;iv&#x60;) used by the cipher. | [optional] 
 **key** | **str** | The encryption &#x60;key&#x60;. | [optional] 
+**nonce** | **str** | The &#x60;nonce&#x60; used, e.g. by stream ciphers such as ChaCha20. | [optional] 
 
 ## Example
 

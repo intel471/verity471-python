@@ -47,6 +47,10 @@ class AlertsMapper(BaseMapper):
     """
 
     def map(self, source: dict):
+        if self.settings.lookup_cache is None:
+            # One cache for every target of this page, so a parent object (e.g. the
+            # marketplace of many product alerts) is fetched only once.
+            self.settings = self.settings._replace(lookup_cache={})
         api_client = self.settings.api_client
         if api_client is None:
             raise StixMapperNotFound(

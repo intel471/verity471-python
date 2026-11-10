@@ -8,6 +8,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **address** | **str** | Address of the redirect. | [optional] 
 **host** | **str** | Host of the redirect. | [optional] 
+**trigger** | **str** | Pattern that triggers the redirect. | [optional] 
+**url** | **str** | Url the traffic is redirected to. | [optional] 
 
 ## Example
 

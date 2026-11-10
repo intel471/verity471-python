@@ -9,20 +9,21 @@ data items, allowing easier integration with threat intelligence platforms.
 
 API bindings are generated via [OpenAPI Generator](https://openapi-generator.tech), with manual extensions for validation and STIX support.
 
-- API version: 1.1.12
-  - creds: 1.0.4
+- API version: 1.1.15
+  - creds: 1.0.5
   - indicators: 1.0.1
-  - malware: 1.0.1
-  - reports: 1.0.6
-  - sources: 1.0.6
-  - actors: 1.0.2
-  - watchers: 1.0.2
-  - observables: 1.0.1
-  - entities: 1.0.1
+  - malware: 1.0.2
+  - reports: 1.0.7
+  - sources: 1.0.8
+  - actors: 1.0.3
+  - watchers: 1.0.3
+  - observables: 1.0.3
+  - entities: 1.0.3
   - girs: 1.0.1
+  - marketplaces: 1.0.0
 
-- Package version: 1.2.2
-- Generator version: 7.21.0
+- Package version: 1.3.0
+- Generator version: 7.27.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
 ## Requirements.
@@ -145,7 +146,7 @@ serialized = api_response.to_dict()
 > ```
 
 To convert the response into the [STIX format (v2.1)](https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html), call the `to_stix()` method on the response object.
-This method converts the API response into the corresponding STIX objects and returns them wrapped in a `Bundle` object (from [stix2](https://pypi.org/project/stix2/) package).
+This method converts the API response into the corresponding STIX objects and returns them wrapped in a `Bundle` object (from the [stix2](https://pypi.org/project/stix2/) package).
 The `Bundle` object can be serialized into a JSON string using its `serialize()` method.
 
 ```
@@ -163,8 +164,8 @@ full report content.
 
 If an instance of `verity471.verity_stix.STIXMapperSettings` is passed to the `to_stix()` method 
 with the `report_full_content` flag set to `True`, the mapper will issue additional API calls to 
-retrieve the full representation of each truncated report referenced in the stream results. This allows 
-to execute a stream (search) endpoint and serialize it into STIX while still obtaining complete 
+retrieve the full representation of each truncated report referenced in the stream results. This makes it possible
+to call a stream (search) endpoint and serialize the results into STIX while still obtaining complete 
 report data.
 
 The `STIXMapperSettings` instance must be initialized with the `verity471` package and an 
@@ -190,13 +191,13 @@ with verity471.ApiClient(configuration) as api_client:
     bundle = api_response.to_stix(mapper_settings)
 ```
 
-If the objects returned by the endpoint for some reason can't be mapped into STIX format, `EmptyBundle` exception will be raised.
+If the objects returned by the endpoint for some reason can't be mapped into STIX format, an `EmptyBundle` exception will be raised.
 
-At the moment following API methods provide the response in STIX format:
+At the moment, the following API methods provide the response in STIX format:
 
 Client's class/method | API endpoint | Produced outcome
 ------------------------|-------------|-----------------
-`IndicatorsApi.get_indicators_stream` | `/indicators/stream` | `Indicator` and `Malware` SDOs related using `Relationship` object; `URL`, `IPv4Address`, `File`, `DomainName` or `EmailAddress`  Observable related with the `Indicator` SDO using `Relationship` object
+`IndicatorsApi.get_indicators_stream` | `/indicators/stream` | `Indicator` and `Malware` SDOs related using `Relationship` object; `URL`, `IPv4Address`, `File`, `DomainName` or `EmailAddress` Observable related to the `Indicator` SDO using `Relationship` object
 `IndicatorsApi.get_indicator_by_id` | `/indicators/{id}` |
 `ReportsApi.get_reports_breach_alert_stream` | `/reports/breach-alert/stream` | `Report` SDOs with related entities/victims via `object_refs` (`Identity`/Org, `Malware`, `ThreatActor`, `Vulnerability` and observables like `URL`, `DomainName`, `IPv4Address`, `IPv6Address`, `EmailAddress`, `AutonomousSystem`, `File`, `UserAccount`, `CryptocurrencyWallet`)
 `ReportsApi.get_reports_breach_alert_id` | `/reports/breach-alert/{id}` |
@@ -227,6 +228,14 @@ Client's class/method | API endpoint | Produced outcome
 `EventsApi.get_event_by_id` | `/events/{id}` |
 `MalwareApi.get_malware_list` | `/malware` | `Malware` (`is_family`) + `Software` (OS/platform) linked via `Relationship`
 `MalwareApi.get_malware_family_by_id` | `/malware/{id}` |
+`MarketplacesApi.get_marketplaces_stream` | `/marketplaces/stream` | `Channel` (`channel_type` `marketplace`); tier and active status in the description
+`MarketplacesApi.get_marketplaces_marketplace_id` | `/marketplaces/{marketplace_id}` |
+`MarketplacesApi.get_vendors_stream` | `/vendors/stream` | vendor handle as an individual `Identity` (rating and valid-goods rates in the description) `related-to` its marketplace `Channel`
+`MarketplacesApi.get_vendors_vendor_id` | `/vendors/{vendor_id}` |
+`MarketplacesApi.get_products_stream` | `/products/stream` | listing as `Media-Content` published by the marketplace `Channel` and related to the vendor `Identity`; bot listings add the infected machine's `IPv4Address` and the stealer `Malware`, proxy listings the proxy `IPv4Address` / `DomainName`. Personal data sold in listings is never mapped, and full card numbers in listing text are truncated to the first 6 and last 4 digits. The marketplace is fetched with an extra API call when `api_client` is set on `STIXMapperSettings` (cached per mapping run); without it the `Channel` is omitted
+`MarketplacesApi.get_products_product_id` | `/products/{product_id}` |
+`MarketplacesApi.get_resources_stream` | `/resources/stream` | `DomainName` / `URL` of the site whose data is in a bot's stealer log (labels show whether login, password or cookies are included), `related-to` the bot listing, which is fetched and mapped as above when `api_client` is set
+`MarketplacesApi.get_resources_resource_id` | `/resources/{resource_id}` |
 `AlertsApi.get_alerts_stream` | `/alerts/stream` | Each alert's target is resolved (extra API calls, see `fetch_alert_targets`) and mapped as above, then wrapped in an `Incident` (`incident_type` `alert` or `data-breach`) carrying watcher labels + a portal reference and linked `related-to` the content. Requires `api_client` on `STIXMapperSettings`; set `alerts_create_incident=False` to emit the content without the wrapping `Incident`. Report targets are fetched with inline images (as when mapping a report directly) unless `report_full_content=False`
 
 *Empty cells inherit the value from the previous row.*
@@ -236,13 +245,12 @@ Client's class/method | API endpoint | Produced outcome
 The alerts stream endpoint returns lightweight `StreamingWatcherAlert` objects that carry metadata
 (status, watcher IDs, timestamps, highlights) but not the actual content the alert refers to.
 `fetch_alert_targets` resolves each alert's API link in parallel and pairs it with the fully
-fetched target object — a report, forum post, credential, indicator, or any other supported type.
+fetched target object — a report, forum post, credential, indicator, marketplace product, or any other
+supported type.
 
 When a target cannot be fetched (no link, no known SDK route, forbidden, or an unexpected error),
 the alert is still returned by default with `target=None` and a `status` explaining why, so nothing
-is silently lost. Pass `skip_missing_targets=True` to omit such alerts instead. Marketplace hits
-have no SDK route yet, so they come back as bare alerts with `status=UNRESOLVABLE` (or are omitted
-when `skip_missing_targets=True`), the same as any other unresolvable target.
+is silently lost. Pass `skip_missing_targets=True` to omit such alerts instead.
 
 ```python
 from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatus
@@ -255,7 +263,7 @@ from verity471.helpers import fetch_alert_targets, AlertTarget, AlertTargetStatu
 | `alerts_response` | `StreamingAlertsResponse` | *(required)* | The page returned by `AlertsApi.get_alerts_stream()`. |
 | `api_client` | `ApiClient` | *(required)* | An active `ApiClient` instance (must share credentials with the alerts call). |
 | `raise_on_error` | `bool` | `False` | When `True`, re-raise unexpected errors (and the missing-link error) instead of recording them on the result. |
-| `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. Marketplace hits (no SDK route yet) are treated like any other unresolvable target. |
+| `skip_missing_targets` | `bool` | `False` | When `True`, alerts whose target cannot be fetched are omitted from the result. When `False` (default), they are returned with `target=None` and a failure `status`. |
 | `include_inline_images` | `bool` | `True` | When `True` (default), report targets are fetched with their images embedded in the body as base64 data URIs. Set to `False` for smaller responses, leaving the images as bare attachment URLs. Ignored by target types that have no such option. |
 
 ### Returns
@@ -331,7 +339,7 @@ from verity471.helpers import get_latest
 ### Returns
 
 A list of at most `n` items in ascending order (oldest first), so the last element is always the
-single most-recent item. When fewer than `n` items exist in the full history the function returns
+single most-recent item. When fewer than `n` items exist in the full history, the function returns
 however many are available.
 
 ### How probing works
@@ -388,6 +396,7 @@ Class | Method | HTTP request | Description
 *CredentialsApi* | [**get_credentials_occurrences_id**](docs/CredentialsApi.md#get_credentials_occurrences_id) | **GET** /integrations/creds/v1/credentials/occurrences/{id} | Get credential occurrence by ID
 *CredentialsApi* | [**get_credentials_occurrences_stream**](docs/CredentialsApi.md#get_credentials_occurrences_stream) | **GET** /integrations/creds/v1/credentials/occurrences/stream | Credential occurrence stream
 *CredentialsApi* | [**get_credentials_stream**](docs/CredentialsApi.md#get_credentials_stream) | **GET** /integrations/creds/v1/credentials/stream | Credential stream
+*EntitiesApi* | [**get_entities_stream**](docs/EntitiesApi.md#get_entities_stream) | **GET** /integrations/entities/v1/entities/stream | Retrieve a stream of entities
 *EventsApi* | [**get_event_by_id**](docs/EventsApi.md#get_event_by_id) | **GET** /integrations/malware-intel/v1/events/{id} | Get event by id
 *EventsApi* | [**get_events_stream**](docs/EventsApi.md#get_events_stream) | **GET** /integrations/malware-intel/v1/events/stream | Stream malware events using a cursor
 *GIRsApi* | [**get_list_of_girs_in_a_hierarchical_structure**](docs/GIRsApi.md#get_list_of_girs_in_a_hierarchical_structure) | **GET** /integrations/girs/v1/girs/tree | 
@@ -396,6 +405,15 @@ Class | Method | HTTP request | Description
 *MalwareApi* | [**get_malware_family_by_id**](docs/MalwareApi.md#get_malware_family_by_id) | **GET** /integrations/malware-intel/v1/malware/{id} | Get malware family details by id
 *MalwareApi* | [**get_malware_file**](docs/MalwareApi.md#get_malware_file) | **GET** /integrations/malware-intel/v1/malware/files/{file_name}/download | Get malware file using sha256
 *MalwareApi* | [**get_malware_list**](docs/MalwareApi.md#get_malware_list) | **GET** /integrations/malware-intel/v1/malware | Get list of malware families.
+*MarketplacesApi* | [**get_marketplaces_marketplace_id**](docs/MarketplacesApi.md#get_marketplaces_marketplace_id) | **GET** /integrations/marketplaces/v1/marketplaces/{marketplace_id} | Get a marketplace by id
+*MarketplacesApi* | [**get_marketplaces_stream**](docs/MarketplacesApi.md#get_marketplaces_stream) | **GET** /integrations/marketplaces/v1/marketplaces/stream | Get marketplaces (stream)
+*MarketplacesApi* | [**get_products_product_id**](docs/MarketplacesApi.md#get_products_product_id) | **GET** /integrations/marketplaces/v1/products/{product_id} | Get a product by id
+*MarketplacesApi* | [**get_products_stream**](docs/MarketplacesApi.md#get_products_stream) | **GET** /integrations/marketplaces/v1/products/stream | Get products (stream)
+*MarketplacesApi* | [**get_resources_resource_id**](docs/MarketplacesApi.md#get_resources_resource_id) | **GET** /integrations/marketplaces/v1/resources/{resource_id} | Get a resource by id
+*MarketplacesApi* | [**get_resources_stream**](docs/MarketplacesApi.md#get_resources_stream) | **GET** /integrations/marketplaces/v1/resources/stream | Get resources (stream)
+*MarketplacesApi* | [**get_vendors_stream**](docs/MarketplacesApi.md#get_vendors_stream) | **GET** /integrations/marketplaces/v1/vendors/stream | Get vendors (stream)
+*MarketplacesApi* | [**get_vendors_vendor_id**](docs/MarketplacesApi.md#get_vendors_vendor_id) | **GET** /integrations/marketplaces/v1/vendors/{vendor_id} | Get a vendor by id
+*ObservablesApi* | [**get_observables_stream**](docs/ObservablesApi.md#get_observables_stream) | **GET** /integrations/observables/v1/observables/stream | Retrieve a stream of observables
 *ReportsApi* | [**get_reports_breach_alert_id**](docs/ReportsApi.md#get_reports_breach_alert_id) | **GET** /integrations/intel-report/v1/reports/breach-alert/{id} | Get a breach alert report details
 *ReportsApi* | [**get_reports_breach_alert_stream**](docs/ReportsApi.md#get_reports_breach_alert_stream) | **GET** /integrations/intel-report/v1/reports/breach-alert/stream | Get all breach alert reports (stream)
 *ReportsApi* | [**get_reports_fintel_id**](docs/ReportsApi.md#get_reports_fintel_id) | **GET** /integrations/intel-report/v1/reports/fintel/{id} | Get a fintel report details
@@ -418,6 +436,7 @@ Class | Method | HTTP request | Description
 *ReportsApi* | [**get_reports_vulnerability_id_download_as_pdf**](docs/ReportsApi.md#get_reports_vulnerability_id_download_as_pdf) | **GET** /integrations/intel-report/v1/reports/vulnerability/{id}/download-as-pdf | Get a vulnerability report as PDF
 *ReportsApi* | [**get_reports_vulnerability_stream**](docs/ReportsApi.md#get_reports_vulnerability_stream) | **GET** /integrations/intel-report/v1/reports/vulnerability/stream | Get all vulnerabilities reports (stream)
 *SourcesApi* | [**get_data_leak_sites_file_listings_id**](docs/SourcesApi.md#get_data_leak_sites_file_listings_id) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id} | Get a data leak site file listing content
+*SourcesApi* | [**get_data_leak_sites_file_listings_id_details**](docs/SourcesApi.md#get_data_leak_sites_file_listings_id_details) | **GET** /integrations/sources/v1/data-leak-sites/file-listings/{id}/details | Get data leak site file listing details by id
 *SourcesApi* | [**get_data_leak_sites_posts_id**](docs/SourcesApi.md#get_data_leak_sites_posts_id) | **GET** /integrations/sources/v1/data-leak-sites/posts/{id} | Get a data leak site post by id
 *SourcesApi* | [**get_data_leak_sites_posts_stream**](docs/SourcesApi.md#get_data_leak_sites_posts_stream) | **GET** /integrations/sources/v1/data-leak-sites/posts/stream | Get data leak sites posts (stream)
 *SourcesApi* | [**get_forums_posts_post_id**](docs/SourcesApi.md#get_forums_posts_post_id) | **GET** /integrations/sources/v1/forums/posts/{post_id} | Get a forum post by id
@@ -429,12 +448,12 @@ Class | Method | HTTP request | Description
 *SourcesApi* | [**get_messaging_services_messages_stream**](docs/SourcesApi.md#get_messaging_services_messages_stream) | **GET** /integrations/sources/v1/messaging-services/messages/stream | Get chat messages (stream)
 *WatchersApi* | [**get_watcher_groups**](docs/WatchersApi.md#get_watcher_groups) | **GET** /integrations/watchers/v1/watcher-groups | Get list of watcher groups for user
 *WatchersApi* | [**get_watchers**](docs/WatchersApi.md#get_watchers) | **GET** /integrations/watchers/v1/watchers | Get list of watchers for the current user
-*EntitiesApi* | [**get_entities_stream**](docs/EntitiesApi.md#get_entities_stream) | **GET** /integrations/entities/v1/entities/stream | Retrieve a stream of entities
-*ObservablesApi* | [**get_observables_stream**](docs/ObservablesApi.md#get_observables_stream) | **GET** /integrations/observables/v1/observables/stream | Retrieve a stream of observables
 
 
 ## Documentation For Models
 
+ - [AccountBasicInfo](docs/AccountBasicInfo.md)
+ - [AccountDetails](docs/AccountDetails.md)
  - [Activity](docs/Activity.md)
  - [ActivityLocation](docs/ActivityLocation.md)
  - [ActivityResponse](docs/ActivityResponse.md)
@@ -444,16 +463,28 @@ Class | Method | HTTP request | Description
  - [ActorSubjectOfReport](docs/ActorSubjectOfReport.md)
  - [AdmiraltyCode](docs/AdmiraltyCode.md)
  - [AllMalwareProfiles](docs/AllMalwareProfiles.md)
+ - [ApkMeta](docs/ApkMeta.md)
+ - [ArticleBasicInfo](docs/ArticleBasicInfo.md)
+ - [ArticleDetails](docs/ArticleDetails.md)
  - [Assessment](docs/Assessment.md)
  - [AttachmentClassification](docs/AttachmentClassification.md)
  - [AttachmentData](docs/AttachmentData.md)
  - [AuthorActor1](docs/AuthorActor1.md)
+ - [AvailableInfo](docs/AvailableInfo.md)
  - [BadRequest](docs/BadRequest.md)
+ - [BankBasicInfo](docs/BankBasicInfo.md)
+ - [BankDetails](docs/BankDetails.md)
+ - [BotDetails](docs/BotDetails.md)
+ - [BotInfostealerInfo](docs/BotInfostealerInfo.md)
+ - [BotOtherInfo](docs/BotOtherInfo.md)
  - [BotSettings](docs/BotSettings.md)
  - [BreachAlertByIdResponse](docs/BreachAlertByIdResponse.md)
  - [BreachAlertResponse](docs/BreachAlertResponse.md)
  - [BreachAlertsResponseStream](docs/BreachAlertsResponseStream.md)
  - [BulletproofHosting](docs/BulletproofHosting.md)
+ - [CardBasicInfo](docs/CardBasicInfo.md)
+ - [CardDetails](docs/CardDetails.md)
+ - [Certificate](docs/Certificate.md)
  - [ChatMessageStream](docs/ChatMessageStream.md)
  - [ChatMessagesStreamingPage](docs/ChatMessagesStreamingPage.md)
  - [ChatRoomMessageStream](docs/ChatRoomMessageStream.md)
@@ -477,14 +508,29 @@ Class | Method | HTTP request | Description
  - [CredStatisticsResponse](docs/CredStatisticsResponse.md)
  - [CredentialOccurrenceCredResponse](docs/CredentialOccurrenceCredResponse.md)
  - [CredentialOccurrenceDataResponse](docs/CredentialOccurrenceDataResponse.md)
+ - [CreditCard](docs/CreditCard.md)
  - [Cvss](docs/Cvss.md)
+ - [DataLeakSiteFileListingDetailsResponse](docs/DataLeakSiteFileListingDetailsResponse.md)
+ - [DataLeakSiteFileListingDownload](docs/DataLeakSiteFileListingDownload.md)
+ - [DataLeakSiteFileListingFileRef](docs/DataLeakSiteFileListingFileRef.md)
+ - [DataLeakSiteFileListingPostRef](docs/DataLeakSiteFileListingPostRef.md)
+ - [DataLeakSiteFileListingThreadRef](docs/DataLeakSiteFileListingThreadRef.md)
  - [DataLeakSiteFileListingUrl](docs/DataLeakSiteFileListingUrl.md)
+ - [DataLeakSiteFileListingWebsiteRef](docs/DataLeakSiteFileListingWebsiteRef.md)
  - [DataLeakSitePost](docs/DataLeakSitePost.md)
  - [DataLeakSitePost1](docs/DataLeakSitePost1.md)
  - [DataLeakSitePostItem](docs/DataLeakSitePostItem.md)
  - [DataLeakSitePostWebsite](docs/DataLeakSitePostWebsite.md)
  - [DataLeakSitePostsStreamingPage](docs/DataLeakSitePostsStreamingPage.md)
  - [DataLeakSitesWebsite](docs/DataLeakSitesWebsite.md)
+ - [DatabaseBasicInfo](docs/DatabaseBasicInfo.md)
+ - [DatabaseDetails](docs/DatabaseDetails.md)
+ - [DigitalGoodBasicInfo](docs/DigitalGoodBasicInfo.md)
+ - [DigitalGoodDetails](docs/DigitalGoodDetails.md)
+ - [DocumentBasicInfo](docs/DocumentBasicInfo.md)
+ - [DrugBasicInfo](docs/DrugBasicInfo.md)
+ - [DrugDetails](docs/DrugDetails.md)
+ - [EmbeddedWatcherGroupResponse](docs/EmbeddedWatcherGroupResponse.md)
  - [Encryption](docs/Encryption.md)
  - [Entities](docs/Entities.md)
  - [Entity](docs/Entity.md)
@@ -497,8 +543,11 @@ Class | Method | HTTP request | Description
  - [EventData](docs/EventData.md)
  - [EventTag](docs/EventTag.md)
  - [EventsStream](docs/EventsStream.md)
+ - [ExploitBasicInfo](docs/ExploitBasicInfo.md)
+ - [ExploitDetails](docs/ExploitDetails.md)
  - [ExploitStatus](docs/ExploitStatus.md)
  - [File](docs/File.md)
+ - [FileInfo](docs/FileInfo.md)
  - [FintelReportSubType](docs/FintelReportSubType.md)
  - [FintelReportsResponseStream](docs/FintelReportsResponseStream.md)
  - [FintelResponse](docs/FintelResponse.md)
@@ -536,6 +585,7 @@ Class | Method | HTTP request | Description
  - [Href](docs/Href.md)
  - [ImServer](docs/ImServer.md)
  - [ImageType](docs/ImageType.md)
+ - [InGameItems](docs/InGameItems.md)
  - [IndicatorData](docs/IndicatorData.md)
  - [IndicatorsStream](docs/IndicatorsStream.md)
  - [Industries](docs/Industries.md)
@@ -543,6 +593,10 @@ Class | Method | HTTP request | Description
  - [InfoReportsResponseStream](docs/InfoReportsResponseStream.md)
  - [InfoStealerResponseOption](docs/InfoStealerResponseOption.md)
  - [InfoStealerResponseSet](docs/InfoStealerResponseSet.md)
+ - [IntegrationMarketplaceResponse](docs/IntegrationMarketplaceResponse.md)
+ - [IntegrationProductResponse](docs/IntegrationProductResponse.md)
+ - [IntegrationResourceResponse](docs/IntegrationResourceResponse.md)
+ - [IntegrationVendorResponse](docs/IntegrationVendorResponse.md)
  - [IntegrationsEvent](docs/IntegrationsEvent.md)
  - [IntegrationsIndicator](docs/IntegrationsIndicator.md)
  - [IntelligenceEstimateResponse](docs/IntelligenceEstimateResponse.md)
@@ -560,6 +614,7 @@ Class | Method | HTTP request | Description
  - [MalwareFamily](docs/MalwareFamily.md)
  - [MalwareReportResponse](docs/MalwareReportResponse.md)
  - [MalwareReportsResponseStream](docs/MalwareReportsResponseStream.md)
+ - [MarketplacesStreamingPage](docs/MarketplacesStreamingPage.md)
  - [Motivation](docs/Motivation.md)
  - [NotFound](docs/NotFound.md)
  - [NotificationPreferenceType](docs/NotificationPreferenceType.md)
@@ -568,12 +623,26 @@ Class | Method | HTTP request | Description
  - [ObservableStreamPage](docs/ObservableStreamPage.md)
  - [ObservableType](docs/ObservableType.md)
  - [PatchStatus](docs/PatchStatus.md)
+ - [PaypalBasicInfo](docs/PaypalBasicInfo.md)
+ - [PaypalDetails](docs/PaypalDetails.md)
+ - [PersonalInfoBasicInfo](docs/PersonalInfoBasicInfo.md)
+ - [PersonalInfoDetails](docs/PersonalInfoDetails.md)
  - [Poc](docs/Poc.md)
+ - [PolicyInfo](docs/PolicyInfo.md)
  - [PostDetails1](docs/PostDetails1.md)
  - [PostResponse1](docs/PostResponse1.md)
+ - [PriceEntry](docs/PriceEntry.md)
  - [PrivateMessageDetails1](docs/PrivateMessageDetails1.md)
  - [PrivateMessageResponse1](docs/PrivateMessageResponse1.md)
  - [ProcessingStatus](docs/ProcessingStatus.md)
+ - [ProductKind](docs/ProductKind.md)
+ - [ProductMeta](docs/ProductMeta.md)
+ - [ProductsStreamingPage](docs/ProductsStreamingPage.md)
+ - [ProxyBasicInfo](docs/ProxyBasicInfo.md)
+ - [ProxyDetails](docs/ProxyDetails.md)
+ - [Quantity](docs/Quantity.md)
+ - [RatingOverall](docs/RatingOverall.md)
+ - [RealDocumentDetails](docs/RealDocumentDetails.md)
  - [RecipientDomain](docs/RecipientDomain.md)
  - [Redirect](docs/Redirect.md)
  - [Report](docs/Report.md)
@@ -584,6 +653,10 @@ Class | Method | HTTP request | Description
  - [ReportType](docs/ReportType.md)
  - [ReportingStatus](docs/ReportingStatus.md)
  - [ReportsVictimResponse](docs/ReportsVictimResponse.md)
+ - [ResourceInfostealerInfo](docs/ResourceInfostealerInfo.md)
+ - [ResourceOtherInfo](docs/ResourceOtherInfo.md)
+ - [ResourceProductInfo](docs/ResourceProductInfo.md)
+ - [ResourcesStreamingPage](docs/ResourcesStreamingPage.md)
  - [Revocation](docs/Revocation.md)
  - [RiskLevel](docs/RiskLevel.md)
  - [RoomStream](docs/RoomStream.md)
@@ -591,6 +664,9 @@ Class | Method | HTTP request | Description
  - [ServerStream](docs/ServerStream.md)
  - [Settings](docs/Settings.md)
  - [ShareSettingsResponse](docs/ShareSettingsResponse.md)
+ - [ShippingInfo](docs/ShippingInfo.md)
+ - [ShopBasicInfo](docs/ShopBasicInfo.md)
+ - [ShopDetails](docs/ShopDetails.md)
  - [SignificantActivity](docs/SignificantActivity.md)
  - [SimplifiedMalwareProfile](docs/SimplifiedMalwareProfile.md)
  - [SourceLink](docs/SourceLink.md)
@@ -613,6 +689,8 @@ Class | Method | HTTP request | Description
  - [TranslationStatus](docs/TranslationStatus.md)
  - [Trigger](docs/Trigger.md)
  - [Unauthorized](docs/Unauthorized.md)
+ - [VendorsStreamingPage](docs/VendorsStreamingPage.md)
+ - [VictimInfo](docs/VictimInfo.md)
  - [VictimResponse](docs/VictimResponse.md)
  - [VulnerabilitiesReportDetailsResponse](docs/VulnerabilitiesReportDetailsResponse.md)
  - [VulnerabilitiesReportDetailsResponseStream](docs/VulnerabilitiesReportDetailsResponseStream.md)

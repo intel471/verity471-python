@@ -10,8 +10,8 @@ from verity471.verity_stix.constants import INTEL_471
 class STIXMapperSettings(NamedTuple):
     client: Union['verity471', None] = None
     api_client: Union['ApiClient', None] = None
-    # Get full report's content, including inline images, using additional API call.
-    # Only if given report from search endpoint is truncated or has inline images.
+    # Get the full report content, including inline images, using an additional API call.
+    # Only applies if the report returned by the search endpoint is truncated or has inline images.
     report_full_content: bool = True
     ioc_opencti_score: Optional[int] = None
     # When mapping alerts, wrap each alert's resolved target in an Incident
@@ -22,6 +22,11 @@ class STIXMapperSettings(NamedTuple):
     # ``credential`` field. Set False to emit the account without it; the
     # password strength is still noted in the description.
     credentials_include_plain_password: bool = True
+    # Cache for parent objects fetched while mapping (e.g. a product's marketplace,
+    # a resource's bot product), keyed internally by mapper. Leave as None: mappers
+    # that fetch create one per run, and AlertsMapper shares one across all targets
+    # of a page so each parent is fetched only once.
+    lookup_cache: Optional[dict] = None
 
 
 class StixObjects:
